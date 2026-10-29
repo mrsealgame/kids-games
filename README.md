@@ -13,3 +13,8 @@ https://mrsealgame.github.io/kids-games/fish-go-go-go
 🐣 Chicken Math
 
 https://mrsealgame.github.io/kids-games/chicken-math
+
+
+🎹 Piano Pop!
+
+https://mrsealgame.github.io/kids-games/piano-pop
