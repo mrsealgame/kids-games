@@ -68,28 +68,35 @@ header{background:#4e7757;color:#fff8dd;text-align:center;padding:10px 12px;bord
 
 .collection-tabs{display:flex;gap:10px;justify-content:center;margin:10px 0 18px;flex-wrap:wrap}.collection-tabs button.active{background:#d7e9b7;border-color:#8cb064}.collection-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;max-height:55vh;overflow-y:auto;padding:6px}.collection-card{border:2px solid #d8c49a;background:#fffaf0;border-radius:16px;padding:12px;text-align:center;min-height:175px}.collection-card.locked{background:#f1eee8;opacity:.65}.collection-art{height:90px}.collection-art svg{height:90px;max-width:130px}.collection-emoji{font-size:57px;height:80px}.collection-card b,.collection-card small{display:block}.collection-card small{color:#7b796f;margin-top:4px}.collection-card p{font-size:12px;line-height:1.35}
 
-/* In-world level-up and evolution effects */
-.cat{isolation:isolate}
-.levelup-float{position:absolute;z-index:20;bottom:105%;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:clamp(22px,3vw,34px);font-weight:900;color:#fff4a2;-webkit-text-stroke:1px #a86b39;text-shadow:0 0 8px #fff,0 3px 0 #8e633d,0 0 18px #ffdf73;pointer-events:none;animation:levelUpFloat 1.25s ease-out forwards}
-@keyframes levelUpFloat{0%{opacity:0;transform:translate(-50%,20px) scale(.65)}20%{opacity:1;transform:translate(-50%,-10px) scale(1.22)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-40px) scale(1)}}
-.cat.evolving{z-index:15!important;transition:none!important;animation:evolvePulse .3s ease-in-out infinite alternate!important;filter:drop-shadow(0 0 12px #fff9ae) drop-shadow(0 0 28px #fff2a0)!important}
-.cat.evolving::before{content:"";position:absolute;inset:-60%;border-radius:50%;z-index:-1;background:radial-gradient(circle,#fffef5 0%,#fff8bb9e 27%,#ffe66d55 45%,transparent 70%);animation:evolveAura .65s ease-in-out infinite alternate;pointer-events:none}
-.cat.evolving svg{animation:evolveFlash .18s steps(2,end) infinite}
-@keyframes evolvePulse{from{transform:scale(.9)}to{transform:scale(1.28)}}
-@keyframes evolveAura{from{opacity:.45;transform:scale(.7)}to{opacity:1;transform:scale(1.22)}}
-@keyframes evolveFlash{from{filter:brightness(1)}to{filter:brightness(4) saturate(.15)}}
-.cat.evolve-reveal{animation:evolveReveal .85s ease-out!important;filter:drop-shadow(0 0 20px #ffe986)!important}
-@keyframes evolveReveal{0%{transform:scale(.25);filter:brightness(5)}55%{transform:scale(1.45)}100%{transform:scale(1)}}
+/* Dual-farm layout */
+.dual-world{display:grid;grid-template-columns:minmax(0,45fr) minmax(0,55fr);gap:12px;max-width:1500px;margin:0 auto;padding:0 12px;align-items:stretch}
+.dual-world .farm{width:100%;min-width:0;margin:0;height:610px;overflow:hidden}
+.farm-side,.ranch-side{min-width:0}.side-title{text-align:center;font-size:20px;margin:9px 0;color:#5a7048}
+.ranch-side{background:linear-gradient(#cce9d5,#f6eac4);border:5px solid #9eae76;border-radius:24px;padding:8px 12px 18px;min-height:610px;box-shadow:inset 0 0 0 3px #f9efcc}
+.ranch-summary{text-align:center;font-size:13px;font-weight:bold;color:#657553;margin:4px 0 8px}
+.ranch-fence{background:repeating-linear-gradient(90deg,#d6a36d 0 8px,#b27c4d 8px 12px,transparent 12px 39px);border:5px solid #9d7145;border-radius:18px;min-height:178px;padding:12px;display:flex;flex-wrap:wrap;align-content:center;gap:8px;position:relative}
+.ranch-pet{position:relative;background:#fff8df;border:3px solid #b7a67c;border-radius:17px;width:94px;height:108px;display:flex;align-items:center;flex-direction:column;justify-content:center;cursor:pointer;user-select:none;touch-action:none}
+.ranch-pet svg{width:76px;height:68px}.ranch-pet .pet-emoji{font-size:43px}.ranch-pet .wish{position:absolute;top:-17px;right:-7px;background:white;border:2px solid #dcba72;border-radius:20px;padding:2px 5px;font-size:22px;z-index:2;animation:focusPulse 1s infinite alternate}
+.ranch-pet small{font-size:11px;color:#6b725b}.ranch-pet.evolving{animation:focusPulse .25s infinite alternate;filter:drop-shadow(0 0 15px gold)}
+.ranch-pet.flying{animation:ranchFly 1.1s forwards}@keyframes ranchFly{to{transform:translate(150px,-170px) rotate(25deg);opacity:0}}
+.ranch-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}
+.ranch-field{background:repeating-linear-gradient(0deg,#a5774e 0 12px,#845b3c 12px 22px);border:4px solid #9b744b;border-radius:16px;min-height:107px;position:relative;text-align:center;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;touch-action:none;color:#fffbe8}
+.ranch-field.locked{background:#b8b2a2;opacity:.65;cursor:default}.ranch-field .field-icon{font-size:34px}.ranch-field .field-label{font-size:12px;font-weight:900;text-shadow:0 1px 3px #453221}
+.ranch-field .water-mark{font-size:23px;position:absolute;right:7px;top:0}.ranch-field .field-fruit{font-size:39px;touch-action:none;cursor:grab}
+.ranch-tray{display:flex;align-items:center;justify-content:center;gap:12px;min-height:52px;padding:7px;background:#fff8dc;border:3px dashed #cba971;border-radius:15px;margin-top:10px;font-size:13px;color:#716346}
+.ranch-seed{font-size:30px;cursor:grab;touch-action:none;display:inline-block;background:#f3d39b;border:2px solid #8f6a3c;border-radius:9px;padding:3px}
+.ranch-hint{font-size:12px;color:#6a7556;text-align:center;margin:8px 0}
+@media(max-width:850px){.dual-world{grid-template-columns:1fr}.dual-world .farm{height:540px}.ranch-side{min-height:0}.side-title{font-size:18px}}
 </style></head><body>
 <header><h1>🌾 Caterpillar Farming Adventure</h1></header>
 <div class="top"><button id="level" class="level-button" onclick="openLevelMap()" aria-label="Open level map"></button><button onclick="openBook()">📖 My Storybook</button><button onclick="openCollection()">📚 图鉴</button></div>
-<main class="farm" id="farm">
+<div class="dual-world"><section class="farm-side"><h2 class="side-title">📖 Main Farm · Learn</h2><main class="farm" id="farm">
 <div class="sky"><div class="sun"></div><div class="cloud"></div><div class="cloud two"></div></div>
 <div class="hill"></div><div class="hill two"></div><div class="fence"></div><div class="grass"></div><div class="path"></div><div class="flowers">🌼 🌸 🌼 🌷</div>
 <div class="obj crate" id="crate" onclick="openCrate()"><div class="crateArt"><div class="seedmark"><div class="package-picture"><div class="seed-dots"><i></i><i></i><i></i><i></i><i></i></div></div></div></div><div class="sign">SEEDS</div><div id="bag" class="bag" data-kind="seed"><span id="bagIcon">🍎</span></div></div>
 <div class="obj well" id="well" onclick="openReading()"><div class="wellArt"><div class="wellRoof"></div><div class="wellPost left"></div><div class="wellPost right"></div><div class="wellStone"></div><div class="wellHole"></div><div class="wellRope"></div></div><div class="sign">WELL</div><div id="bucket" class="bucket" data-kind="water">🪣</div></div><div class="plot" id="plot" onclick="clickPlot()"><div class="plot-label">FARM</div><div class="growbar" id="growbar"><div class="growfill" id="growfill"></div></div><div id="seedsOnSoil" class="soil-seeds" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div id="crop" class="crop"></div><div id="waterfall" class="waterfall">💦</div><div id="fruit" class="fruit" data-kind="fruit"></div></div>
 <div class="cat" id="cat" onclick="clickCat()"><svg viewBox="0 0 150 105" aria-label="Caterpillar" role="img"><g stroke="#5d8c48" stroke-width="3"><ellipse cx="38" cy="66" rx="23" ry="25" fill="#91c66a"/><ellipse cx="62" cy="58" rx="26" ry="30" fill="#a4d478"/><ellipse cx="88" cy="54" rx="28" ry="33" fill="#b1da80"/><circle cx="118" cy="48" r="34" fill="#b6df84"/></g><path d="M113 17 Q103 0 95 11 M128 16 Q139 -1 145 10" stroke="#618a51" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="110" cy="43" r="4" fill="#354b37"/><circle cx="135" cy="43" r="4" fill="#354b37"/><path d="M114 58 Q122 68 133 57" fill="none" stroke="#526c47" stroke-width="3" stroke-linecap="round"/><circle cx="102" cy="55" r="6" fill="#efaaa0" opacity=".65"/><circle cx="142" cy="55" r="5" fill="#efaaa0" opacity=".65"/><g stroke="#6c9c57" stroke-width="5" stroke-linecap="round"><path d="M32 84l-4 12M64 85l-4 12M94 85l-4 12"/></g></svg><div id="bubble" class="bubble">...</div><div id="heart" class="heart">❤️</div></div>
-</main>
+</main></section><section class="ranch-side" id="ranchSide"><h2 class="side-title">🏡 Caterpillar Ranch · Review</h2><div id="ranchSummary" class="ranch-summary"></div><div class="ranch-fence" id="ranchFence"></div><div id="ranchTray" class="ranch-tray"></div><div id="ranchFields" class="ranch-fields"></div><p class="ranch-hint">Tap a hungry caterpillar → answer → drag seed to soil → 💧 quiz → 🌱 quiz → drag fruit to its owner.</p></section></div>
 <div class="bottom"><button onclick="resetGame()">↺ Reset</button></div>
 <div class="modal" id="modal"><div class="panel"><h2 id="mtitle"></h2><div id="mbody"></div><p id="feedback" class="feedback"></p><button class="close" id="closeBtn" onclick="closeModal()">Close</button></div></div>
 <script>
@@ -209,94 +216,84 @@ function farmMap(){
 function selectLevel(level){if(level<0||level>Math.min(s.unlocked,19))return;clearTimeout(timer);clearTimeout(catTimer);speechSynthesis?.cancel?.();window.pouringNow=false;s.level=level;s.step=0;s.water=0;delete s.chosen;s.listened=false;waitingForSpeech=false;writingMistakes=0;delete s.pendingSentence;$('heart').classList.remove('show');closeModal();render()}
 function openLevelMap(){openModal('🗺️ Level Map',farmMap(),'map');requestAnimationFrame(alignMapPaths)}
 
-let evolutionInProgress=false;
-function levelUpEffect(){
- const el=document.createElement('div');el.className='levelup-float';el.textContent='⭐ LEVEL UP! ⭐';
- $('cat').appendChild(el);setTimeout(()=>el.remove(),1400);
- try{sound('ripe')}catch(e){}
-}
-function evolutionSound(){
- try{
- const ctx=new (window.AudioContext||window.webkitAudioContext)();
- const t=ctx.currentTime;
- for(let i=0;i<13;i++){
-  const o=ctx.createOscillator(),g=ctx.createGain(),at=t+i*.12;
-  o.type=i%3===0?'triangle':'sine';
-  o.frequency.setValueAtTime(240+i*49,at);
-  o.frequency.exponentialRampToValueAtTime(360+i*64,at+.17);
-  g.gain.setValueAtTime(.0001,at);
-  g.gain.exponentialRampToValueAtTime(.065,at+.025);
-  g.gain.exponentialRampToValueAtTime(.0001,at+.2);
-  o.connect(g).connect(ctx.destination);o.start(at);o.stop(at+.21);
- }
- for(let i=0;i<3;i++){
-  const o=ctx.createOscillator(),g=ctx.createGain(),at=t+1.55+i*.12;
-  o.type='sine';o.frequency.value=[523,784,1047][i];
-  g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(.12,at+.025);g.gain.exponentialRampToValueAtTime(.0001,at+.65);
-  o.connect(g).connect(ctx.destination);o.start(at);o.stop(at+.68);
- }
- setTimeout(()=>ctx.close(),3000);
- }catch(e){}
-}
-function evolveToNextLevel(){
- evolutionInProgress=true;
- const cat=$('cat');cat.classList.add('evolving');cat.classList.remove('next-focus');
- evolutionSound();
- setTimeout(()=>{
-  s.level++;s.unlocked=Math.max(s.unlocked,s.level);
-  s.step=0;s.listened=false;waitingForSpeech=false;s.water=0;delete s.chosen;writingMistakes=0;
-  cat.classList.remove('evolving');cat.classList.add('evolve-reveal');
-  render();
-  setTimeout(()=>{cat.classList.remove('evolve-reveal');evolutionInProgress=false;focusNext()},900);
- },1850);
-}
-function feed(){
- if(s.step!==5||evolutionInProgress)return;
- if(chosen()!==s.level){
+function feed(){if(s.step!==5)return;if(chosen()!==s.level){
+  // The caterpillar eats the harvest, then realizes it was the wrong food.
   s.step=6;render();chomp();
   $('cat').animate([{transform:'scale(1)'},{transform:'scale(1.18)'},{transform:'scale(1)'}],{duration:650});
   setTimeout(()=>{
-   $('heart').textContent='❌';$('heart').classList.add('show');
-   $('cat').animate([{transform:'rotate(-10deg)'},{transform:'rotate(10deg)'},{transform:'rotate(0deg)'}],{duration:420});
-   s.step=0;s.water=0;s.listened=true;delete s.chosen;delete s.pendingSentence;
-   writingMistakes=0;render();speak(cur()[2],true);
-   setTimeout(()=>{$('heart').classList.remove('show');$('heart').textContent='❤️'},1250);
+    $('heart').textContent='❌';$('heart').classList.add('show');
+    $('cat').animate([{transform:'rotate(-10deg)'},{transform:'rotate(10deg)'},{transform:'rotate(0deg)'}],{duration:420});
+    // Reset the plot and unlock the seed box for another attempt at the same level.
+    s.step=0;s.water=0;s.listened=true;delete s.chosen;delete s.pendingSentence;
+    writingMistakes=0;render();speak(cur()[2],true);
+    setTimeout(()=>{$('heart').classList.remove('show');$('heart').textContent='❤️'},1250);
   },800);
   return;
- }
- s.step=6;render();chomp();
- $('cat').animate([{transform:'scale(1)'},{transform:'scale(1.22)'},{transform:'scale(1)'}],{duration:700,iterations:2});
- $('heart').classList.add('show');
- const old=s.level;
- clearTimeout(catTimer);
- catTimer=setTimeout(()=>{
-  const d=items[old],entry={level:old,item:d[0],sentence:d[2],writing:s.pendingSentence||d[6].replace('___',d[7])};
-  const existing=s.book.findIndex(b=>b.level===old);
-  if(existing>=0)s.book[existing]=entry;
-  else{s.book.push(entry);s.book.sort((a,b)=>a.level-b.level)}
-  delete s.pendingSentence;
-  $('heart').classList.remove('show');$('heart').textContent='❤️';
-  levelUpEffect();
-  const next=old+1;
-  const advancingToNewStage=next<20&&stageIndex(old)!==stageIndex(next);
-  if(next===20){
-   setTimeout(()=>{
-    s.level=20;s.unlocked=20;s.step=0;s.listened=false;s.water=0;delete s.chosen;
-    render();openModal('🦋 Congratulations!',`<p>All 20 levels complete!</p>${farmMap()}<button onclick="closeModal();openBook()">📖 My Storybook</button>`,'complete');
-   },1250);
-  }else if(advancingToNewStage){
-   setTimeout(evolveToNextLevel,1150);
-  }else{
-   setTimeout(()=>{
-    s.level=next;s.unlocked=Math.max(s.unlocked,s.level);
-    if(s.level<s.unlocked)s.level=s.unlocked;
-    s.step=0;s.listened=false;waitingForSpeech=false;s.water=0;delete s.chosen;writingMistakes=0;
-    render();
-   },1300);
-  }
- },850);
-}
-let page=0;function openBook(){page=Math.max(0,s.book.length-1);drawBook()}function drawBook(){const total=s.book.length,b=s.book[page];openModal('📖 My Storybook',`<p>${total} / 20 pages unlocked</p>${b?`<div class="bookpage"><div style="font-size:65px">${emojis[b.level]}</div><b>Page ${page+1}</b><p>${b.sentence}</p><p>✏️ ${b.writing}</p><button onclick="listenStoryPage()">🔊 Listen</button></div>`:'<div class="bookpage">📖</div>'}<button ${page===0?'disabled':''} onclick="page--;drawBook()">◀</button><button ${page>=total-1?'disabled':''} onclick="page++;drawBook()">▶</button>`,'book')}function listenStoryPage(){const entry=s.book[page];if(entry&&entry.sentence)speak(entry.sentence)}function resetGame(){if(confirm('Erase progress and storybook?')){localStorage.removeItem(KEY);location.reload()}}
+}s.step=6;render();chomp();$('cat').animate([{transform:'scale(1)'},{transform:'scale(1.22)'},{transform:'scale(1)'}],{duration:700,iterations:2});$('heart').classList.add('show');const old=s.level;clearTimeout(catTimer);catTimer=setTimeout(()=>{const entry={level:old,item:cur()[0],sentence:cur()[2],writing:s.pendingSentence||cur()[6].replace('___',cur()[7])};const existing=s.book.findIndex(b=>b.level===old);if(existing>=0)s.book[existing]=entry;else{s.book.push(entry);s.book.sort((a,b)=>a.level-b.level)}delete s.pendingSentence;s.level++;s.unlocked=Math.max(s.unlocked,s.level);ranchUnlock();if(s.level<s.unlocked)s.level=s.unlocked;s.step=0;s.listened=false;waitingForSpeech=false;s.water=0;delete s.chosen;writingMistakes=0;$('heart').classList.remove('show');$('heart').textContent='❤️';render();if(s.level===20){openModal('🦋 Congratulations!',`<p>All 20 levels complete!</p>${farmMap()}<button onclick="closeModal();openBook()">📖 My Storybook</button>`,'complete')}else{openModal('⭐ Level Complete!',`<div style="font-size:60px">${emojis[old]} 🐛 ❤️</div>${farmMap()}<button onclick="closeModal()">Level ${s.level+1} ➜</button>`,'complete')}},2000)}
+let page=0;function openBook(){page=Math.max(0,s.book.length-1);drawBook()}function drawBook(){const total=s.book.length,b=s.book[page];openModal('📖 My Storybook',`<p>${total} / 20 pages unlocked</p>${b?`<div class="bookpage"><div style="font-size:65px">${emojis[b.level]}</div><b>Page ${page+1}</b><p>${b.sentence}</p><p>✏️ ${b.writing}</p><button onclick="listenStoryPage()">🔊 Listen</button></div>`:'<div class="bookpage">📖</div>'}<button ${page===0?'disabled':''} onclick="page--;drawBook()">◀</button><button ${page>=total-1?'disabled':''} onclick="page++;drawBook()">▶</button>`,'book')}function listenStoryPage(){const entry=s.book[page];if(entry&&entry.sentence)speak(entry.sentence)}function resetGame(){if(confirm('Erase progress and storybook?')){localStorage.removeItem(KEY);localStorage.removeItem(RANCH_KEY);location.reload()}}
 function inRect(x,y,el){const r=el.getBoundingClientRect();return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom}function dragStart(e){const el=e.target.closest('[data-kind]');if(!el)return;const kind=el.dataset.kind;if((kind==='seed'&&s.step!==1)||(kind==='water'&&(s.step!==2||s.water<1))||(kind==='fruit'&&s.step!==5))return;e.preventDefault();e.stopPropagation();const ghost=document.createElement('div');ghost.className='dragghost';if(kind==='seed'){ghost.classList.add('seedbag-ghost');ghost.innerHTML=el.innerHTML;}else{ghost.textContent=kind==='water'?'🪣':emojis[chosen()];}document.body.appendChild(ghost);drag={id:e.pointerId,kind,ghost,el};el.classList.add('drag-origin-hidden');for(const id of ['crate','bag','well','bucket','plot','fruit','cat'])$(id).classList.remove('next-focus');if(kind!=='fruit')$('plot').classList.add('next-focus');else $('cat').classList.add('next-focus');move(e);el.setPointerCapture(e.pointerId)}function move(e){if(!drag)return;drag.ghost.style.left=e.clientX+'px';drag.ghost.style.top=e.clientY+'px';$('plot').classList.toggle('dropready',drag.kind!=='fruit'&&inRect(e.clientX,e.clientY,$('plot')))}function dragEnd(e){if(!drag||drag.id!==e.pointerId)return;const kind=drag.kind;drag.el.classList.remove('drag-origin-hidden');drag.ghost.remove();drag=null;$('plot').classList.remove('dropready');if(kind==='seed'&&inRect(e.clientX,e.clientY,$('plot')))planted();else if(kind==='water'&&inRect(e.clientX,e.clientY,$('plot')))watered();else if(kind==='fruit'&&inRect(e.clientX,e.clientY,$('cat')))feed();focusNext()}document.addEventListener('pointerdown',dragStart);document.addEventListener('pointermove',e=>{if(drag&&drag.id===e.pointerId)move(e)});document.addEventListener('pointerup',dragEnd);document.addEventListener('pointercancel',()=>{if(drag){drag.el.classList.remove('drag-origin-hidden');drag.ghost.remove();drag=null;$('plot').classList.remove('dropready');focusNext()}});
-function wander(){if(!evolutionInProgress&&!$('modal').classList.contains('open')&&!drag&&s.step!==6){$('cat').style.left=(20+Math.random()*57)+'%';$('cat').style.top=(36+Math.random()*17)+'%'}}render();setTimeout(wander,200);setInterval(wander,9000);
+function wander(){if(!$('modal').classList.contains('open')&&!drag&&s.step!==6){$('cat').style.left=(20+Math.random()*57)+'%';$('cat').style.top=(36+Math.random()*17)+'%'}}
+// Ranch: separate review questions, land and creatures. All state survives refresh.
+const RANCH_KEY='caterpillarReviewRanchV1';let ranch;try{ranch=JSON.parse(localStorage.getItem(RANCH_KEY))}catch{};
+if(!ranch||!Array.isArray(ranch.pets))ranch={pets:[],plots:Array.from({length:6},()=>({stage:0})),seed:null,nextId:1,firstEgg:false};
+if(!Array.isArray(ranch.plots))ranch.plots=[];
+while(ranch.plots.length<6)ranch.plots.push({stage:0});
+const ranchSave=()=>localStorage.setItem(RANCH_KEY,JSON.stringify(ranch));
+const ranchLand=()=>s.unlocked<3?0:Math.min(6,1+Math.floor((s.unlocked-3)/3));
+const ranchCapacity=()=>s.unlocked<3?0:s.unlocked<8?3:s.unlocked<14?6:s.unlocked<20?12:20;
+const ranchStages=['🥚','🐛','🐛','🟤','🦋'];
+const ranchNeeds=[1,2,3,2,1];
+const ranchUnlocked=()=>Math.min(20,Math.max(0,s.unlocked));
+let ranchQuestion=null;
+function ranchUnlock(){if(s.unlocked>=3&&!ranch.firstEgg){ranch.firstEgg=true;ranch.pets.push({id:ranch.nextId++,stage:0,fed:0,wish:null,hungry:true,at:Date.now()});}ranchSave();ranchRender()}
+function ranchPet(id){return ranch.pets.find(p=>p.id===id)}
+function ranchRender(){
+ const capacity=ranchCapacity(),land=ranchLand();
+ $('ranchSummary').textContent=land?`🐛 ${ranch.pets.length}/${capacity} residents · 🌱 ${land}/6 plots unlocked`:'🔒 Complete Level 3 to unlock the ranch';
+ $('ranchFence').innerHTML=land?ranch.pets.map(p=>`<div class="ranch-pet" data-pet="${p.id}" onclick="ranchClickPet(${p.id})"><span class="wish">${p.wish!==null?emojis[p.wish]:p.hungry?'🍽️':''}</span><span class="pet-emoji">${ranchStages[p.stage]}</span><small>${['Egg','Baby','Grown','Pupa','Butterfly'][p.stage]} ${p.fed}/${ranchNeeds[p.stage]}</small></div>`).join(''):'<div style="margin:auto;font-size:38px">🔒 🥚</div>';
+ $('ranchTray').innerHTML=land?(ranch.seed!==null?`🎒 Seed earned: <span class="ranch-seed" data-ranch-seed="1" title="Drag to an empty ranch plot">${emojis[ranch.seed]} 🌱</span>`:'🎒 Answer a hungry caterpillar’s quiz to earn seeds'):'Finish 3 main levels to start breeding';
+ $('ranchFields').innerHTML=Array.from({length:6},(_,i)=>{let p=ranch.plots[i];if(i>=land)return `<div class="ranch-field locked"><div class="field-icon">🔒</div><div class="field-label">Unlock Level ${3+i*3}</div></div>`;return `<div class="ranch-field" data-plot="${i}" onclick="ranchClickPlot(${i})"><div class="water-mark">${p.stage===1?'💧':''}</div><div class="field-icon">${p.stage===0?'🌱':p.stage===1?'🌰':p.stage===2?'🌿':p.stage===3?`<span class="field-fruit" data-ranch-fruit="${i}">${emojis[p.crop]}</span>`:'🌱'}</div><div class="field-label">Plot ${i+1} · ${['Empty','Needs water','Tap to grow','Harvest!'][p.stage]||'Empty'}</div></div>`}).join('');
+ ranchSave();
+}
+function ranchClickPet(id){const p=ranchPet(id);if(!p||s.unlocked<3||p.wish!==null||!p.hungry)return;
+ if(ranch.seed!==null){openModal('🎒 Plant your seed first','<p>Drag the seed packet into an empty ranch field.</p>','ranch');return}
+ const crop=Math.floor(Math.random()*ranchUnlocked());p.wish=crop;ranchSave();ranchRender();ranchQuiz(crop,'seed',id);
+}
+function ranchQuiz(crop,action,target){const d=items[crop];ranchQuestion={crop,action,target};
+ const type=['listen','read','write'][Math.floor(Math.random()*3)];ranchQuestion.type=type;
+ if(type==='write'){openModal('✏️ Ranch Review · Writing',`<p>🌱 ${emojis[crop]} ${d[2]}</p><h3>${d[6]}</h3><input id="ranchAnswer" placeholder="Missing word" autocomplete="off"><p><button onclick="ranchCheckWrite()">Check Answer</button></p>`,'ranch');return}
+ const title=type==='listen'?'🔊 Ranch Review · Listening':'📖 Ranch Review · Reading';
+ openModal(title,`${type==='listen'?'<p>🔊 Listen carefully!</p><button onclick="ranchSpeak()">🔊 Listen again</button>':`<p>${d[2]}</p>`}<h3>${d[3]}</h3><div class="choices">${d[4].map((x,i)=>`<button onclick="ranchCheckChoice(${i})">${String.fromCharCode(65+i)}. ${x}</button>`).join('')}</div>`,'ranch');if(type==='listen')setTimeout(()=>speak(d[2]),250);
+}
+function ranchSpeak(){if(ranchQuestion)speak(items[ranchQuestion.crop][2])}
+function ranchCheckChoice(n){if(!ranchQuestion)return;if(n!==items[ranchQuestion.crop][5]){fb('🌼 Try again!');speak(items[ranchQuestion.crop][2]);return}ranchSuccess()}
+function ranchCheckWrite(){if(!ranchQuestion)return;const input=$('ranchAnswer');if(!input)return;const answer=input.value.trim().toLowerCase().replace(/[.!?]/g,'');if(answer!==items[ranchQuestion.crop][7]){fb('🌷 Listen and try again!');speak(items[ranchQuestion.crop][6].replace('___',items[ranchQuestion.crop][7]));return}ranchSuccess()}
+function ranchSuccess(){const q=ranchQuestion;if(!q)return;ranchQuestion=null;closeModal();sound('ripe');if(q.action==='seed'){ranch.seed=q.crop}else if(q.action==='water'){ranch.plots[q.target].stage=2}else if(q.action==='grow'){ranch.plots[q.target].stage=3}ranchRender()}
+function ranchClickPlot(i){const p=ranch.plots[i];if(i>=ranchLand())return;if(p.stage===1)ranchQuiz(p.crop,'water',i);else if(p.stage===2)ranchQuiz(p.crop,'grow',i)}
+function ranchPlant(i){if(i>=ranchLand()||ranch.seed===null||ranch.plots[i].stage!==0)return;ranch.plots[i]={stage:1,crop:ranch.seed};ranch.seed=null;sound('sow');ranchRender()}
+function ranchFeed(i,id){const plot=ranch.plots[i],pet=ranchPet(id);if(!plot||plot.stage!==3||!pet||pet.wish!==plot.crop)return;
+ plot.stage=0;delete plot.crop;pet.wish=null;pet.hungry=false;pet.fed++;pet.at=Date.now();chomp();
+ const stage=pet.stage;
+ if(pet.fed>=ranchNeeds[stage]){
+  if(stage===4){const vacant=Math.max(0,ranchCapacity()-ranch.pets.length);const eggs=Math.min(vacant,1+Math.floor(Math.random()*3));const node=document.querySelector(`[data-pet="${id}"]`);if(node)node.classList.add('evolving');
+   for(let n=0;n<eggs;n++)ranch.pets.push({id:ranch.nextId++,stage:0,fed:0,wish:null,hungry:true,at:Date.now()});
+   ranchSave();setTimeout(()=>{const el=document.querySelector(`[data-pet="${id}"]`);if(el)el.classList.add('flying');setTimeout(()=>{ranch.pets=ranch.pets.filter(p=>p.id!==id);ranchRender()},1050)},650);
+   openModal('🦋 Butterfly lays eggs!',`<div style="font-size:55px">${'🥚'.repeat(eggs)||'🦋'}</div><p>${eggs?`Laid ${eggs} egg${eggs>1?'s':''}!`:'The ranch is full. No eggs this time.'}</p><p>The butterfly flies away after laying.</p>`,'ranch');
+  }else{pet.stage++;pet.fed=0;pet.hungry=true;pet.at=Date.now();sound('ripe');const el=document.querySelector(`[data-pet="${id}"]`);if(el)el.classList.add('evolving');setTimeout(ranchRender,800)}
+ }else setTimeout(()=>{pet.hungry=true;ranchRender()},180000);
+ ranchRender();
+}
+// Independent ranch drag-and-drop (pointer and touch); main farm drag remains untouched.
+let ranchDrag=null;
+document.addEventListener('pointerdown',e=>{const el=e.target.closest('[data-ranch-seed],[data-ranch-fruit]');if(!el||ranchDrag)return;e.preventDefault();e.stopPropagation();const seed=el.hasAttribute('data-ranch-seed');const plot=seed?-1:Number(el.dataset.ranchFruit);const crop=seed?ranch.seed:ranch.plots[plot]?.crop;if(crop===null||crop===undefined)return;
+ const ghost=document.createElement('div');ghost.className='dragghost';ghost.textContent=seed?'🎒 '+emojis[crop]:emojis[crop];document.body.appendChild(ghost);ranchDrag={id:e.pointerId,seed,plot,ghost};ghost.style.left=e.clientX+'px';ghost.style.top=e.clientY+'px';el.setPointerCapture(e.pointerId);
+},true);
+document.addEventListener('pointermove',e=>{if(!ranchDrag||ranchDrag.id!==e.pointerId)return;ranchDrag.ghost.style.left=e.clientX+'px';ranchDrag.ghost.style.top=e.clientY+'px'},true);
+document.addEventListener('pointerup',e=>{if(!ranchDrag||ranchDrag.id!==e.pointerId)return;const d=ranchDrag;ranchDrag=null;d.ghost.remove();if(d.seed){const el=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-plot]');if(el)ranchPlant(Number(el.dataset.plot))}else{const el=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-pet]');if(el)ranchFeed(d.plot,Number(el.dataset.pet))}},true);
+document.addEventListener('pointercancel',()=>{if(ranchDrag){ranchDrag.ghost.remove();ranchDrag=null}},true);
+setInterval(()=>{if(s.unlocked<3)return;let changed=false;for(const p of ranch.pets){if(!p.hungry&&p.wish===null&&Date.now()-p.at>=180000){p.hungry=true;changed=true}}if(changed)ranchRender()},10000);
+// Preserve existing saves; grant starter egg if user already cleared Level 3.
+ranchUnlock();
+
+render();setTimeout(wander,200);setInterval(wander,9000);
 </script></body></html>
