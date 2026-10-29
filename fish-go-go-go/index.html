@@ -22,6 +22,31 @@ let hp,mp,exp,level,stage,stageTime,fish,items,particles,floats,spawnTimer,attac
 const maxHP=()=>4+level,maxMP=()=>2+level,maxEXP=()=>6+level*2,atk=()=>1+Math.floor((level-1)/3);
 const zone=()=>Math.min(5,Math.floor((stage-1)/3));
 function beep(freq=520,dur=.12){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();let o=audio.createOscillator(),g=audio.createGain();o.type='sine';o.frequency.setValueAtTime(freq,audio.currentTime);o.frequency.exponentialRampToValueAtTime(Math.max(80,freq*.65),audio.currentTime+dur);g.gain.setValueAtTime(.07,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+dur);o.connect(g).connect(audio.destination);o.start();o.stop(audio.currentTime+dur)}catch(e){}}
+// A gentle looping music-box melody while the MP aura is active.
+// All notes are synthesized locally: no MP3 files or network needed.
+const magicMelody=[659.25,783.99,987.77,783.99,698.46,880,1046.5,880,659.25,783.99,987.77,1174.66,1046.5,880,783.99,587.33];
+let musicStep=0,musicCountdown=0,musicWasPlaying=false;
+function magicNote(frequency){
+ try{
+  if(!audio||audio.state!=='running')return;
+  const now=audio.currentTime;
+  const osc=audio.createOscillator(),gain=audio.createGain();
+  osc.type='sine';osc.frequency.setValueAtTime(frequency,now);
+  gain.gain.setValueAtTime(.0001,now);
+  gain.gain.exponentialRampToValueAtTime(.024,now+.025);
+  gain.gain.exponentialRampToValueAtTime(.0001,now+.36);
+  osc.connect(gain).connect(audio.destination);
+  osc.start(now);osc.stop(now+.38);
+ }catch(e){}
+}
+function updateMagicMusic(dt){
+ const playing=mp>0&&!paused&&!ended&&!document.hidden;
+ if(!playing){musicWasPlaying=false;musicCountdown=0;return}
+ if(!audio||audio.state!=='running')return;
+ if(!musicWasPlaying){musicWasPlaying=true;musicStep=0;musicCountdown=0}
+ musicCountdown-=dt;
+ if(musicCountdown<=0){magicNote(magicMelody[musicStep%magicMelody.length]);musicStep++;musicCountdown=.29}
+}
 function floatText(text,color,x=fish.x,y=fish.y-45){floats.push({text,color,x,y,t:1.15})}
 function say(text){toast.textContent=text;toast.classList.add('show');toastTime=1.35}
 function hud(){for(const [key,v,m] of [['hp',hp,maxHP()],['exp',exp,maxEXP()],['mp',mp,maxMP()]]){document.getElementById(key+'num').textContent=v+' / '+m;document.getElementById(key+'bar').style.width=clamp(v/m*100,0,100)+'%'}document.getElementById('level').innerHTML='<div style="font-size:23px;color:#8453b7">⭐ Lv.'+level+'</div><div style="font-size:13px">第'+stage+'关 · '+names[zone()]+'</div>'}
@@ -53,7 +78,7 @@ function spawn(){
   enemy.verticalSpeed=rand(24,42);
  }
 }
-function reset(){level=1;stage=1;stageTime=0;hp=maxHP();mp=0;exp=0;fish={x:185,y:250,tx:185,ty:250};items=[];particles=[];projectiles=[];floats=[];nextItemId=0;edgeStayTime=0;spawnCount=0;spawnTimer=1.5;attackTimer=0;invuln=0;clock=0;toastTime=0;transitionTime=0;paused=false;ended=false;document.getElementById('pauseBtn').textContent='⏸ 暂停';toast.classList.remove('show');makeItem('potion',560,160);makeItem('rock',750,340);makeItem('enemy',965,240,0);hud();makeQuestion();last=performance.now()}
+function reset(){musicWasPlaying=false;musicCountdown=0;musicStep=0;level=1;stage=1;stageTime=0;hp=maxHP();mp=0;exp=0;fish={x:185,y:250,tx:185,ty:250};items=[];particles=[];projectiles=[];floats=[];nextItemId=0;edgeStayTime=0;spawnCount=0;spawnTimer=1.5;attackTimer=0;invuln=0;clock=0;toastTime=0;transitionTime=0;paused=false;ended=false;document.getElementById('pauseBtn').textContent='⏸ 暂停';toast.classList.remove('show');makeItem('potion',560,160);makeItem('rock',750,340);makeItem('enemy',965,240,0);hud();makeQuestion();last=performance.now()}
 function restart(){reset()}
 function togglePause(){if(ended)return;paused=!paused;document.getElementById('pauseBtn').textContent=paused?'▶ 继续':'⏸ 暂停';if(paused){toast.textContent='⏸ 已暂停';toast.classList.add('show')}else{toast.classList.remove('show');toastTime=0}last=performance.now()}
 function aim(e){if(paused||ended)return;const r=cv.getBoundingClientRect();fish.tx=clamp((e.clientX-r.left)/r.width*W,50,W-65);fish.ty=clamp((e.clientY-r.top)/r.height*H,45,H-55)}
@@ -128,5 +153,5 @@ for(const f of floats){ctx.save();ctx.globalAlpha=Math.min(1,f.t*2);ctx.textAlig
 if(transitionTime>0){ctx.save();ctx.globalAlpha=Math.min(1,transitionTime);emoji('🌟',fish.x+60,fish.y-45,35);emoji('✨',fish.x-55,fish.y+45,33);ctx.restore()}
 if(ended){ctx.fillStyle='#15283caa';ctx.fillRect(0,0,W,H);ctx.fillStyle='white';ctx.textAlign='center';ctx.font='bold 60px system-ui';ctx.fillText('游戏结束',W/2,H/2)}}
 function resize(){const d=Math.min(devicePixelRatio||1,3);cv.width=Math.round(W*d);cv.height=Math.round(H*d);ctx.setTransform(d,0,0,d,0,0)}window.addEventListener('resize',resize);resize();
-function loop(now){const dt=Math.min(.05,(now-last)/1000||0);last=now;tick(dt);draw();requestAnimationFrame(loop)}reset();requestAnimationFrame(loop);
+function loop(now){const dt=Math.min(.05,(now-last)/1000||0);last=now;tick(dt);updateMagicMusic(dt);draw();requestAnimationFrame(loop)}reset();requestAnimationFrame(loop);
 </script></body></html>
