@@ -1,20 +1,13 @@
-# kids-games
+# 🎮 Kids Games
 
-Educational mini games for kids
+Educational mini games for kids.
 
-## 🎮 Play Games
+## Play Games
 
-
-🐟 Fish Go Go Go
-
-https://mrsealgame.github.io/kids-games/fish-go-go-go
-
-
-🐣 Chicken Math
-
-https://mrsealgame.github.io/kids-games/chicken-math
-
-
-🎹 Piano Pop!
-
-https://mrsealgame.github.io/kids-games/piano-pop
+| Game | Play |
+| --- | --- |
+| 🐟 Fish Go Go Go | [Play](https://mrsealgame.github.io/kids-games/fish-go-go-go/) |
+| 🐣 Chicken Math | [Play](https://mrsealgame.github.io/kids-games/chicken-math/) |
+| 🎹 Piano Pop! | [Play](https://mrsealgame.github.io/kids-games/piano-pop/) |
+| 🍱 Lunchbox | [Play](https://mrsealgame.github.io/kids-games/lunchbox/) |
+| 🐛 Caterpillar Farming Adventure | [Play](https://mrsealgame.github.io/kids-games/caterpillar-farming/) |
