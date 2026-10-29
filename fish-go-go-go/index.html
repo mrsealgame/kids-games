@@ -16,8 +16,9 @@ const enemyData=[
  {icon:'🦈',hp:8,damage:3,exp:8,r:39},
  {icon:'🐙',hp:15,damage:4,exp:15,r:43},
  {icon:'🦑',hp:20,damage:5,exp:20,r:43}];
+const ATTACK_RADIUS=110; // Same radius for the visible magic ring and automatic targeting.
 const rand=(a,b)=>a+Math.random()*(b-a),clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-let hp,mp,exp,level,stage,stageTime,fish,items,particles,floats,spawnTimer,attackTimer,invuln,clock,answer,paused,ended,last,audio,toastTime,transitionTime,projectiles,nextItemId;
+let hp,mp,exp,level,stage,stageTime,fish,items,particles,floats,spawnTimer,attackTimer,invuln,clock,answer,paused,ended,last,audio,toastTime,transitionTime,projectiles,nextItemId,edgeStayTime,spawnCount;
 const maxHP=()=>4+level,maxMP=()=>2+level,maxEXP=()=>6+level*2,atk=()=>1+Math.floor((level-1)/3);
 const zone=()=>Math.min(5,Math.floor((stage-1)/3));
 function beep(freq=520,dur=.12){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();let o=audio.createOscillator(),g=audio.createGain();o.type='sine';o.frequency.setValueAtTime(freq,audio.currentTime);o.frequency.exponentialRampToValueAtTime(Math.max(80,freq*.65),audio.currentTime+dur);g.gain.setValueAtTime(.07,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+dur);o.connect(g).connect(audio.destination);o.start();o.stop(audio.currentTime+dur)}catch(e){}}
@@ -28,12 +29,31 @@ function makeQuestion(){if(ended)return;const a=Math.floor(rand(1,11)),b=Math.fl
 function expGain(n,x=fish.x,y=fish.y){floatText('+'+n+' EXP','#ffc536',x,y-35);exp+=n;while(exp>=maxEXP()){exp-=maxEXP();level++;hp=maxHP();floatText('❤️ HP FULL!','#24b878');transitionTime=2.2;say('✨ Lv.'+level+' 升级！');beep(1150,.28)}hud()}
 function hurt(d){if(invuln>0)return;const n=Math.min(hp,d);hp-=n;invuln=1.15;floatText('−'+n+' HP','#f44f65');beep(170,.24);hud();if(hp<=0){ended=true;question.textContent='💔 游戏结束';choices.replaceChildren();say('点击重新开始')}}
 function potion(){const n=Math.min(2,maxHP()-hp);hp+=n;floatText('+'+n+' HP','#2db76b');beep(950);hud()}
-function makeItem(type,x=W+50,y=rand(60,H-70),tier=0){const data=type==='enemy'?enemyData[tier]:hazardData[type];items.push({type,tier,x,y,baseY:y,r:data?.r||25,hp:data?.hp||0,max:data?.hp||0,phase:rand(0,6),hitCooldown:0,id:++nextItemId,collided:false})}
-function spawn(){let z=zone(),r=Math.random();let x=W+rand(40,90),y=rand(60,H-70);
-if(r<.12)makeItem('potion',x,y);
-else if(r<.48){const types=['rock','coral','crystal','vortex','lava','trap'].slice(0,z+1);makeItem(types[Math.floor(rand(0,types.length))],x,y)}
-else{let tier=Math.min(z,Math.floor(rand(0,z+1)));makeItem('enemy',x,y,tier)}}
-function reset(){level=1;stage=1;stageTime=0;hp=maxHP();mp=0;exp=0;fish={x:185,y:250,tx:185,ty:250};items=[];particles=[];projectiles=[];floats=[];nextItemId=0;spawnTimer=1.5;attackTimer=0;invuln=0;clock=0;toastTime=0;transitionTime=0;paused=false;ended=false;document.getElementById('pauseBtn').textContent='⏸ 暂停';toast.classList.remove('show');makeItem('potion',560,160);makeItem('rock',750,340);makeItem('enemy',965,240,0);hud();makeQuestion();last=performance.now()}
+function makeItem(type,x=W+50,y=rand(35,H-35),tier=0){const data=type==='enemy'?enemyData[tier]:hazardData[type];items.push({type,tier,x,y,baseY:y,r:data?.r||25,hp:data?.hp||0,max:data?.hp||0,phase:rand(0,6),hitCooldown:0,tracking:false,verticalSpeed:0,id:++nextItemId,collided:false})}
+function spawn(){
+ const z=zone(),r=Math.random(),x=W+rand(40,90);
+ // Cover the entire playable height, including the upper and lower edges.
+ let y=rand(38,H-38);
+ // Every third hazard or enemy spawns near the player's current swimming lane.
+ // Spawning still happens beyond the right edge, leaving time to react.
+ const laneSpawn=(spawnCount++%3===2);
+ if(laneSpawn&&r>=.12)y=clamp(fish.y+rand(-65,65),38,H-38);
+ // After prolonged edge camping, increase the chance of an encounter there.
+ if(edgeStayTime>3&&r>=.12&&Math.random()<.65)y=clamp(fish.y+rand(-42,42),38,H-38);
+ if(r<.12){makeItem('potion',x,y);return}
+ if(r<.48){
+  const types=['rock','coral','crystal','vortex','lava','trap'].slice(0,z+1);
+  makeItem(types[Math.floor(rand(0,types.length))],x,y);
+ }else{
+  const tier=Math.min(z,Math.floor(rand(0,z+1)));
+  makeItem('enemy',x,y,tier);
+  const enemy=items[items.length-1];
+  // Some enemies gently track the player's lane; others swim straight.
+  enemy.tracking=Math.random()<Math.min(.55,.24+stage*.018);
+  enemy.verticalSpeed=rand(24,42);
+ }
+}
+function reset(){level=1;stage=1;stageTime=0;hp=maxHP();mp=0;exp=0;fish={x:185,y:250,tx:185,ty:250};items=[];particles=[];projectiles=[];floats=[];nextItemId=0;edgeStayTime=0;spawnCount=0;spawnTimer=1.5;attackTimer=0;invuln=0;clock=0;toastTime=0;transitionTime=0;paused=false;ended=false;document.getElementById('pauseBtn').textContent='⏸ 暂停';toast.classList.remove('show');makeItem('potion',560,160);makeItem('rock',750,340);makeItem('enemy',965,240,0);hud();makeQuestion();last=performance.now()}
 function restart(){reset()}
 function togglePause(){if(ended)return;paused=!paused;document.getElementById('pauseBtn').textContent=paused?'▶ 继续':'⏸ 暂停';if(paused){toast.textContent='⏸ 已暂停';toast.classList.add('show')}else{toast.classList.remove('show');toastTime=0}last=performance.now()}
 function aim(e){if(paused||ended)return;const r=cv.getBoundingClientRect();fish.tx=clamp((e.clientX-r.left)/r.width*W,50,W-65);fish.ty=clamp((e.clientY-r.top)/r.height*H,45,H-55)}
@@ -46,10 +66,19 @@ function tick(dt){
  toastTime-=dt;if(toastTime<=0)toast.classList.remove('show');
  if(stageTime>=40){stageTime-=40;stage++;transitionTime=2.4;say('🌊 第 '+stage+' 关 · '+names[zone()]);beep(1000,.25);hud()}
  const k=Math.min(1,dt*5);fish.x+=(fish.tx-fish.x)*k;fish.y+=(fish.ty-fish.y)*k;
+ // Staying near either boundary is no longer a permanent safe strategy.
+ edgeStayTime=(fish.y<90||fish.y>H-90)?edgeStayTime+dt:Math.max(0,edgeStayTime-dt*2);
  spawnTimer-=dt;if(spawnTimer<=0){spawn();spawnTimer=rand(1,1.7)*Math.max(.65,1-stage*.02)}
  const speed=125+Math.min(stage,25)*8;
  for(let i=items.length-1;i>=0;i--){
   const o=items[i];o.x-=speed*dt*(o.type==='enemy'?1.12:1);o.phase+=dt*2.2;
+  if(o.type==='enemy'&&o.tracking&&o.x>fish.x+75){
+   const delta=fish.y-o.y;
+   o.y+=clamp(delta,-o.verticalSpeed*dt,o.verticalSpeed*dt);
+   o.y=clamp(o.y,38,H-38);
+  }
+  // Whirlpools drift vertically, making fixed-height hiding less effective.
+  if(o.type==='vortex')o.y=clamp(o.baseY+Math.sin(o.phase*.65)*32,38,H-38);
   if(o.x< -80){items.splice(i,1);continue}
   const y=o.y+(o.type==='enemy'||o.type==='vortex'?Math.sin(o.phase)*13:0);
   if(o.type==='vortex'&&Math.hypot(o.x-fish.x,y-fish.y)<115)fish.y+=(y-fish.y)*dt*.35;
@@ -76,7 +105,7 @@ function tick(dt){
  }
  if(mp>0&&attackTimer<=0){
   const targeted=new Set(projectiles.map(p=>p.targetId));
-  const enemy=items.filter(o=>o.type==='enemy'&&o.hp>0&&o.x>fish.x+25&&o.x-fish.x<280&&Math.abs(o.y-fish.y)<100&&!targeted.has(o.id)).sort((a,b)=>a.x-b.x)[0];
+  const enemy=items.filter(o=>o.type==='enemy'&&o.hp>0&&Math.hypot(o.x-fish.x,(o.y+Math.sin(o.phase)*13)-fish.y)<=ATTACK_RADIUS&&!targeted.has(o.id)).sort((a,b)=>Math.hypot(a.x-fish.x,a.y-fish.y)-Math.hypot(b.x-fish.x,b.y-fish.y))[0];
   if(enemy){mp--;attackTimer=.55;projectiles.push({x:fish.x+32,y:fish.y,targetId:enemy.id,damage:atk()});beep(1080,.13);hud()}
  }
  for(let i=particles.length-1;i>=0;i--){particles[i].t-=dt;if(particles[i].t<=0)particles.splice(i,1)}
@@ -91,7 +120,9 @@ const decor=[['🌿','🐚'],['🪸','🐚'],['💎','🪨'],['🪨','🌀'],['�
 function draw(){background();for(const o of items){const y=o.y+(o.type==='enemy'||o.type==='vortex'?Math.sin(o.phase)*13:0);let icon=o.type==='potion'?'🧪':o.type==='enemy'?enemyData[o.tier].icon:hazardData[o.type].icon;emoji(icon,o.x,y,o.type==='enemy'?o.r*2:50,o.type==='enemy');if(o.type==='enemy'){const w=66;ctx.fillStyle='#263e55';ctx.fillRect(o.x-w/2,y-o.r-27,w,10);ctx.fillStyle=o.hp/o.max>.4?'#6ee58a':'#f67d79';ctx.fillRect(o.x-w/2+2,y-o.r-25,(w-4)*o.hp/o.max,6)}}
 for(const p of projectiles){ctx.save();ctx.shadowColor='#f1a3ff';ctx.shadowBlur=24;ctx.fillStyle='#bb64fa';ctx.beginPath();ctx.arc(p.x,p.y,13,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(p.x,p.y,6,0,Math.PI*2);ctx.fill();ctx.restore()}
 for(const p of particles){ctx.save();ctx.strokeStyle='#d88bff';ctx.lineWidth=7;ctx.shadowColor='#ffffff';ctx.shadowBlur=10;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.tx,p.ty);ctx.stroke();ctx.restore();emoji('✨',p.tx,p.ty,30)}
-if(invuln===0||Math.floor(clock*13)%2===0){if(mp>0){ctx.save();ctx.strokeStyle='#c079ff';ctx.lineWidth=4;ctx.shadowColor='#c477ff';ctx.shadowBlur=15;ctx.beginPath();ctx.arc(fish.x,fish.y,47+Math.sin(clock*5)*3,0,Math.PI*2);ctx.stroke();ctx.restore();for(let j=0;j<3;j++){let a=clock*2+j*Math.PI*2/3;emoji('✨',fish.x+Math.cos(a)*49,fish.y+Math.sin(a)*43,18)}}
+// Draw the real attack boundary. It exactly matches the targeting distance.
+if(mp>0&&!ended){ctx.save();ctx.beginPath();ctx.arc(fish.x,fish.y,ATTACK_RADIUS,0,Math.PI*2);ctx.fillStyle='rgba(180,110,255,0.055)';ctx.fill();ctx.strokeStyle='rgba(182,102,255,0.78)';ctx.lineWidth=3;ctx.shadowColor='#b76aff';ctx.shadowBlur=12;ctx.stroke();ctx.restore()}
+if(invuln===0||Math.floor(clock*13)%2===0){if(mp>0){for(let j=0;j<3;j++){let a=clock*2+j*Math.PI*2/3;emoji('✨',fish.x+Math.cos(a)*49,fish.y+Math.sin(a)*43,18)}}
 const form=forms[Math.min(5,Math.floor((level-1)/3))];emoji(form,fish.x,fish.y+Math.sin(clock*6)*3,level>=10?76:64,true);if(mp>0)emoji('⚡',fish.x,fish.y-47,23)}
 for(const f of floats){ctx.save();ctx.globalAlpha=Math.min(1,f.t*2);ctx.textAlign='center';ctx.font='900 30px system-ui';ctx.lineWidth=5;ctx.strokeStyle='white';ctx.strokeText(f.text,f.x,f.y);ctx.fillStyle=f.color;ctx.fillText(f.text,f.x,f.y);ctx.restore()}
 if(transitionTime>0){ctx.save();ctx.globalAlpha=Math.min(1,transitionTime);emoji('🌟',fish.x+60,fish.y-45,35);emoji('✨',fish.x-55,fish.y+45,33);ctx.restore()}
