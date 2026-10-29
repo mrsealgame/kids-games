@@ -1,1 +1,157 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>小鱼游走了 · 10以内减法</title><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,'PingFang SC',sans-serif;background:linear-gradient(#bcefff,#52b9dc 55%,#137aa8);min-height:100vh;color:#124663;text-align:center}.wrap{max-width:860px;margin:auto;padding:20px}h1{font-size:clamp(27px,5vw,42px);margin:12px 0}.top{display:flex;justify-content:space-between;font-weight:700;background:#ffffffa8;border-radius:18px;padding:12px 18px}.sea{position:relative;margin:18px 0;background:linear-gradient(#72d4ec,#168cb8);height:330px;border:5px solid #ffffff8a;border-radius:28px;overflow:hidden;box-shadow:0 12px 30px #00597855}.sea:after{content:'🌿　🪸　🐚　🌱　🪸';position:absolute;bottom:5px;left:0;width:100%;font-size:30px;pointer-events:none}.fish{position:absolute;font-size:46px;transition:transform 1s ease,opacity 1s ease;filter:drop-shadow(1px 4px 2px #166c8b66)}.fish.leave{transform:translateX(850px) rotate(15deg)!important;opacity:0}.bubble{position:absolute;border:2px solid #e8ffffaa;border-radius:50%;background:#ffffff22;animation:rise 7s linear infinite}@keyframes rise{from{transform:translateY(340px)}to{transform:translateY(-100px)}}.question{font-size:clamp(25px,5vw,36px);font-weight:800;background:#ffffffdb;border-radius:20px;padding:14px;margin:10px 0}.hint{font-size:19px;min-height:30px;font-weight:700}.answers{display:flex;gap:15px;justify-content:center;margin:18px 0}.answers button{width:90px;height:90px;border-radius:50%;border:4px solid #fff;background:radial-gradient(circle at 30% 25%,#fff,#b8f1ff 45%,#60c6ec);font-size:36px;font-weight:900;color:#125b80;cursor:pointer;box-shadow:0 7px 0 #2181a8;touch-action:manipulation}.answers button:active{transform:translateY(5px);box-shadow:0 2px 0 #2181a8}.action{border:0;border-radius:15px;background:#ffdb72;color:#6d4c0b;padding:14px 24px;font-size:20px;font-weight:800;cursor:pointer}.action:disabled{opacity:.5}.message{min-height:40px;font-size:24px;font-weight:800;color:white;text-shadow:0 2px 3px #075a7b}.footer{font-size:14px;color:#eaffff} @media(max-width:480px){.sea{height:280px}.fish{font-size:36px}.answers button{width:76px;height:76px}}</style></head><body><main class="wrap"><h1>🐟 小鱼游走了 🫧</h1><div class="top"><span id="progress">第 1 / 10 题</span><span id="stars">⭐ 0</span></div><div class="sea" id="sea" aria-label="海底小鱼游戏区域"></div><div class="question" id="question">准备好了吗？</div><div class="hint" id="hint">观察小鱼，看看游走了几条！</div><div class="answers" id="answers"></div><div class="message" id="message" aria-live="polite"></div><button class="action" id="next">开始游戏 ▶</button><p class="footer">没有计时器，慢慢想就好 💙</p></main><script>const sea=document.getElementById('sea'),q=document.getElementById('question'),hint=document.getElementById('hint'),answers=document.getElementById('answers'),msg=document.getElementById('message'),next=document.getElementById('next'),progress=document.getElementById('progress'),stars=document.getElementById('stars');let round=0,score=0,total=0,gone=0,correct=0,ready=false,started=false,fish=[];function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}function makeSea(){sea.innerHTML='';for(let i=0;i<12;i++){let b=document.createElement('div');b.className='bubble';let size=rand(8,30);Object.assign(b.style,{width:size+'px',height:size+'px',left:rand(0,95)+'%',top:rand(-80,250)+'px',animationDelay:-rand(0,7)+'s'});sea.append(b)}}function startRound(){started=true;ready=false;next.style.display='none';answers.innerHTML='';msg.textContent='';round++;progress.textContent=`第 ${round} / 10 题`;total=rand(4,10);gone=rand(1,total-1);correct=total-gone;makeSea();fish=[];let cols=5;for(let i=0;i<total;i++){let f=document.createElement('div');f.className='fish';f.textContent=['🐟','🐠','🐡'][i%3];let col=i%cols,row=Math.floor(i/cols);f.style.left=(8+col*18)+'%';f.style.top=(35+row*92)+'px';sea.append(f);fish.push(f)}q.textContent=`海里有 ${total} 条小鱼`;hint.textContent='仔细看看，准备数数！';setTimeout(()=>{if(!started)return;q.textContent=`有 ${gone} 条小鱼游走啦！`;hint.textContent='还剩下几条小鱼？';let idx=[...Array(total).keys()].sort(()=>Math.random()-.5).slice(0,gone);idx.forEach(i=>fish[i].classList.add('leave'));setTimeout(showAnswers,1100)},1600)}function showAnswers(){ready=true;q.textContent=`${total} − ${gone} = ?`;let opts=new Set([correct]);while(opts.size<3)opts.add(rand(0,10));[...opts].sort(()=>Math.random()-.5).forEach(n=>{let b=document.createElement('button');b.textContent=n;b.setAttribute('aria-label',`答案 ${n}`);b.onclick=()=>choose(n);answers.append(b)})}function choose(n){if(!ready)return;if(n===correct){ready=false;score++;stars.textContent=`⭐ ${score}`;msg.textContent=['太棒啦！🌟','答对了！🐬','你是海洋数学家！🪸'][rand(0,2)];hint.textContent=`没错！${total} − ${gone} = ${correct}`;answers.querySelectorAll('button').forEach(b=>b.disabled=true);next.style.display='inline-block';next.textContent=round===10?'打开海底宝箱 🎁':'下一题 ➜'}else{msg.textContent='再试试看 💙 数一数留下的小鱼！'}}function handleNext(){if(round===10){started=false;makeSea();q.textContent='🎁 宝箱打开啦！';hint.textContent=`完成10题，获得 ${score} 颗海星！`;msg.textContent='🐬 🐚 🪸 你真棒！';answers.innerHTML='';next.textContent='再玩一次 ↻';next.style.display='inline-block';round=0;score=0;stars.textContent='⭐ 0';return}if(!started&&round===0){stars.textContent='⭐ 0'}startRound()}next.addEventListener('click',handleNext);makeSea();</script></body></html>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>小鱼冲冲冲 | Fishy Go Go Go!</title><style>*{box-sizing:border-box}body{margin:0;background:#dcf5fb;color:#21536a;font-family:system-ui,'Arial Rounded MT Bold',sans-serif;text-align:center}.app{max-width:1000px;margin:auto;padding:10px}h1{font-size:clamp(23px,4vw,36px);margin:3px 0 9px}.hud{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}.meter{background:#fff;border-radius:15px;padding:9px 12px;box-shadow:0 3px 8px #71b4c455}.label{display:flex;justify-content:space-between;font-weight:800;font-size:clamp(12px,2vw,18px)}.track{height:14px;border-radius:10px;background:#dcebf0;overflow:hidden;margin-top:6px}.fill{height:100%;transition:width .2s}.hp{background:#ee7984}.exp{background:#f5c44e}.mp{background:#a47deb}#level{font-weight:900;display:grid;place-items:center}.sea{position:relative;border:5px solid #7ac9da;border-radius:20px;overflow:hidden;background:#6bcce7;touch-action:none}canvas{display:block;width:100%;height:auto;aspect-ratio:10/5;touch-action:none}.question{font-weight:900;font-size:clamp(29px,5vw,45px);min-height:55px;margin:8px 0 0}.choices{display:flex;justify-content:center;gap:12px;margin:3px 0 8px}.choice{flex:1;max-width:210px;padding:12px 8px;border:0;border-radius:19px;background:#fff7d7;box-shadow:0 5px 0 #dec687;font-size:clamp(27px,5vw,40px);font-weight:900;color:#22556b;cursor:pointer}.choice:active{transform:translateY(3px)}.foot{font-size:14px;display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap}.pause{border:0;border-radius:12px;background:#7857bc;color:white;padding:10px 16px;font-weight:800;cursor:pointer}.pause:focus-visible{outline:3px solid #fff}.restart{border:0;border-radius:12px;background:#318fb0;color:white;padding:10px 16px;font-weight:800;cursor:pointer}.toast{position:absolute;top:12px;left:50%;transform:translateX(-50%);font-size:24px;font-weight:900;text-shadow:0 2px 5px #fff;background:#fff;border-radius:20px;padding:4px 15px;pointer-events:none;opacity:0;transition:opacity .15s}.toast.show{opacity:1}@media(max-width:560px){.hud{grid-template-columns:repeat(2,1fr);gap:5px}.meter{padding:7px}.app{padding:5px}.sea{border-width:3px}.question{min-height:48px}.choice{padding:9px}}</style></head><body><main class="app"><h1>🐠 小鱼冲冲冲</h1><div class="hud"><div class="meter"><div class="label"><span>❤️ HP</span><span id="hpnum"></span></div><div class="track"><div id="hpbar" class="fill hp"></div></div></div><div class="meter"><div class="label"><span>⭐ EXP</span><span id="expnum"></span></div><div class="track"><div id="expbar" class="fill exp"></div></div></div><div class="meter"><div class="label"><span>✨ MP</span><span id="mpnum"></span></div><div class="track"><div id="mpbar" class="fill mp"></div></div></div><div class="meter" id="level"></div></div><div class="sea" id="sea"><canvas id="canvas" width="1000" height="500"></canvas><div class="toast" id="toast"></div></div><div class="question" id="question"></div><div class="choices" id="choices"></div><div class="foot"><span>👆 点击水面游动 · 答对获得魔法 · 魔法自动攻击敌人</span><button class="pause" id="pauseBtn" onclick="togglePause()">⏸ 暂停</button><button class="restart" onclick="restart()">重新开始 ↻</button></div></main><script>
+"use strict";
+const W=1000,H=500,cv=document.getElementById('canvas'),ctx=cv.getContext('2d',{alpha:false}),sea=document.getElementById('sea');
+const question=document.getElementById('question'),choices=document.getElementById('choices'),toast=document.getElementById('toast');
+const names=['阳光浅海','珊瑚花园','水晶洞穴','暗流海域','海底火山','神秘深海'];
+const forms=['🐠','🐟','🐡','🦈','🐉','🐲'];
+const themes=[
+ ['#9deaff','#31b6e3','#e9d49c'],['#75e8dd','#139eac','#f4c5a3'],
+ ['#488bc8','#162d79','#425b8d'],['#2b9da8','#0c3d63','#396c76'],
+ ['#574b76','#291d3c','#684453'],['#3c4a9d','#160e46','#51438b']];
+const hazardData={rock:{icon:'🪨',damage:1,r:27},coral:{icon:'🪸',damage:2,r:30},crystal:{icon:'💎',damage:3,r:27},vortex:{icon:'🌀',damage:4,r:32},lava:{icon:'☄️',damage:5,r:29},trap:{icon:'⚡',damage:6,r:29}};
+const enemyData=[
+ {icon:'🐟',hp:1,damage:1,exp:2,r:27},
+ {icon:'🐠',hp:3,damage:1,exp:3,r:29},
+ {icon:'🐡',hp:5,damage:2,exp:5,r:32},
+ {icon:'🦈',hp:8,damage:3,exp:8,r:39},
+ {icon:'🐙',hp:15,damage:4,exp:15,r:43},
+ {icon:'🦑',hp:20,damage:5,exp:20,r:43}];
+const ATTACK_RADIUS=110; // Same radius for the visible magic ring and automatic targeting.
+const rand=(a,b)=>a+Math.random()*(b-a),clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+let hp,mp,exp,level,stage,stageTime,fish,items,particles,floats,spawnTimer,attackTimer,invuln,clock,answer,paused,ended,last,audio,toastTime,transitionTime,projectiles,nextItemId,edgeStayTime,spawnCount;
+const maxHP=()=>4+level,maxMP=()=>2+level,maxEXP=()=>6+level*2,atk=()=>1+Math.floor((level-1)/3);
+const zone=()=>Math.min(5,Math.floor((stage-1)/3));
+function beep(freq=520,dur=.12){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();let o=audio.createOscillator(),g=audio.createGain();o.type='sine';o.frequency.setValueAtTime(freq,audio.currentTime);o.frequency.exponentialRampToValueAtTime(Math.max(80,freq*.65),audio.currentTime+dur);g.gain.setValueAtTime(.07,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+dur);o.connect(g).connect(audio.destination);o.start();o.stop(audio.currentTime+dur)}catch(e){}}
+// A gentle looping music-box melody while the MP aura is active.
+// All notes are synthesized locally: no MP3 files or network needed.
+const magicMelody=[659.25,783.99,987.77,783.99,698.46,880,1046.5,880,659.25,783.99,987.77,1174.66,1046.5,880,783.99,587.33];
+let musicStep=0,musicCountdown=0,musicWasPlaying=false;
+function magicNote(frequency){
+ try{
+  if(!audio||audio.state!=='running')return;
+  const now=audio.currentTime;
+  const osc=audio.createOscillator(),gain=audio.createGain();
+  osc.type='sine';osc.frequency.setValueAtTime(frequency,now);
+  gain.gain.setValueAtTime(.0001,now);
+  gain.gain.exponentialRampToValueAtTime(.024,now+.025);
+  gain.gain.exponentialRampToValueAtTime(.0001,now+.36);
+  osc.connect(gain).connect(audio.destination);
+  osc.start(now);osc.stop(now+.38);
+ }catch(e){}
+}
+function updateMagicMusic(dt){
+ const playing=mp>0&&!paused&&!ended&&!document.hidden;
+ if(!playing){musicWasPlaying=false;musicCountdown=0;return}
+ if(!audio||audio.state!=='running')return;
+ if(!musicWasPlaying){musicWasPlaying=true;musicStep=0;musicCountdown=0}
+ musicCountdown-=dt;
+ if(musicCountdown<=0){magicNote(magicMelody[musicStep%magicMelody.length]);musicStep++;musicCountdown=.29}
+}
+function floatText(text,color,x=fish.x,y=fish.y-45){floats.push({text,color,x,y,t:1.15})}
+function say(text){toast.textContent=text;toast.classList.add('show');toastTime=1.35}
+function hud(){for(const [key,v,m] of [['hp',hp,maxHP()],['exp',exp,maxEXP()],['mp',mp,maxMP()]]){document.getElementById(key+'num').textContent=v+' / '+m;document.getElementById(key+'bar').style.width=clamp(v/m*100,0,100)+'%'}document.getElementById('level').innerHTML='<div style="font-size:23px;color:#8453b7">⭐ Lv.'+level+'</div><div style="font-size:13px">第'+stage+'关 · '+names[zone()]+'</div>'}
+function makeQuestion(){if(ended)return;const a=Math.floor(rand(1,11)),b=Math.floor(rand(0,a+1));answer=a-b;question.textContent=a+' − '+b+' = ?';const vals=new Set([answer]);while(vals.size<3)vals.add(clamp(answer+Math.floor(rand(-5,6)),0,10));choices.replaceChildren();for(const v of [...vals].sort(()=>Math.random()-.5)){const btn=document.createElement('button');btn.className='choice';btn.textContent=v;btn.onclick=()=>{if(paused||ended)return;if(v===answer){const gained=Math.min(1,maxMP()-mp);mp+=gained;floatText(gained?'+1 MP':'✨ MP 已满','#a557e5');beep(840);makeQuestion()}else{const lost=Math.min(1,mp);mp-=lost;if(lost)floatText('−1 MP','#b05add');beep(190,.2)}hud()};choices.appendChild(btn)}}
+function expGain(n,x=fish.x,y=fish.y){floatText('+'+n+' EXP','#ffc536',x,y-35);exp+=n;while(exp>=maxEXP()){exp-=maxEXP();level++;hp=maxHP();floatText('❤️ HP FULL!','#24b878');transitionTime=2.2;say('✨ Lv.'+level+' 升级！');beep(1150,.28)}hud()}
+function hurt(d){if(invuln>0)return;const n=Math.min(hp,d);hp-=n;invuln=1.15;floatText('−'+n+' HP','#f44f65');beep(170,.24);hud();if(hp<=0){ended=true;question.textContent='💔 游戏结束';choices.replaceChildren();say('点击重新开始')}}
+function potion(){const n=Math.min(2,maxHP()-hp);hp+=n;floatText('+'+n+' HP','#2db76b');beep(950);hud()}
+function makeItem(type,x=W+50,y=rand(35,H-35),tier=0){const data=type==='enemy'?enemyData[tier]:hazardData[type];items.push({type,tier,x,y,baseY:y,r:data?.r||25,hp:data?.hp||0,max:data?.hp||0,phase:rand(0,6),hitCooldown:0,tracking:false,verticalSpeed:0,id:++nextItemId,collided:false})}
+function spawn(){
+ const z=zone(),r=Math.random(),x=W+rand(40,90);
+ // Cover the entire playable height, including the upper and lower edges.
+ let y=rand(38,H-38);
+ // Every third hazard or enemy spawns near the player's current swimming lane.
+ // Spawning still happens beyond the right edge, leaving time to react.
+ const laneSpawn=(spawnCount++%3===2);
+ if(laneSpawn&&r>=.12)y=clamp(fish.y+rand(-65,65),38,H-38);
+ // After prolonged edge camping, increase the chance of an encounter there.
+ if(edgeStayTime>3&&r>=.12&&Math.random()<.65)y=clamp(fish.y+rand(-42,42),38,H-38);
+ if(r<.12){makeItem('potion',x,y);return}
+ if(r<.48){
+  const types=['rock','coral','crystal','vortex','lava','trap'].slice(0,z+1);
+  makeItem(types[Math.floor(rand(0,types.length))],x,y);
+ }else{
+  const tier=Math.min(z,Math.floor(rand(0,z+1)));
+  makeItem('enemy',x,y,tier);
+  const enemy=items[items.length-1];
+  // Some enemies gently track the player's lane; others swim straight.
+  enemy.tracking=Math.random()<Math.min(.55,.24+stage*.018);
+  enemy.verticalSpeed=rand(24,42);
+ }
+}
+function reset(){musicWasPlaying=false;musicCountdown=0;musicStep=0;level=1;stage=1;stageTime=0;hp=maxHP();mp=0;exp=0;fish={x:185,y:250,tx:185,ty:250};items=[];particles=[];projectiles=[];floats=[];nextItemId=0;edgeStayTime=0;spawnCount=0;spawnTimer=1.5;attackTimer=0;invuln=0;clock=0;toastTime=0;transitionTime=0;paused=false;ended=false;document.getElementById('pauseBtn').textContent='⏸ 暂停';toast.classList.remove('show');makeItem('potion',560,160);makeItem('rock',750,340);makeItem('enemy',965,240,0);hud();makeQuestion();last=performance.now()}
+function restart(){reset()}
+function togglePause(){if(ended)return;paused=!paused;document.getElementById('pauseBtn').textContent=paused?'▶ 继续':'⏸ 暂停';if(paused){toast.textContent='⏸ 已暂停';toast.classList.add('show')}else{toast.classList.remove('show');toastTime=0}last=performance.now()}
+function aim(e){if(paused||ended)return;const r=cv.getBoundingClientRect();fish.tx=clamp((e.clientX-r.left)/r.width*W,50,W-65);fish.ty=clamp((e.clientY-r.top)/r.height*H,45,H-55)}
+sea.addEventListener('pointerdown',e=>{if(paused||ended)return;aim(e);beep(480,.09);sea.setPointerCapture(e.pointerId)});
+sea.addEventListener('pointermove',e=>{if(e.buttons)aim(e)});
+function tick(dt){
+ if(paused||ended)return;
+ clock+=dt;stageTime+=dt;attackTimer=Math.max(0,attackTimer-dt);
+ invuln=Math.max(0,invuln-dt);transitionTime=Math.max(0,transitionTime-dt);
+ toastTime-=dt;if(toastTime<=0)toast.classList.remove('show');
+ if(stageTime>=40){stageTime-=40;stage++;transitionTime=2.4;say('🌊 第 '+stage+' 关 · '+names[zone()]);beep(1000,.25);hud()}
+ const k=Math.min(1,dt*5);fish.x+=(fish.tx-fish.x)*k;fish.y+=(fish.ty-fish.y)*k;
+ // Staying near either boundary is no longer a permanent safe strategy.
+ edgeStayTime=(fish.y<90||fish.y>H-90)?edgeStayTime+dt:Math.max(0,edgeStayTime-dt*2);
+ spawnTimer-=dt;if(spawnTimer<=0){spawn();spawnTimer=rand(1,1.7)*Math.max(.65,1-stage*.02)}
+ const speed=125+Math.min(stage,25)*8;
+ for(let i=items.length-1;i>=0;i--){
+  const o=items[i];o.x-=speed*dt*(o.type==='enemy'?1.12:1);o.phase+=dt*2.2;
+  if(o.type==='enemy'&&o.tracking&&o.x>fish.x+75){
+   const delta=fish.y-o.y;
+   o.y+=clamp(delta,-o.verticalSpeed*dt,o.verticalSpeed*dt);
+   o.y=clamp(o.y,38,H-38);
+  }
+  // Whirlpools drift vertically, making fixed-height hiding less effective.
+  if(o.type==='vortex')o.y=clamp(o.baseY+Math.sin(o.phase*.65)*32,38,H-38);
+  if(o.x< -80){items.splice(i,1);continue}
+  const y=o.y+(o.type==='enemy'||o.type==='vortex'?Math.sin(o.phase)*13:0);
+  if(o.type==='vortex'&&Math.hypot(o.x-fish.x,y-fish.y)<115)fish.y+=(y-fish.y)*dt*.35;
+  if(Math.hypot(o.x-fish.x,y-fish.y)<o.r+23){
+   if(o.type==='potion'){items.splice(i,1);potion();continue}
+   if(o.type==='enemy'){
+    if(!o.collided&&invuln<=0){o.collided=true;hurt(enemyData[o.tier].damage)}
+   }else{if(invuln<=0)hurt(hazardData[o.type].damage);items.splice(i,1)}
+  }
+ }
+ // A projectile has its own flight time. Enemy HP changes only on impact.
+ for(let i=projectiles.length-1;i>=0;i--){
+  const p=projectiles[i],target=items.find(o=>o.id===p.targetId&&o.type==='enemy');
+  if(!target){projectiles.splice(i,1);continue}
+  const ty=target.y+Math.sin(target.phase)*13,dx=target.x-p.x,dy=ty-p.y,d=Math.hypot(dx,dy);
+  const travel=550*dt;
+  if(d<=travel+target.r*.65){
+   const dealt=Math.min(target.hp,p.damage);target.hp-=dealt;
+   floatText('−'+dealt+' HP','#fb6d74',target.x,ty-55);
+   particles.push({x:target.x,y:ty,tx:target.x,ty:ty,t:.2});beep(730,.09);
+   if(target.hp<=0){const reward=enemyData[target.tier].exp;items.splice(items.indexOf(target),1);expGain(reward,target.x,ty)}
+   projectiles.splice(i,1);
+  }else{p.x+=dx/d*travel;p.y+=dy/d*travel}
+ }
+ if(mp>0&&attackTimer<=0){
+  const targeted=new Set(projectiles.map(p=>p.targetId));
+  const enemy=items.filter(o=>o.type==='enemy'&&o.hp>0&&Math.hypot(o.x-fish.x,(o.y+Math.sin(o.phase)*13)-fish.y)<=ATTACK_RADIUS&&!targeted.has(o.id)).sort((a,b)=>Math.hypot(a.x-fish.x,a.y-fish.y)-Math.hypot(b.x-fish.x,b.y-fish.y))[0];
+  if(enemy){mp--;attackTimer=.55;projectiles.push({x:fish.x+32,y:fish.y,targetId:enemy.id,damage:atk()});beep(1080,.13);hud()}
+ }
+ for(let i=particles.length-1;i>=0;i--){particles[i].t-=dt;if(particles[i].t<=0)particles.splice(i,1)}
+ for(let i=floats.length-1;i>=0;i--){floats[i].t-=dt;floats[i].y-=dt*46;if(floats[i].t<=0)floats.splice(i,1)}
+}
+function emoji(t,x,y,size,flip=false){ctx.save();ctx.translate(x,y);if(flip)ctx.scale(-1,1);ctx.font=size+'px "Apple Color Emoji","Segoe UI Emoji",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(t,0,0);ctx.restore()}
+function background(){const z=zone(),theme=themes[z],g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,theme[0]);g.addColorStop(1,theme[1]);ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+if(z<=1){ctx.fillStyle='#ffffff2e';for(let j=0;j<5;j++){ctx.beginPath();ctx.moveTo(90+j*210,0);ctx.lineTo(145+j*210,0);ctx.lineTo(245+j*210,H);ctx.lineTo(150+j*210,H);ctx.fill()}}
+ctx.fillStyle=theme[2];ctx.beginPath();ctx.moveTo(0,H-40);for(let x=0;x<=W;x+=20)ctx.lineTo(x,H-40+Math.sin(x/90+clock*.2)*10);ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.fill();
+for(let i=0;i<15;i++){let x=(i*137-clock*14+2000)%1100-50,y=45+(i*97)%390;ctx.strokeStyle='#ffffff7a';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,3+i%5,0,Math.PI*2);ctx.stroke()}
+const decor=[['🌿','🐚'],['🪸','🐚'],['💎','🪨'],['🪨','🌀'],['🌋','🪨'],['✨','🏛️']][z];for(let i=0;i<7;i++){let x=(i*179-clock*24+3000)%1200-100;emoji(decor[i%2],x,H-42+(i%2)*12,48)}}
+function draw(){background();for(const o of items){const y=o.y+(o.type==='enemy'||o.type==='vortex'?Math.sin(o.phase)*13:0);let icon=o.type==='potion'?'🧪':o.type==='enemy'?enemyData[o.tier].icon:hazardData[o.type].icon;emoji(icon,o.x,y,o.type==='enemy'?o.r*2:50,o.type==='enemy');if(o.type==='enemy'){const w=66;ctx.fillStyle='#263e55';ctx.fillRect(o.x-w/2,y-o.r-27,w,10);ctx.fillStyle=o.hp/o.max>.4?'#6ee58a':'#f67d79';ctx.fillRect(o.x-w/2+2,y-o.r-25,(w-4)*o.hp/o.max,6)}}
+for(const p of projectiles){ctx.save();ctx.shadowColor='#f1a3ff';ctx.shadowBlur=24;ctx.fillStyle='#bb64fa';ctx.beginPath();ctx.arc(p.x,p.y,13,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(p.x,p.y,6,0,Math.PI*2);ctx.fill();ctx.restore()}
+for(const p of particles){ctx.save();ctx.strokeStyle='#d88bff';ctx.lineWidth=7;ctx.shadowColor='#ffffff';ctx.shadowBlur=10;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.tx,p.ty);ctx.stroke();ctx.restore();emoji('✨',p.tx,p.ty,30)}
+// Draw the real attack boundary. It exactly matches the targeting distance.
+if(mp>0&&!ended){ctx.save();ctx.beginPath();ctx.arc(fish.x,fish.y,ATTACK_RADIUS,0,Math.PI*2);ctx.fillStyle='rgba(180,110,255,0.055)';ctx.fill();ctx.strokeStyle='rgba(182,102,255,0.78)';ctx.lineWidth=3;ctx.shadowColor='#b76aff';ctx.shadowBlur=12;ctx.stroke();ctx.restore()}
+if(invuln===0||Math.floor(clock*13)%2===0){if(mp>0){for(let j=0;j<3;j++){let a=clock*2+j*Math.PI*2/3;emoji('✨',fish.x+Math.cos(a)*49,fish.y+Math.sin(a)*43,18)}}
+const form=forms[Math.min(5,Math.floor((level-1)/3))];emoji(form,fish.x,fish.y+Math.sin(clock*6)*3,level>=10?76:64,true);if(mp>0)emoji('⚡',fish.x,fish.y-47,23)}
+for(const f of floats){ctx.save();ctx.globalAlpha=Math.min(1,f.t*2);ctx.textAlign='center';ctx.font='900 30px system-ui';ctx.lineWidth=5;ctx.strokeStyle='white';ctx.strokeText(f.text,f.x,f.y);ctx.fillStyle=f.color;ctx.fillText(f.text,f.x,f.y);ctx.restore()}
+if(transitionTime>0){ctx.save();ctx.globalAlpha=Math.min(1,transitionTime);emoji('🌟',fish.x+60,fish.y-45,35);emoji('✨',fish.x-55,fish.y+45,33);ctx.restore()}
+if(ended){ctx.fillStyle='#15283caa';ctx.fillRect(0,0,W,H);ctx.fillStyle='white';ctx.textAlign='center';ctx.font='bold 60px system-ui';ctx.fillText('游戏结束',W/2,H/2)}}
+function resize(){const d=Math.min(devicePixelRatio||1,3);cv.width=Math.round(W*d);cv.height=Math.round(H*d);ctx.setTransform(d,0,0,d,0,0)}window.addEventListener('resize',resize);resize();
+function loop(now){const dt=Math.min(.05,(now-last)/1000||0);last=now;tick(dt);updateMagicMusic(dt);draw();requestAnimationFrame(loop)}reset();requestAnimationFrame(loop);
+</script></body></html>
