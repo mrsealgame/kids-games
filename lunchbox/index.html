@@ -6,7 +6,7 @@
 .cookSlot .cookProgress{width:100%}
 .ingredient{cursor:grab}.ingredient:active{cursor:grabbing}
 .pot.dragTarget{outline:4px solid #89a98a;outline-offset:4px}
-.ignite{margin:12px auto 4px;display:block;padding:11px 38px;border:0;border-radius:14px;background:#bc8966;color:white;font-size:17px;font-weight:700;cursor:pointer}.ignite:disabled{opacity:.4;cursor:default}.readyFood{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid #8fac82;border-radius:14px;background:#fff4df;min-width:100px;padding:8px;touch-action:none;cursor:grab}.readyFood b{font-size:30px}.readyFood small{font-size:11px}.compartment.dropTarget{outline:4px solid #7ca580;outline-offset:-4px}#stopFire{background:#829c89}</style></head><body><main class="app"><header class="top card"><div><div class="brand"><span class="shiba">🐕</span> Lunchbox <span style="font-size:12px">Prototype</span></div><div>暖暖的午餐，从这里开始 ☀️</div></div><div class="stats"><b id="level">Day 1 · Level 1</b><span>🪙 <b id="coins">0</b></span><span>⭐ <b id="score">0</b></span><div><small>今日目标 <span id="goal">0/3</span></small><div class="progress"><i id="bar"></i></div></div></div></header><div class="grid"><section class="card"><h2 class="title">👩‍🍳 厨房 · Kitchen</h2><div class="conveyor" id="conveyor"></div><div class="pot" id="pot"><div style="font-size:14px">🍲 Cooking Pot</div><div class="cookSlots" id="cookSlots"></div><button id="ignite" class="ignite" disabled>▶ 开火</button><button id="stopFire" class="ignite" disabled>■ 停火</button><div id="readyTray" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px"></div></div></section><section class="card"><h2 class="title">🍱 装盒 · Lunchbox</h2><div class="queue"><div class="customer" id="avatar">👧</div><div><b id="customer">小悠</b><div id="request">想要一份营养均衡的午餐！</div><span class="pill" id="order">订单 1 / 3</span></div></div><div style="height:14px"></div><div class="lunchbox" id="box"><div class="compartment" id="c0"></div><div class="compartment" id="c1"></div><div class="compartment" id="c2"></div><div class="compartment" id="c3"></div></div><div class="nutrition" id="nutrition"></div><div class="controls"><button id="serve" disabled>🎁 交付饭盒</button></div></section></div></main><div class="overlay" id="overlay"><div class="modal"><div class="big" id="modalIcon">🎉</div><h2 id="modalTitle">今日完成！</h2><p id="modalText"></p><button id="next">开启下一天 →</button></div></div><script>
+.ignite{margin:12px auto 4px;display:block;padding:11px 38px;border:0;border-radius:14px;background:#bc8966;color:white;font-size:17px;font-weight:700;cursor:pointer}.ignite:disabled{opacity:.4;cursor:default}.readyFood{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid #8fac82;border-radius:14px;background:#fff4df;min-width:100px;padding:8px;touch-action:none;cursor:grab}.readyFood b{font-size:30px}.readyFood small{font-size:11px}.compartment.dropTarget{outline:4px solid #7ca580;outline-offset:-4px}.ignite.firing{background:#829c89}</style></head><body><main class="app"><header class="top card"><div><div class="brand"><span class="shiba">🐕</span> Lunchbox <span style="font-size:12px">Prototype</span></div><div>暖暖的午餐，从这里开始 ☀️</div></div><div class="stats"><b id="level">Day 1 · Level 1</b><span>🪙 <b id="coins">0</b></span><span>⭐ <b id="score">0</b></span><div><small>今日目标 <span id="goal">0/3</span></small><div class="progress"><i id="bar"></i></div></div></div></header><div class="grid"><section class="card"><h2 class="title">👩‍🍳 厨房 · Kitchen</h2><div class="conveyor" id="conveyor"></div><div class="pot" id="pot"><div style="font-size:14px">🍲 Cooking Pot</div><div class="cookSlots" id="cookSlots"></div><button id="ignite" class="ignite" disabled>▶ 开火</button><div id="readyTray" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px"></div></div></section><section class="card"><h2 class="title">🍱 装盒 · Lunchbox</h2><div class="queue"><div class="customer" id="avatar">👧</div><div><b id="customer">小悠</b><div id="request">想要一份营养均衡的午餐！</div><span class="pill" id="order">订单 1 / 3</span></div></div><div style="height:14px"></div><div class="lunchbox" id="box"><div class="compartment" id="c0"></div><div class="compartment" id="c1"></div><div class="compartment" id="c2"></div><div class="compartment" id="c3"></div></div><div class="nutrition" id="nutrition"></div><div class="controls"><button id="serve" disabled>🎁 交付饭盒</button></div></section></div></main><div class="overlay" id="overlay"><div class="modal"><div class="big" id="modalIcon">🎉</div><h2 id="modalTitle">今日完成！</h2><p id="modalText"></p><button id="next">开启下一天 →</button></div></div><script>
 const foods=[{e:'🍚',n:'米饭',t:'Grain'},{e:'🍞',n:'面包',t:'Grain'},{e:'🥦',n:'西兰花',t:'Vegetable'},{e:'🥕',n:'胡萝卜',t:'Vegetable'},{e:'🍄',n:'蘑菇',t:'Vegetable'},{e:'🍗',n:'鸡肉',t:'Protein'},{e:'🥚',n:'鸡蛋',t:'Protein'},{e:'🥩',n:'牛肉',t:'Protein'},{e:'🍎',n:'苹果',t:'Fruit'},{e:'🍓',n:'草莓',t:'Fruit'},{e:'🧀',n:'奶酪',t:'Dairy'},{e:'🥛',n:'牛奶',t:'Dairy'}];const palette={Grain:['#c7a46d','#f4e7cd'],Vegetable:['#8fac82','#e5efde'],Protein:['#c68f82','#f2dfd8'],Fruit:['#d7a0a1','#f6e3e3'],Dairy:['#9aaec4','#e4ebf2']};const cookedIcons={'🍚':'🍙','🍞':'🥪','🥦':'🥦','🥕':'🥕','🍄':'🍄','🍗':'🍖','🥚':'🍳','🥩':'🍖','🍎':'🥧','🍓':'🍰','🧀':'🫕','🥛':'🥣'};function cook(f){return {...f,e:cookedIcons[f.e]||f.e,n:({'米饭':'饭团','面包':'三明治','西兰花':'熟西兰花','胡萝卜':'熟胡萝卜','蘑菇':'炒蘑菇','鸡肉':'熟鸡肉','鸡蛋':'煎蛋','牛肉':'熟牛肉','苹果':'苹果派','草莓':'草莓甜点','奶酪':'融化奶酪','牛奶':'热牛奶'})[f.n]||f.n}}const recipes=[
  {a:['鸡蛋','米饭'],e:'🍳',n:'蛋炒饭'},
  {a:['鸡肉','米饭'],e:'🍛',n:'鸡肉饭'},
@@ -36,7 +36,7 @@ const cats=[['Grain','🌾','谷物'],['Vegetable','🌿','蔬菜'],['Protein','
 $('level').textContent=`Day ${day} · Level ${day}`;$('score').textContent=score;$('coins').textContent=coins;$('goal').textContent=`${done}/3`;$('bar').style.width=done/3*100+'%';$('conveyor').innerHTML='';
 slots.forEach((f,i)=>{let b=document.createElement('button');b.className='ingredient';b.style.setProperty('--food-color',palette[f.t][0]);b.style.setProperty('--food-bg',palette[f.t][1]);b.innerHTML=`<b>${f.e}</b><small>${f.n}</small>`;b.disabled=cooking||pot.length+ready.length+active.filter(Boolean).length>=4;b.addEventListener('click',()=>take(i));b.addEventListener('pointerdown',ev=>drag(ev,i,f));$('conveyor').append(b)});
 $('cookSlots').innerHTML=active.map((job,i)=>`<div class="cookSlot"><div class="icon">${job?job.food.e:'＋'}</div><small>${job?(cooking?(job.progress>=100?'快停火！':'烹饪中…'):'待烹饪'):'空位'}</small><div class="cookProgress"><i style="width:${job?job.progress:0}%"></i></div></div>`).join('');
-$('serve').disabled=cooking||active.some(Boolean)||ready.length>0||pot.length===0;$('ignite').disabled=cooking||!active.some(Boolean);$('stopFire').disabled=!cooking;
+$('serve').disabled=cooking||active.some(Boolean)||ready.length>0||pot.length===0;$('ignite').disabled=!cooking&&!active.some(Boolean);$('ignite').textContent=cooking?'■ 停火':'▶ 开火';$('ignite').classList.toggle('firing',cooking);
 [0,1,2,3].forEach(i=>{let f=pot[i];$('c'+i).classList.toggle('filled',!!f);$('c'+i).style.setProperty('--food-color',f?palette[f.t][0]:'#b6a182');$('c'+i).style.setProperty('--food-bg',f?palette[f.t][1]:'#f5ebd7');$('c'+i).innerHTML=f?`${f.e}<span>${f.n}</span>`:''});
 $('readyTray').innerHTML='';
 ready.forEach((f,i)=>{
@@ -57,7 +57,8 @@ function take(i){
  active[free]={food:f,progress:0};draw();
 }
 $('ignite').onclick=()=>{
- if(cooking||!active.some(Boolean))return;
+ if(cooking){stopCooking();return;}
+ if(!active.some(Boolean))return;
  cooking=true;fireStart=performance.now();draw();
  function tick(now){
   if(!cooking)return;
@@ -72,7 +73,7 @@ $('ignite').onclick=()=>{
  }
  fireFrame=requestAnimationFrame(tick);
 };
-$('stopFire').onclick=()=>{
+function stopCooking(){
  if(!cooking)return;
  const elapsed=performance.now()-fireStart;
  cooking=false;cancelAnimationFrame(fireFrame);
@@ -87,7 +88,7 @@ $('stopFire').onclick=()=>{
   draw();return;
  }
  active=[null,null];draw();
-};
+}
 function dragReady(ev,i,f){
  if(ev.pointerType==='mouse'&&ev.button!==0)return;
  const x=ev.clientX,y=ev.clientY;let ghost=null,moved=false;
