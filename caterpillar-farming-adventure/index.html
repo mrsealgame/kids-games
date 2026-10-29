@@ -67,6 +67,19 @@ header{background:#4e7757;color:#fff8dd;text-align:center;padding:10px 12px;bord
 .map-node.selectable{cursor:pointer;transition:transform .15s}.map-node.selectable:hover{transform:scale(1.12)}.map-node:disabled{cursor:default;opacity:1}.map-node{padding:0;font-family:inherit} 
 
 .collection-tabs{display:flex;gap:10px;justify-content:center;margin:10px 0 18px;flex-wrap:wrap}.collection-tabs button.active{background:#d7e9b7;border-color:#8cb064}.collection-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;max-height:55vh;overflow-y:auto;padding:6px}.collection-card{border:2px solid #d8c49a;background:#fffaf0;border-radius:16px;padding:12px;text-align:center;min-height:175px}.collection-card.locked{background:#f1eee8;opacity:.65}.collection-art{height:90px}.collection-art svg{height:90px;max-width:130px}.collection-emoji{font-size:57px;height:80px}.collection-card b,.collection-card small{display:block}.collection-card small{color:#7b796f;margin-top:4px}.collection-card p{font-size:12px;line-height:1.35}
+
+/* In-world level-up and evolution effects */
+.cat{isolation:isolate}
+.levelup-float{position:absolute;z-index:20;bottom:105%;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:clamp(22px,3vw,34px);font-weight:900;color:#fff4a2;-webkit-text-stroke:1px #a86b39;text-shadow:0 0 8px #fff,0 3px 0 #8e633d,0 0 18px #ffdf73;pointer-events:none;animation:levelUpFloat 1.25s ease-out forwards}
+@keyframes levelUpFloat{0%{opacity:0;transform:translate(-50%,20px) scale(.65)}20%{opacity:1;transform:translate(-50%,-10px) scale(1.22)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-40px) scale(1)}}
+.cat.evolving{z-index:15!important;transition:none!important;animation:evolvePulse .3s ease-in-out infinite alternate!important;filter:drop-shadow(0 0 12px #fff9ae) drop-shadow(0 0 28px #fff2a0)!important}
+.cat.evolving::before{content:"";position:absolute;inset:-60%;border-radius:50%;z-index:-1;background:radial-gradient(circle,#fffef5 0%,#fff8bb9e 27%,#ffe66d55 45%,transparent 70%);animation:evolveAura .65s ease-in-out infinite alternate;pointer-events:none}
+.cat.evolving svg{animation:evolveFlash .18s steps(2,end) infinite}
+@keyframes evolvePulse{from{transform:scale(.9)}to{transform:scale(1.28)}}
+@keyframes evolveAura{from{opacity:.45;transform:scale(.7)}to{opacity:1;transform:scale(1.22)}}
+@keyframes evolveFlash{from{filter:brightness(1)}to{filter:brightness(4) saturate(.15)}}
+.cat.evolve-reveal{animation:evolveReveal .85s ease-out!important;filter:drop-shadow(0 0 20px #ffe986)!important}
+@keyframes evolveReveal{0%{transform:scale(.25);filter:brightness(5)}55%{transform:scale(1.45)}100%{transform:scale(1)}}
 </style></head><body>
 <header><h1>🌾 Caterpillar Farming Adventure</h1></header>
 <div class="top"><button id="level" class="level-button" onclick="openLevelMap()" aria-label="Open level map"></button><button onclick="openBook()">📖 My Storybook</button><button onclick="openCollection()">📚 图鉴</button></div>
@@ -196,21 +209,94 @@ function farmMap(){
 function selectLevel(level){if(level<0||level>Math.min(s.unlocked,19))return;clearTimeout(timer);clearTimeout(catTimer);speechSynthesis?.cancel?.();window.pouringNow=false;s.level=level;s.step=0;s.water=0;delete s.chosen;s.listened=false;waitingForSpeech=false;writingMistakes=0;delete s.pendingSentence;$('heart').classList.remove('show');closeModal();render()}
 function openLevelMap(){openModal('🗺️ Level Map',farmMap(),'map');requestAnimationFrame(alignMapPaths)}
 
-function feed(){if(s.step!==5)return;if(chosen()!==s.level){
-  // The caterpillar eats the harvest, then realizes it was the wrong food.
+let evolutionInProgress=false;
+function levelUpEffect(){
+ const el=document.createElement('div');el.className='levelup-float';el.textContent='⭐ LEVEL UP! ⭐';
+ $('cat').appendChild(el);setTimeout(()=>el.remove(),1400);
+ try{sound('ripe')}catch(e){}
+}
+function evolutionSound(){
+ try{
+ const ctx=new (window.AudioContext||window.webkitAudioContext)();
+ const t=ctx.currentTime;
+ for(let i=0;i<13;i++){
+  const o=ctx.createOscillator(),g=ctx.createGain(),at=t+i*.12;
+  o.type=i%3===0?'triangle':'sine';
+  o.frequency.setValueAtTime(240+i*49,at);
+  o.frequency.exponentialRampToValueAtTime(360+i*64,at+.17);
+  g.gain.setValueAtTime(.0001,at);
+  g.gain.exponentialRampToValueAtTime(.065,at+.025);
+  g.gain.exponentialRampToValueAtTime(.0001,at+.2);
+  o.connect(g).connect(ctx.destination);o.start(at);o.stop(at+.21);
+ }
+ for(let i=0;i<3;i++){
+  const o=ctx.createOscillator(),g=ctx.createGain(),at=t+1.55+i*.12;
+  o.type='sine';o.frequency.value=[523,784,1047][i];
+  g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(.12,at+.025);g.gain.exponentialRampToValueAtTime(.0001,at+.65);
+  o.connect(g).connect(ctx.destination);o.start(at);o.stop(at+.68);
+ }
+ setTimeout(()=>ctx.close(),3000);
+ }catch(e){}
+}
+function evolveToNextLevel(){
+ evolutionInProgress=true;
+ const cat=$('cat');cat.classList.add('evolving');cat.classList.remove('next-focus');
+ evolutionSound();
+ setTimeout(()=>{
+  s.level++;s.unlocked=Math.max(s.unlocked,s.level);
+  s.step=0;s.listened=false;waitingForSpeech=false;s.water=0;delete s.chosen;writingMistakes=0;
+  cat.classList.remove('evolving');cat.classList.add('evolve-reveal');
+  render();
+  setTimeout(()=>{cat.classList.remove('evolve-reveal');evolutionInProgress=false;focusNext()},900);
+ },1850);
+}
+function feed(){
+ if(s.step!==5||evolutionInProgress)return;
+ if(chosen()!==s.level){
   s.step=6;render();chomp();
   $('cat').animate([{transform:'scale(1)'},{transform:'scale(1.18)'},{transform:'scale(1)'}],{duration:650});
   setTimeout(()=>{
-    $('heart').textContent='❌';$('heart').classList.add('show');
-    $('cat').animate([{transform:'rotate(-10deg)'},{transform:'rotate(10deg)'},{transform:'rotate(0deg)'}],{duration:420});
-    // Reset the plot and unlock the seed box for another attempt at the same level.
-    s.step=0;s.water=0;s.listened=true;delete s.chosen;delete s.pendingSentence;
-    writingMistakes=0;render();speak(cur()[2],true);
-    setTimeout(()=>{$('heart').classList.remove('show');$('heart').textContent='❤️'},1250);
+   $('heart').textContent='❌';$('heart').classList.add('show');
+   $('cat').animate([{transform:'rotate(-10deg)'},{transform:'rotate(10deg)'},{transform:'rotate(0deg)'}],{duration:420});
+   s.step=0;s.water=0;s.listened=true;delete s.chosen;delete s.pendingSentence;
+   writingMistakes=0;render();speak(cur()[2],true);
+   setTimeout(()=>{$('heart').classList.remove('show');$('heart').textContent='❤️'},1250);
   },800);
   return;
-}s.step=6;render();chomp();$('cat').animate([{transform:'scale(1)'},{transform:'scale(1.22)'},{transform:'scale(1)'}],{duration:700,iterations:2});$('heart').classList.add('show');const old=s.level;clearTimeout(catTimer);catTimer=setTimeout(()=>{const entry={level:old,item:cur()[0],sentence:cur()[2],writing:s.pendingSentence||cur()[6].replace('___',cur()[7])};const existing=s.book.findIndex(b=>b.level===old);if(existing>=0)s.book[existing]=entry;else{s.book.push(entry);s.book.sort((a,b)=>a.level-b.level)}delete s.pendingSentence;s.level++;s.unlocked=Math.max(s.unlocked,s.level);if(s.level<s.unlocked)s.level=s.unlocked;s.step=0;s.listened=false;waitingForSpeech=false;s.water=0;delete s.chosen;writingMistakes=0;$('heart').classList.remove('show');$('heart').textContent='❤️';render();if(s.level===20){openModal('🦋 Congratulations!',`<p>All 20 levels complete!</p>${farmMap()}<button onclick="closeModal();openBook()">📖 My Storybook</button>`,'complete')}else{openModal('⭐ Level Complete!',`<div style="font-size:60px">${emojis[old]} 🐛 ❤️</div>${farmMap()}<button onclick="closeModal()">Level ${s.level+1} ➜</button>`,'complete')}},2000)}
+ }
+ s.step=6;render();chomp();
+ $('cat').animate([{transform:'scale(1)'},{transform:'scale(1.22)'},{transform:'scale(1)'}],{duration:700,iterations:2});
+ $('heart').classList.add('show');
+ const old=s.level;
+ clearTimeout(catTimer);
+ catTimer=setTimeout(()=>{
+  const d=items[old],entry={level:old,item:d[0],sentence:d[2],writing:s.pendingSentence||d[6].replace('___',d[7])};
+  const existing=s.book.findIndex(b=>b.level===old);
+  if(existing>=0)s.book[existing]=entry;
+  else{s.book.push(entry);s.book.sort((a,b)=>a.level-b.level)}
+  delete s.pendingSentence;
+  $('heart').classList.remove('show');$('heart').textContent='❤️';
+  levelUpEffect();
+  const next=old+1;
+  const advancingToNewStage=next<20&&stageIndex(old)!==stageIndex(next);
+  if(next===20){
+   setTimeout(()=>{
+    s.level=20;s.unlocked=20;s.step=0;s.listened=false;s.water=0;delete s.chosen;
+    render();openModal('🦋 Congratulations!',`<p>All 20 levels complete!</p>${farmMap()}<button onclick="closeModal();openBook()">📖 My Storybook</button>`,'complete');
+   },1250);
+  }else if(advancingToNewStage){
+   setTimeout(evolveToNextLevel,1150);
+  }else{
+   setTimeout(()=>{
+    s.level=next;s.unlocked=Math.max(s.unlocked,s.level);
+    if(s.level<s.unlocked)s.level=s.unlocked;
+    s.step=0;s.listened=false;waitingForSpeech=false;s.water=0;delete s.chosen;writingMistakes=0;
+    render();
+   },1300);
+  }
+ },850);
+}
 let page=0;function openBook(){page=Math.max(0,s.book.length-1);drawBook()}function drawBook(){const total=s.book.length,b=s.book[page];openModal('📖 My Storybook',`<p>${total} / 20 pages unlocked</p>${b?`<div class="bookpage"><div style="font-size:65px">${emojis[b.level]}</div><b>Page ${page+1}</b><p>${b.sentence}</p><p>✏️ ${b.writing}</p><button onclick="listenStoryPage()">🔊 Listen</button></div>`:'<div class="bookpage">📖</div>'}<button ${page===0?'disabled':''} onclick="page--;drawBook()">◀</button><button ${page>=total-1?'disabled':''} onclick="page++;drawBook()">▶</button>`,'book')}function listenStoryPage(){const entry=s.book[page];if(entry&&entry.sentence)speak(entry.sentence)}function resetGame(){if(confirm('Erase progress and storybook?')){localStorage.removeItem(KEY);location.reload()}}
 function inRect(x,y,el){const r=el.getBoundingClientRect();return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom}function dragStart(e){const el=e.target.closest('[data-kind]');if(!el)return;const kind=el.dataset.kind;if((kind==='seed'&&s.step!==1)||(kind==='water'&&(s.step!==2||s.water<1))||(kind==='fruit'&&s.step!==5))return;e.preventDefault();e.stopPropagation();const ghost=document.createElement('div');ghost.className='dragghost';if(kind==='seed'){ghost.classList.add('seedbag-ghost');ghost.innerHTML=el.innerHTML;}else{ghost.textContent=kind==='water'?'🪣':emojis[chosen()];}document.body.appendChild(ghost);drag={id:e.pointerId,kind,ghost,el};el.classList.add('drag-origin-hidden');for(const id of ['crate','bag','well','bucket','plot','fruit','cat'])$(id).classList.remove('next-focus');if(kind!=='fruit')$('plot').classList.add('next-focus');else $('cat').classList.add('next-focus');move(e);el.setPointerCapture(e.pointerId)}function move(e){if(!drag)return;drag.ghost.style.left=e.clientX+'px';drag.ghost.style.top=e.clientY+'px';$('plot').classList.toggle('dropready',drag.kind!=='fruit'&&inRect(e.clientX,e.clientY,$('plot')))}function dragEnd(e){if(!drag||drag.id!==e.pointerId)return;const kind=drag.kind;drag.el.classList.remove('drag-origin-hidden');drag.ghost.remove();drag=null;$('plot').classList.remove('dropready');if(kind==='seed'&&inRect(e.clientX,e.clientY,$('plot')))planted();else if(kind==='water'&&inRect(e.clientX,e.clientY,$('plot')))watered();else if(kind==='fruit'&&inRect(e.clientX,e.clientY,$('cat')))feed();focusNext()}document.addEventListener('pointerdown',dragStart);document.addEventListener('pointermove',e=>{if(drag&&drag.id===e.pointerId)move(e)});document.addEventListener('pointerup',dragEnd);document.addEventListener('pointercancel',()=>{if(drag){drag.el.classList.remove('drag-origin-hidden');drag.ghost.remove();drag=null;$('plot').classList.remove('dropready');focusNext()}});
-function wander(){if(!$('modal').classList.contains('open')&&!drag&&s.step!==6){$('cat').style.left=(20+Math.random()*57)+'%';$('cat').style.top=(36+Math.random()*17)+'%'}}render();setTimeout(wander,200);setInterval(wander,9000);
+function wander(){if(!evolutionInProgress&&!$('modal').classList.contains('open')&&!drag&&s.step!==6){$('cat').style.left=(20+Math.random()*57)+'%';$('cat').style.top=(36+Math.random()*17)+'%'}}render();setTimeout(wander,200);setInterval(wander,9000);
 </script></body></html>
