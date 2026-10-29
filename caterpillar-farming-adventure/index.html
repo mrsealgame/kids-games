@@ -1,1 +1,216 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Caterpillar Farming Adventure</title></head><body><h1>Caterpillar Farming Adventure</h1><p>Game content pending V21 upload.</p></body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>🌾 Caterpillar Farming Adventure V5</title><style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
+*{box-sizing:border-box}body{margin:0;background:#e6e8cb;color:#43523a;font-family:Nunito,system-ui,sans-serif;overflow-x:hidden}
+button{font:800 17px Nunito,system-ui,sans-serif;background:#f8e5ae;border:3px solid #a77c4e;color:#634e36;border-radius:15px;padding:9px 17px;box-shadow:0 4px 0 #9b744d;cursor:pointer}button:active{transform:translateY(3px);box-shadow:0 1px 0 #9b744d}button:disabled{opacity:.4}
+header{background:#4e7757;color:#fff8dd;text-align:center;padding:10px 12px;border-bottom:5px solid #365b43}h1{font-size:clamp(22px,3vw,32px);margin:0;letter-spacing:.4px;text-shadow:0 3px #34523b}
+.top{max-width:1160px;margin:12px auto;display:flex;align-items:center;justify-content:space-between;padding:0 12px;gap:10px}.top strong{background:#fff8de;border:3px solid #cba971;padding:10px 18px;border-radius:15px;box-shadow:0 4px #c5b083}
+.farm{position:relative;width:min(1160px,calc(100% - 22px));height:min(73vh,700px);min-height:520px;margin:auto;overflow:hidden;border:9px solid #b78955;border-radius:24px;box-shadow:0 9px #8e663d,0 14px 28px #3d54332b;background:linear-gradient(#9ed3d6 0 37%,#d4e3a5 37% 47%,#89ba73 47% 100%)}
+.sky{position:absolute;inset:0 0 60%;pointer-events:none}.sun{position:absolute;top:8%;right:18%;width:78px;height:78px;border-radius:50%;background:#fff0ae;box-shadow:0 0 0 13px #fff0ae42}.cloud{position:absolute;background:#f7f6e6;border-radius:100px;width:150px;height:38px;top:13%;left:12%;box-shadow:36px -18px 0 3px #f7f6e6,75px -5px 0 #f7f6e6;opacity:.88}.cloud.two{left:64%;top:23%;transform:scale(.65)}
+.hill{position:absolute;width:70%;height:28%;top:31%;left:-15%;border-radius:55% 65% 0 0;background:#a4c48a}.hill.two{left:43%;top:34%;background:#b4cc8c}
+.fence{position:absolute;top:43%;left:0;width:100%;height:70px;background:repeating-linear-gradient(90deg,transparent 0 25px,#e6c998 26px 39px,transparent 40px 75px);border-top:10px solid #dfbf87;border-bottom:10px solid #d4af78;opacity:.9}
+.path{position:absolute;left:0;top:59%;width:100%;height:22%;background:#dfc58c;clip-path:polygon(0 22%,100% 5%,100% 80%,0 100%);border-top:3px solid #c4a46f;opacity:.85}
+.grass{position:absolute;inset:48% 0 0;pointer-events:none;background-image:radial-gradient(ellipse 6px 3px at 10% 10%,#6fa866 90%,transparent),radial-gradient(ellipse 8px 4px at 70% 40%,#6da465 90%,transparent),radial-gradient(ellipse 7px 3px at 30% 75%,#70a667 90%,transparent);background-size:110px 70px}
+.flowers{position:absolute;bottom:12%;left:5%;font-size:24px;opacity:.9;pointer-events:none;letter-spacing:25px}
+.obj{position:absolute;z-index:3;cursor:pointer;user-select:none;touch-action:manipulation;text-align:center;filter:drop-shadow(0 7px 1px #3c593a45)}
+.crate{top:37%;left:6%;width:158px;height:160px}.crateArt{position:relative;width:145px;height:105px;margin:auto;background:linear-gradient(135deg,#dcb06b,#a97843);border:8px solid #875b35;border-radius:8px 8px 18px 18px;box-shadow:inset 0 0 0 3px #f1cc86}.crateArt:before,.crateArt:after{content:"";position:absolute;top:8px;left:54px;height:72px;width:10px;background:#8c623d;transform:rotate(45deg)}.crateArt:after{transform:rotate(-45deg)}.crateArt .seedmark{position:absolute;left:44px;top:-42px;width:58px;height:57px;background:#fff0c8;border:5px solid #a87948;border-radius:12px;display:grid;place-items:center;font-size:32px}.sign{display:inline-block;margin-top:8px;background:#fff2ca;padding:4px 15px;border:3px solid #966d42;border-radius:12px;font-size:16px;font-weight:900;color:#694a2f}
+.well{top:30%;right:6%;width:180px;height:195px}.wellArt{height:152px;position:relative}.wellRoof{position:absolute;left:12px;top:0;width:156px;height:46px;background:#b66c47;clip-path:polygon(50% 0,100% 80%,94% 100%,6% 100%,0 80%);filter:drop-shadow(0 4px #83543a)}.wellPost{position:absolute;top:37px;width:13px;height:104px;background:#986b43;border:3px solid #704b33}.wellPost.left{left:32px}.wellPost.right{right:32px}.wellStone{position:absolute;left:24px;right:24px;bottom:0;height:66px;background:repeating-linear-gradient(0deg,#9fa7a0 0 23px,#6f827c 24px 27px);border:6px solid #687b73;border-radius:13px 13px 25px 25px}.wellHole{position:absolute;left:42px;right:42px;bottom:45px;height:29px;border-radius:50%;background:#405e63;border:5px solid #9ca69c}.wellRope{position:absolute;top:40px;left:89px;width:4px;height:67px;background:#e6d2a2}
+.plot{position:absolute;z-index:2;left:31%;bottom:7%;width:40%;height:32%;min-height:155px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:12px solid #9d754b;border-radius:45% 45% 23% 23%/24% 24% 23% 23%;background:repeating-linear-gradient(0deg,#af8051 0 18px,#986c45 19px 31px);box-shadow:inset 0 8px 10px #67482b5e,0 9px 0 #795637;transition:background .35s}
+.plot.planted{background:repeating-linear-gradient(0deg,#956d4a 0 18px,#805c3f 19px 31px)}.plot.wet{background:repeating-linear-gradient(0deg,#6f513a 0 18px,#563f31 19px 31px)}.plot.dropready{outline:6px solid #fff4a3}.plot.ready{cursor:pointer}
+.crop{font-size:clamp(60px,8vw,110px);line-height:1.1;filter:drop-shadow(0 6px 3px #3e342866);pointer-events:none}.sprout{animation:pop .5s ease-out}.growbar{position:absolute;z-index:5;top:-30px;left:15%;width:70%;height:20px;border:4px solid #fff4cf;border-radius:20px;background:#d7d2ac;display:none;overflow:hidden;box-shadow:0 2px 3px #57402b55}.growbar.show{display:block}.growfill{height:100%;width:0;background:linear-gradient(90deg,#84bf77,#b8e48b);transition:width 500ms linear}
+.cat{position:absolute;z-index:6;left:45%;top:50%;width:118px;height:86px;cursor:pointer;touch-action:none;user-select:none;transition:left 8s linear,top 8s linear;filter:drop-shadow(0 6px 2px #3d5c3a55)}.cat svg{width:100%;height:100%;overflow:visible}.cat.speaking{animation:bob .55s ease-in-out infinite alternate}.bubble{position:absolute;bottom:93%;left:45%;transform:translateX(-50%);display:none;background:#fffaf0;border:3px solid #7eaa72;border-radius:20px;padding:0 18px;font-size:27px;font-weight:900}.bubble.show{display:block}.heart{position:absolute;bottom:95%;left:44%;font-size:43px;display:none;animation:float 1s infinite alternate}.heart.show{display:block}
+.bag,.bucket,.fruit{position:relative;z-index:7;touch-action:none;cursor:grab;user-select:none;display:none}.bag.show,.bucket.show,.fruit.show{display:flex}.bag{position:absolute;top:88px;left:45px;width:66px;height:76px;align-items:center;justify-content:center;background:#f3dfab;border:5px solid #a47a4d;border-radius:9px 9px 15px 15px;box-shadow:0 4px #916b43}.bag:before{content:"";position:absolute;top:-13px;left:7px;width:40px;height:13px;background:#c6a274;border-radius:5px}.bag span{font-size:39px}.bucket{position:absolute;top:94px;left:60px;font-size:60px;transform-origin:50% 25%}.bucket.pour{animation:tilt 1.05s ease-in-out}.fruit{font-size:82px;line-height:1}
+.waterfall{position:absolute;z-index:8;left:50%;top:10%;font-size:50px;display:none;pointer-events:none}.waterfall.show{display:block;animation:fall 1.1s linear}.next-focus{isolation:isolate;filter:drop-shadow(0 0 12px #fff6a5) drop-shadow(0 0 10px #f4c85b)!important;animation:focusPulse 1.15s ease-in-out infinite alternate}
+.next-focus:after{content:"👇";position:absolute;z-index:15;top:-38px;left:50%;font-size:31px;transform:translateX(-50%);animation:point 1s ease-in-out infinite alternate;pointer-events:none}
+.plot.next-focus:after{top:-48px}.cat.next-focus:after{top:-43px}
+@keyframes focusPulse{to{filter:drop-shadow(0 0 20px #fff3a2) drop-shadow(0 0 18px #ffe77e);}}
+@keyframes point{to{transform:translate(-50%,8px)}}
+.seedbag-ghost{width:66px;height:76px;display:flex;align-items:center;justify-content:center;background:#f3dfab;border:5px solid #a47a4d;border-radius:9px 9px 15px 15px;box-shadow:0 4px #916b43}
+.seedbag-ghost:before{content:"";position:absolute;top:-13px;left:7px;width:40px;height:13px;background:#c6a274;border-radius:5px}
+.seedbag-ghost span{font-size:39px}
+.dragghost{position:fixed;z-index:99;pointer-events:none;transform:translate(-50%,-50%);font-size:67px}
+.modal{position:fixed;inset:0;z-index:20;background:#253e31ba;display:none;align-items:center;justify-content:center;padding:15px}.modal.open{display:flex}.panel{width:min(620px,100%);max-height:90vh;overflow:auto;text-align:center;background:#fff8e5;border:8px solid #c99e67;border-radius:27px;padding:23px;box-shadow:0 12px 0 #5e4739,0 18px 40px #182a2050}.panel h2{margin:0 0 12px;font-size:27px;color:#6c5034}.panel p{font-size:22px}.choices{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:20px 0}.choices button{background:#e5efc4;border-color:#88a46d;box-shadow:0 4px #729064}.feedback{min-height:22px;font-weight:800;color:#a66c4d}.panel input{padding:12px;font-size:23px;border:3px solid #b4a174;border-radius:12px;width:min(100%,360px);background:#fffef6}.close{background:#edc7a9}.bottom{text-align:center;margin:14px}.bookpage{background:#fff0cb;border:3px solid #dfc18c;border-radius:15px;padding:22px;margin:12px 0;min-height:175px}
+@keyframes pop{from{transform:scale(.15)}to{transform:scale(1)}}@keyframes bob{to{transform:translateY(-5px)}}@keyframes float{to{transform:translateY(-23px);opacity:.7}}@keyframes tilt{35%,75%{transform:rotate(-60deg)}}@keyframes fall{to{transform:translateY(95px);opacity:0}}
+@media(max-width:650px){.farm{min-height:540px}.crate{left:2%;transform:scale(.75);transform-origin:top left}.well{right:0;transform:scale(.75);transform-origin:top right}.plot{left:17%;width:66%;height:30%}.cat{width:92px;height:70px}.top{font-size:14px}.top button{font-size:14px}.flowers{letter-spacing:7px}}
+
+.plot{left:37%;bottom:7%;width:27%;height:29%;min-height:140px;border-radius:13px!important;transform:none!important;clip-path:none!important}
+.plot.planted{background:repeating-linear-gradient(0deg,#946843 0 15px,#765135 16px 27px)!important}
+.plot.wet{background:repeating-linear-gradient(0deg,#604534 0 15px,#463325 16px 27px)!important}
+.plot-label{position:absolute;top:-43px;left:50%;transform:translateX(-50%);background:#fff0c7;border:3px solid #946c43;border-radius:10px;padding:3px 16px;font-weight:900;letter-spacing:2px;color:#725232;white-space:nowrap}
+.crate .seedmark{font-size:35px}
+.drag-origin-hidden{visibility:hidden!important}
+.pour-bucket{position:absolute;z-index:11;left:47%;top:8%;font-size:70px;transform-origin:50% 20%;pointer-events:none;animation:tilt 1.05s ease-in-out}
+@media(max-width:650px){.plot{left:28%;width:44%;height:27%}}
+
+.soil-seeds{position:absolute;inset:12% 13%;display:none;pointer-events:none}
+.soil-seeds.visible{display:block}
+.soil-seeds i{position:absolute;width:12px;height:8px;background:#e2c68d;border:2px solid #78583b;border-radius:55% 40% 55% 40%;transform:rotate(-28deg);box-shadow:1px 2px 0 #63472e66}
+.soil-seeds i:nth-child(1){left:14%;top:18%}.soil-seeds i:nth-child(2){left:59%;top:19%;transform:rotate(24deg)}.soil-seeds i:nth-child(3){left:36%;top:47%}.soil-seeds i:nth-child(4){left:76%;top:65%;transform:rotate(40deg)}.soil-seeds i:nth-child(5){left:17%;top:75%;transform:rotate(8deg)}
+.map{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:19px 10px;margin:20px auto 12px;padding:15px 9px 18px;background:#e8f0d4;border:4px solid #a8bc8a;border-radius:20px;max-width:530px}
+.map::before{display:none;content:"";position:absolute;inset:39px 10%;background:repeating-linear-gradient(to bottom,transparent 0 91px,#c8b18b 91px 98px);pointer-events:none}
+.map-lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:0}
+.map-path{stroke:#c1a87b;stroke-width:1.6;stroke-dasharray:2.3 1.3;stroke-linecap:round}
+.map-path.passed{stroke:#79a76a;stroke-width:2.2;stroke-dasharray:none}
+.map-node{position:relative;z-index:1;width:clamp(44px,8vw,65px);height:clamp(44px,8vw,65px);margin:auto;display:flex;align-items:center;justify-content:center;background:#f8f2dc;border:4px solid #b4b5a0;border-radius:50%;font-size:30px;box-shadow:0 4px 0 #a9a68c}
+.map-node.done{background:#fff0b7;border-color:#78a86b;box-shadow:0 4px 0 #608858}
+.map-node.current{border-color:#d49b4d;background:#fff8df;animation:focusPulse 1.15s infinite alternate}
+.map-node small{font-size:14px;color:#958c79;font-weight:900}
+.map-caption{font-weight:900;color:#6a825a;margin-top:6px}
+
+.crateArt .seedmark{left:42px;top:16px;width:62px;height:70px;border:0;background:none;border-radius:0;z-index:3}
+.package-picture{position:relative;width:57px;height:65px;background:#f7e3ad;border:4px solid #916a3f;border-radius:6px 6px 10px 10px;box-shadow:inset 0 5px #e9c88b,2px 3px 0 #68472b55}
+.package-picture:before{content:"";position:absolute;top:0;left:7px;width:34px;height:6px;background:#b48c59;border-radius:0 0 5px 5px}
+.seed-dots{position:absolute;inset:16px 5px 5px}.seed-dots i{position:absolute;width:10px;height:14px;background:#8e6039;border:2px solid #64452d;border-radius:65% 30% 65% 30%;transform:rotate(25deg)}
+.seed-dots i:nth-child(1){left:4px;top:2px}.seed-dots i:nth-child(2){left:24px;top:1px;transform:rotate(-25deg)}.seed-dots i:nth-child(3){left:14px;top:15px}.seed-dots i:nth-child(4){left:0;top:25px;transform:rotate(-15deg)}.seed-dots i:nth-child(5){left:28px;top:27px}
+.crate #bag{left:152px;top:45px;z-index:8}
+@media(max-width:650px){.crate #bag{left:148px;top:45px}}
+.level-button{background:#fff8de;border:3px solid #cba971;padding:10px 18px;border-radius:15px;box-shadow:0 4px #c5b083;color:#43523a;cursor:pointer}.level-button:hover{background:#fff0c6}
+.map-node.selectable{cursor:pointer;transition:transform .15s}.map-node.selectable:hover{transform:scale(1.12)}.map-node:disabled{cursor:default;opacity:1}.map-node{padding:0;font-family:inherit} 
+
+.collection-tabs{display:flex;gap:10px;justify-content:center;margin:10px 0 18px;flex-wrap:wrap}.collection-tabs button.active{background:#d7e9b7;border-color:#8cb064}.collection-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;max-height:55vh;overflow-y:auto;padding:6px}.collection-card{border:2px solid #d8c49a;background:#fffaf0;border-radius:16px;padding:12px;text-align:center;min-height:175px}.collection-card.locked{background:#f1eee8;opacity:.65}.collection-art{height:90px}.collection-art svg{height:90px;max-width:130px}.collection-emoji{font-size:57px;height:80px}.collection-card b,.collection-card small{display:block}.collection-card small{color:#7b796f;margin-top:4px}.collection-card p{font-size:12px;line-height:1.35}
+</style></head><body>
+<header><h1>🌾 Caterpillar Farming Adventure</h1></header>
+<div class="top"><button id="level" class="level-button" onclick="openLevelMap()" aria-label="Open level map"></button><button onclick="openBook()">📖 My Storybook</button><button onclick="openCollection()">📚 图鉴</button></div>
+<main class="farm" id="farm">
+<div class="sky"><div class="sun"></div><div class="cloud"></div><div class="cloud two"></div></div>
+<div class="hill"></div><div class="hill two"></div><div class="fence"></div><div class="grass"></div><div class="path"></div><div class="flowers">🌼 🌸 🌼 🌷</div>
+<div class="obj crate" id="crate" onclick="openCrate()"><div class="crateArt"><div class="seedmark"><div class="package-picture"><div class="seed-dots"><i></i><i></i><i></i><i></i><i></i></div></div></div></div><div class="sign">SEEDS</div><div id="bag" class="bag" data-kind="seed"><span id="bagIcon">🍎</span></div></div>
+<div class="obj well" id="well" onclick="openReading()"><div class="wellArt"><div class="wellRoof"></div><div class="wellPost left"></div><div class="wellPost right"></div><div class="wellStone"></div><div class="wellHole"></div><div class="wellRope"></div></div><div class="sign">WELL</div><div id="bucket" class="bucket" data-kind="water">🪣</div></div><div class="plot" id="plot" onclick="clickPlot()"><div class="plot-label">FARM</div><div class="growbar" id="growbar"><div class="growfill" id="growfill"></div></div><div id="seedsOnSoil" class="soil-seeds" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div id="crop" class="crop"></div><div id="waterfall" class="waterfall">💦</div><div id="fruit" class="fruit" data-kind="fruit"></div></div>
+<div class="cat" id="cat" onclick="clickCat()"><svg viewBox="0 0 150 105" aria-label="Caterpillar" role="img"><g stroke="#5d8c48" stroke-width="3"><ellipse cx="38" cy="66" rx="23" ry="25" fill="#91c66a"/><ellipse cx="62" cy="58" rx="26" ry="30" fill="#a4d478"/><ellipse cx="88" cy="54" rx="28" ry="33" fill="#b1da80"/><circle cx="118" cy="48" r="34" fill="#b6df84"/></g><path d="M113 17 Q103 0 95 11 M128 16 Q139 -1 145 10" stroke="#618a51" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="110" cy="43" r="4" fill="#354b37"/><circle cx="135" cy="43" r="4" fill="#354b37"/><path d="M114 58 Q122 68 133 57" fill="none" stroke="#526c47" stroke-width="3" stroke-linecap="round"/><circle cx="102" cy="55" r="6" fill="#efaaa0" opacity=".65"/><circle cx="142" cy="55" r="5" fill="#efaaa0" opacity=".65"/><g stroke="#6c9c57" stroke-width="5" stroke-linecap="round"><path d="M32 84l-4 12M64 85l-4 12M94 85l-4 12"/></g></svg><div id="bubble" class="bubble">...</div><div id="heart" class="heart">❤️</div></div>
+</main>
+<div class="bottom"><button onclick="resetGame()">↺ Reset</button></div>
+<div class="modal" id="modal"><div class="panel"><h2 id="mtitle"></h2><div id="mbody"></div><p id="feedback" class="feedback"></p><button class="close" id="closeBtn" onclick="closeModal()">Close</button></div></div>
+<script>
+const items=[
+["apple","red","The caterpillar sees a red apple.","What does he see?",["An apple","A shoe","A car"],0,"The apple is ___.","red"],
+["pear","green","A green pear grows on a tree.","What color is the pear?",["Blue","Green","Pink"],1,"The pear is ___.","green"],
+["plum","little","A little plum falls to the ground.","Where does it fall?",["The ground","The sky","The sea"],0,"The plum is ___.","little"],
+["strawberry","sweet","The caterpillar eats a sweet strawberry.","What does he eat?",["A rock","A strawberry","A leaf"],1,"The berry is ___.","sweet"],
+["orange","round","An orange is round and juicy.","What shape is it?",["Square","Long","Round"],2,"The orange is ___.","round"],
+["blueberry","blue","Three blue berries grow near the fence.","How many berries?",["One","Three","Five"],1,"The berries are ___.","blue"],
+["banana","yellow","A yellow banana hangs in the sun.","What color is it?",["Yellow","Red","Black"],0,"The banana is ___.","yellow"],
+["cherry","small","Two small cherries sit on a branch.","Where are the cherries?",["On a branch","In a pond","In a bag"],0,"The cherries are ___.","small"],
+["peach","soft","The soft peach smells very nice.","How does the peach feel?",["Hard","Soft","Cold"],1,"The peach is ___.","soft"],
+["melon","big","A big melon grows in the garden.","Where does it grow?",["A garden","A classroom","A bus"],0,"The melon is ___.","big"],
+["carrot","orange","A rabbit finds an orange carrot.","Who finds the carrot?",["A fish","A rabbit","A bird"],1,"The carrot is ___.","orange"],
+["corn","tall","Tall corn grows beside the barn.","Where is the corn?",["By the barn","On the moon","In the lake"],0,"The corn is ___.","tall"],
+["tomato","red","A red tomato is ready to pick.","What is ready?",["A tomato","A book","A hat"],0,"The tomato is ___.","red"],
+["pea","tiny","Tiny peas sleep inside a pod.","Where are the peas?",["In a pod","On a chair","In a cup"],0,"The peas are ___.","tiny"],
+["pumpkin","large","The large pumpkin sits by the gate.","What sits by the gate?",["A pumpkin","A cat","A kite"],0,"The pumpkin is ___.","large"],
+["flower","bright","A bright flower opens in the morning.","When does it open?",["At night","In the morning","At lunch"],1,"The flower is ___.","bright"],
+["leaf","fresh","The caterpillar eats a fresh leaf.","What does he eat?",["A leaf","A toy","A cake"],0,"The leaf is ___.","fresh"],
+["sunflower","yellow","The yellow sunflower turns to the sun.","What does it turn to?",["The sun","The rain","The moon"],0,"The sunflower is ___.","yellow"],
+["cocoon","safe","The caterpillar rests in a safe cocoon.","Where does he rest?",["In a cocoon","In a boat","In a box"],0,"The cocoon is ___.","safe"],
+["butterfly","beautiful","A beautiful butterfly flies over the flowers.","What flies over the flowers?",["A butterfly","A frog","A dog"],0,"The butterfly is ___.","beautiful"]];
+const emojis=['🍎','🍐','🟣','🍓','🍊','🫐','🍌','🍒','🍑','🍈','🥕','🌽','🍅','🫛','🎃','🌼','🍃','🌻','🟤','🦋'];
+
+const KEY='caterpillarFarmingV18';const $=id=>document.getElementById(id);let s;try{s=JSON.parse(localStorage.getItem(KEY))}catch{}if(!s||!Number.isInteger(s.level)||s.level<0||s.level>20)s={level:0,step:0,book:[],water:0};if(!Array.isArray(s.book))s.book=[];if(typeof s.listened!=='boolean')s.listened=false;if(!Number.isInteger(s.unlocked))s.unlocked=s.level;if(s.unlocked<s.level)s.unlocked=s.level;const cur=()=>items[Math.min(s.level,19)];const chosen=()=>Number.isInteger(s.chosen)?s.chosen:Math.min(s.level,19);let writingMistakes=0,drag=null,modalMode='',timer=null,catTimer=null,waitingForSpeech=false;let audioCtx;function sound(name){try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();const t=audioCtx.currentTime;function note(freq,start,duration,type='sine',gain=.075,endFreq){const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.setValueAtTime(freq,t+start);if(endFreq)o.frequency.exponentialRampToValueAtTime(endFreq,t+start+duration);g.gain.setValueAtTime(.0001,t+start);g.gain.exponentialRampToValueAtTime(gain,t+start+.015);g.gain.exponentialRampToValueAtTime(.0001,t+start+duration);o.connect(g).connect(audioCtx.destination);o.start(t+start);o.stop(t+start+duration+.02)}
+if(name==='package'){note(550,0,.12,'triangle');note(420,.13,.18,'triangle')}
+if(name==='sow'){for(let i=0;i<4;i++)note(250+i*50,i*.09,.11,'triangle',.045)}
+if(name==='water'){for(let i=0;i<8;i++)note(500-i*34,i*.06,.12,'sine',.025,180+i*8)}
+if(name==='sprout'){note(390,0,.14);note(520,.12,.15);note(780,.27,.28)}
+if(name==='ripe'){note(523,0,.15);note(659,.14,.16);note(784,.28,.17);note(1046,.42,.35)}
+}catch(e){}}
+function save(){localStorage.setItem(KEY,JSON.stringify(s))}let activeSpeechId=0;
+function speak(text,cat=false){
+ const speechId=++activeSpeechId;
+ if('speechSynthesis' in window)speechSynthesis.cancel();
+ $('bubble').classList.remove('show');$('cat').classList.remove('speaking');
+ if(cat){$('bubble').classList.add('show');$('cat').classList.add('speaking')}
+ const finish=()=>{if(speechId!==activeSpeechId)return;endSpeech()};
+ if(!('speechSynthesis' in window)){setTimeout(finish,Math.max(1800,text.length*95));return}
+ const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=.8;
+ u.onend=finish;u.onerror=finish;
+ speechSynthesis.speak(u)
+}
+function endSpeech(){
+ $('bubble').classList.remove('show');$('cat').classList.remove('speaking');
+ if(waitingForSpeech){waitingForSpeech=false;s.listened=true;save();focusNext()}
+}
+function openModal(title,html,mode=''){$('mtitle').textContent=title;$('mbody').innerHTML=html;$('feedback').textContent='';$('modal').classList.add('open');if(mode==='complete')requestAnimationFrame(alignMapPaths);modalMode=mode;focusNext();$('closeBtn').style.display=mode==='complete'?'none':'inline-block'}function closeModal(){$('modal').classList.remove('open');modalMode='';focusNext()}function fb(t){$('feedback').textContent=t}function focusNext(){for(const id of ['crate','bag','well','bucket','plot','fruit','cat'])$(id).classList.remove('next-focus');
+if(s.level>=20||$('modal').classList.contains('open'))return;
+const target={0:s.listened&&!waitingForSpeech?'crate':waitingForSpeech?null:'cat',1:'bag',2:s.water?'bucket':'well',3:null,4:'plot',5:'fruit',6:null,7:null}[s.step];
+if(target)$(target).classList.add('next-focus');
+}
+const stages=[
+ {name:'Egg · 蛋',range:'Levels 1–3',color:'#f9e6b5',desc:'A tiny egg rests on a leaf.'},
+ {name:'Larva · 幼虫',range:'Levels 4–6',color:'#a4db7b',desc:'A little green caterpillar.'},
+ {name:'Grown Caterpillar · 大毛毛虫',range:'Levels 7–9',color:'#75b6df',desc:'A big blue caterpillar.'},
+ {name:'Pupa · 蛹',range:'Levels 10–12',color:'#d6a56c',desc:'The caterpillar rests in its chrysalis.'},
+ {name:'Butterfly · 蝴蝶',range:'Levels 13–20',color:'#f3a3c2',desc:'A pink butterfly spreads its wings.'}
+];
+function stageIndex(level){return level<3?0:level<6?1:level<9?2:level<12?3:4}
+function creatureSVG(index){
+ const st=stages[index],c=st.color;
+ const eyes='<circle cx="106" cy="45" r="4" fill="#394d44"/><circle cx="130" cy="45" r="4" fill="#394d44"/><path d="M108 58 Q119 67 130 57" stroke="#526c47" stroke-width="3" fill="none"/>';
+ if(index===0)return `<svg viewBox="0 0 150 105" aria-label="Egg"><path d="M10 87 Q55 72 143 86 Q73 111 10 87" fill="#7cb66d"/><ellipse cx="80" cy="56" rx="37" ry="43" fill="${c}" stroke="#bca67b" stroke-width="4"/><circle cx="70" cy="53" r="3.5" fill="#564d43"/><circle cx="90" cy="53" r="3.5" fill="#564d43"/><path d="M72 67 Q80 73 88 67" fill="none" stroke="#9b816a" stroke-width="3"/></svg>`;
+ if(index===3)return `<svg viewBox="0 0 150 105" aria-label="Pupa"><path d="M76 2 L76 21" stroke="#7c9965" stroke-width="5"/><path d="M75 17 C24 22 39 85 73 99 C115 80 120 32 75 17Z" fill="${c}" stroke="#a07e57" stroke-width="4"/><path d="M57 44 Q75 54 99 42 M54 65 Q75 75 98 63" fill="none" stroke="#bb8a5c" stroke-width="3"/><circle cx="67" cy="35" r="3" fill="#514b42"/><circle cx="83" cy="35" r="3" fill="#514b42"/></svg>`;
+ if(index===4)return `<svg viewBox="0 0 150 105" aria-label="Butterfly"><ellipse cx="47" cy="30" rx="33" ry="29" transform="rotate(-25 47 30)" fill="${c}" stroke="#ad7293" stroke-width="3"/><ellipse cx="103" cy="30" rx="33" ry="29" transform="rotate(25 103 30)" fill="${c}" stroke="#ad7293" stroke-width="3"/><ellipse cx="48" cy="75" rx="27" ry="22" transform="rotate(20 48 75)" fill="#f8d78d" stroke="#b59a6b" stroke-width="3"/><ellipse cx="102" cy="75" rx="27" ry="22" transform="rotate(-20 102 75)" fill="#f8d78d" stroke="#b59a6b" stroke-width="3"/><ellipse cx="75" cy="54" rx="11" ry="36" fill="#806e63"/><path d="M70 22 Q57 2 50 9 M80 22 Q93 2 100 9" stroke="#806e63" stroke-width="3" fill="none"/><circle cx="72" cy="36" r="2" fill="white"/><circle cx="79" cy="36" r="2" fill="white"/></svg>`;
+ const big=index===2;return `<svg viewBox="0 0 150 105" aria-label="${st.name}"><g stroke="${big?'#477fa3':'#679f55'}" stroke-width="3"><ellipse cx="38" cy="66" rx="${big?25:18}" ry="${big?27:20}" fill="${c}"/><ellipse cx="62" cy="58" rx="${big?27:22}" ry="${big?31:25}" fill="${c}"/><ellipse cx="88" cy="54" rx="${big?29:24}" ry="${big?33:27}" fill="${c}"/><circle cx="118" cy="48" r="${big?34:29}" fill="${c}"/></g><path d="M113 17 Q103 0 95 11 M128 16 Q139 -1 145 10" stroke="#618a51" stroke-width="4" fill="none"/>${eyes}<g stroke="#679f55" stroke-width="5"><path d="M32 84l-4 12M64 85l-4 12M94 85l-4 12"/></g></svg>`;
+}
+function drawCreature(){const el=$('cat');const idx=stageIndex(Math.min(s.level,19));if(el.dataset.stage!==String(idx)){el.querySelector('svg').outerHTML=creatureSVG(idx);el.dataset.stage=String(idx)}}
+let collectionTab='creature';
+function openCollection(tab='creature'){collectionTab=tab;drawCollection()}
+function drawCollection(){
+ const max=20; // Testing mode: all encyclopedia entries visible regardless of progress
+ const buttons=`<div class="collection-tabs"><button class="${collectionTab==='creature'?'active':''}" onclick="openCollection('creature')">🐛 毛毛虫图鉴</button><button class="${collectionTab==='fruit'?'active':''}" onclick="openCollection('fruit')">🍎 水果图鉴</button></div>`;
+ let cards;
+ if(collectionTab==='creature')cards=stages.map((st,i)=>{const unlocked=max>=([0,3,6,9,12][i]);return `<div class="collection-card ${unlocked?'':'locked'}"><div class="collection-art">${unlocked?creatureSVG(i):'❔'}</div><b>${unlocked?st.name:'??? · 未解锁'}</b><small>${st.range}</small><p>${unlocked?st.desc:'继续闯关解锁'}</p></div>`}).join('');
+ else cards=items.map((it,i)=>{const unlocked=i<=max;return `<div class="collection-card ${unlocked?'':'locked'}"><div class="collection-emoji">${unlocked?emojis[i]:'❔'}</div><b>${unlocked?it[0][0].toUpperCase()+it[0].slice(1):'???'}</b><small>Level ${i+1}</small><p>${unlocked?it[6].replace('___',it[7]):'未解锁'}</p></div>`}).join('');
+ openModal('📚 Farm Encyclopedia',`${buttons}<div class="collection-grid">${cards}</div>`,'collection');
+}
+function render(){drawCreature();let done=s.level>=20;$('level').textContent=done?'🦋 Level 20':`🌟 Level ${s.level+1}`;let plot=$('plot');plot.className='obj plot';if(s.step===2||(s.step===3&&window.pouringNow))plot.classList.add('planted');if(s.step>=3&&!(s.step===3&&window.pouringNow))plot.classList.add('wet');if(s.step===4)plot.classList.add('ready');$('seedsOnSoil').classList.toggle('visible',!done&&(s.step===2||s.step===3));$('crop').textContent=done?'🌸':s.step===0?'':s.step===1||s.step===2?'':s.step===3?'':s.step===4?'🌱':s.step===7?'🌿':s.step>=5?'': '';$('bagIcon').textContent=done?'🌱':emojis[chosen()];$('bag').classList.toggle('show',!done&&s.step===1);$('bucket').classList.toggle('show',!done&&s.water>0&&s.step===2);$('fruit').classList.toggle('show',!done&&s.step===5);$('fruit').textContent=done?'':emojis[chosen()];$('cat').querySelector('svg').style.display=done?'none':'block';save();focusNext()}function clickCat(){if(s.level>=20){speak('A beautiful butterfly flies over the flowers.',true);return}if(s.step===6)return;if(s.step===0&&!s.listened){waitingForSpeech=true;focusNext()}speak(cur()[2],true)}function openCrate(){if(s.level>=20||s.step!==0||!s.listened||waitingForSpeech)return;const choices=items.slice(0,s.level+1).map((item,i)=>({name:item[0],index:i}));for(let i=choices.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[choices[i],choices[j]]=[choices[j],choices[i]];}openModal('📦 Choose a Seed',`<div class="choices">${choices.map(x=>`<button onclick="chooseSeed(${x.index})">${x.name}</button>`).join('')}</div>`,'seed')}
+function chooseSeed(index){if(index<0||index>s.level)return;s.chosen=index;s.step=1;closeModal();render();sound('package')}
+function openReading(){if(s.level>=20||s.step!==2)return;const d=cur();openModal('📖 Reading',`<p style="font-size:23px">${d[2]}</p><h3>${d[3]}</h3><div class="choices">${d[4].map((x,i)=>`<button onclick="checkReading(${i})">${String.fromCharCode(65+i)}. ${x}</button>`).join('')}</div>`,'reading')}function checkReading(n){if(n!==cur()[5]){fb('🌷 Listen and try again!');speak(cur()[2]);return}s.water=1;closeModal();render();animateBucket();sound('water')}function animateBucket(){const b=$('bucket');b.animate([{transform:'translateY(55px)',opacity:.2},{transform:'translateY(-12px)',opacity:1},{transform:'translateY(0)',opacity:1}],{duration:1200,easing:'ease-out'})}function clickPlot(){if(s.step===4)openWriting()}function startGrow(next){$('growbar').classList.add('show');$('growfill').style.transition='none';$('growfill').style.width='0';requestAnimationFrame(()=>requestAnimationFrame(()=>{$('growfill').style.transition='width 500ms linear';$('growfill').style.width='100%'}));clearTimeout(timer);timer=setTimeout(()=>{$('growbar').classList.remove('show');$('growfill').style.width='0';s.step=next;render();sound(next===4?'sprout':'ripe');$('crop').classList.add('sprout');setTimeout(()=>$('crop').classList.remove('sprout'),500)},500)}function planted(){s.step=2;render();sound('sow')}function watered(){s.water=0;window.pouringNow=true;s.step=3;render();const plot=$('plot');const pouring=document.createElement('div');pouring.className='pour-bucket';pouring.textContent='🪣';plot.appendChild(pouring);$('waterfall').classList.add('show');setTimeout(()=>{pouring.remove();$('waterfall').classList.remove('show');window.pouringNow=false;render();startGrow(4)},1100)}function openWriting(){if(s.step!==4)return;const d=items[chosen()];openModal('✏️ Writing',`<h3>${d[6]}</h3><input id="writingAnswer" autocomplete="off" spellcheck="false" placeholder="Missing word"><p><button onclick="checkWriting()">Check Answer</button></p>`,'writing');$('writingAnswer').focus()}function checkWriting(){const d=items[chosen()],word=d[7],answer=$('writingAnswer').value.trim().toLowerCase().replace(/[.!?]/g,'');if(answer!==word){writingMistakes++;let audio,msg;if(writingMistakes===1){audio=d[2];msg='🌼 Listen to the story.'}else if(writingMistakes===2){audio=d[6].replace('___','blank');msg='🌷 Listen to the sentence.'}else if(writingMistakes===3){audio='The answer is '+word+'.';msg='💛 You can do it!'}else{audio=word.toUpperCase().split('').join(', ')+'. '+word+'.';msg='⭐ '+word.toUpperCase().split('').join(' · ')}fb(msg);speak(audio);return}s.pendingSentence=d[6].replace('___',answer);s.step=7;closeModal();render();startGrow(5)}function chomp(){try{const ctx=new (window.AudioContext||window.webkitAudioContext)();for(let i=0;i<3;i++){const t=ctx.currentTime+i*.17;const o=ctx.createOscillator(),g=ctx.createGain();o.type='triangle';o.frequency.setValueAtTime(310-i*45,t);o.frequency.exponentialRampToValueAtTime(95,t+.13);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.14,t+.018);g.gain.exponentialRampToValueAtTime(.0001,t+.15);o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+.16)}setTimeout(()=>ctx.close(),1300)}catch{}}function alignMapPaths(){
+ const map=document.querySelector('.map');if(!map)return;
+ const nodes=[...map.querySelectorAll('.map-node')];
+ const box=map.getBoundingClientRect();
+ const svg=map.querySelector('.map-lines');svg.setAttribute('viewBox',`0 0 ${box.width} ${box.height}`);
+ const points=[];
+ for(let row=0;row<4;row++){
+  const cols=row%2===0?[0,1,2,3,4]:[4,3,2,1,0];
+  for(const col of cols){const r=nodes[row*5+col].getBoundingClientRect();points.push([r.left+r.width/2-box.left,r.top+r.height/2-box.top])}
+ }
+ [...svg.querySelectorAll('line')].forEach((line,i)=>{
+  line.setAttribute('x1',points[i][0]);line.setAttribute('y1',points[i][1]);
+  line.setAttribute('x2',points[i+1][0]);line.setAttribute('y2',points[i+1][1]);
+ });
+}
+window.addEventListener('resize',alignMapPaths);
+function farmMap(){
+ const route=[];
+ for(let row=0;row<4;row++){
+   const cols=row%2===0?[0,1,2,3,4]:[4,3,2,1,0];
+   cols.forEach(col=>route.push([10+col*20,12.5+row*25]));
+ }
+ const segments=route.slice(0,-1).map(([x,y],i)=>{
+   const [nx,ny]=route[i+1];
+   return `<line x1="${x}" y1="${y}" x2="${nx}" y2="${ny}" class="map-path ${i<s.unlocked-1?'passed':''}"/>`;
+ }).join('');
+ const cells=Array.from({length:20},(_,gridIndex)=>{
+   const row=Math.floor(gridIndex/5),col=gridIndex%5;
+   const i=row*5+(row%2===0?col:4-col);
+   return `<button type="button" class="map-node ${i<s.unlocked?'done':i===s.level?'current':''} ${i<=s.unlocked?'selectable':''}" title="Level ${i+1}${i<s.unlocked?' complete — replay':''}" ${i>s.unlocked?'disabled':''} onclick="selectLevel(${i})">${i<s.unlocked?emojis[i]:`<small>${i+1}</small>`}</button>`;
+ }).join('');
+ return `<div class="map" aria-label="20 level connected farm progress"><svg class="map-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${segments}</svg>${cells}</div><div class="map-caption">${Math.min(s.unlocked,20)} / 20 levels completed</div>`;
+}
+function selectLevel(level){if(level<0||level>Math.min(s.unlocked,19))return;clearTimeout(timer);clearTimeout(catTimer);speechSynthesis?.cancel?.();window.pouringNow=false;s.level=level;s.step=0;s.water=0;delete s.chosen;s.listened=false;waitingForSpeech=false;writingMistakes=0;delete s.pendingSentence;$('heart').classList.remove('show');closeModal();render()}
+function openLevelMap(){openModal('🗺️ Level Map',farmMap(),'map');requestAnimationFrame(alignMapPaths)}
+
+function feed(){if(s.step!==5)return;if(chosen()!==s.level){
+  // The caterpillar eats the harvest, then realizes it was the wrong food.
+  s.step=6;render();chomp();
+  $('cat').animate([{transform:'scale(1)'},{transform:'scale(1.18)'},{transform:'scale(1)'}],{duration:650});
+  setTimeout(()=>{
+    $('heart').textContent='❌';$('heart').classList.add('show');
+    $('cat').animate([{transform:'rotate(-10deg)'},{transform:'rotate(10deg)'},{transform:'rotate(0deg)'}],{duration:420});
+    // Reset the plot and unlock the seed box for another attempt at the same level.
+    s.step=0;s.water=0;s.listened=true;delete s.chosen;delete s.pendingSentence;
+    writingMistakes=0;render();speak(cur()[2],true);
+    setTimeout(()=>{$('heart').classList.remove('show');$('heart').textContent='❤️'},1250);
+  },800);
+  return;
+}s.step=6;render();chomp();$('cat').animate([{transform:'scale(1)'},{transform:'scale(1.22)'},{transform:'scale(1)'}],{duration:700,iterations:2});$('heart').classList.add('show');const old=s.level;clearTimeout(catTimer);catTimer=setTimeout(()=>{const entry={level:old,item:cur()[0],sentence:cur()[2],writing:s.pendingSentence||cur()[6].replace('___',cur()[7])};const existing=s.book.findIndex(b=>b.level===old);if(existing>=0)s.book[existing]=entry;else{s.book.push(entry);s.book.sort((a,b)=>a.level-b.level)}delete s.pendingSentence;s.level++;s.unlocked=Math.max(s.unlocked,s.level);if(s.level<s.unlocked)s.level=s.unlocked;s.step=0;s.listened=false;waitingForSpeech=false;s.water=0;delete s.chosen;writingMistakes=0;$('heart').classList.remove('show');$('heart').textContent='❤️';render();if(s.level===20){openModal('🦋 Congratulations!',`<p>All 20 levels complete!</p>${farmMap()}<button onclick="closeModal();openBook()">📖 My Storybook</button>`,'complete')}else{openModal('⭐ Level Complete!',`<div style="font-size:60px">${emojis[old]} 🐛 ❤️</div>${farmMap()}<button onclick="closeModal()">Level ${s.level+1} ➜</button>`,'complete')}},2000)}
+let page=0;function openBook(){page=Math.max(0,s.book.length-1);drawBook()}function drawBook(){const total=s.book.length,b=s.book[page];openModal('📖 My Storybook',`<p>${total} / 20 pages unlocked</p>${b?`<div class="bookpage"><div style="font-size:65px">${emojis[b.level]}</div><b>Page ${page+1}</b><p>${b.sentence}</p><p>✏️ ${b.writing}</p><button onclick="listenStoryPage()">🔊 Listen</button></div>`:'<div class="bookpage">📖</div>'}<button ${page===0?'disabled':''} onclick="page--;drawBook()">◀</button><button ${page>=total-1?'disabled':''} onclick="page++;drawBook()">▶</button>`,'book')}function listenStoryPage(){const entry=s.book[page];if(entry&&entry.sentence)speak(entry.sentence)}function resetGame(){if(confirm('Erase progress and storybook?')){localStorage.removeItem(KEY);location.reload()}}
+function inRect(x,y,el){const r=el.getBoundingClientRect();return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom}function dragStart(e){const el=e.target.closest('[data-kind]');if(!el)return;const kind=el.dataset.kind;if((kind==='seed'&&s.step!==1)||(kind==='water'&&(s.step!==2||s.water<1))||(kind==='fruit'&&s.step!==5))return;e.preventDefault();e.stopPropagation();const ghost=document.createElement('div');ghost.className='dragghost';if(kind==='seed'){ghost.classList.add('seedbag-ghost');ghost.innerHTML=el.innerHTML;}else{ghost.textContent=kind==='water'?'🪣':emojis[chosen()];}document.body.appendChild(ghost);drag={id:e.pointerId,kind,ghost,el};el.classList.add('drag-origin-hidden');for(const id of ['crate','bag','well','bucket','plot','fruit','cat'])$(id).classList.remove('next-focus');if(kind!=='fruit')$('plot').classList.add('next-focus');else $('cat').classList.add('next-focus');move(e);el.setPointerCapture(e.pointerId)}function move(e){if(!drag)return;drag.ghost.style.left=e.clientX+'px';drag.ghost.style.top=e.clientY+'px';$('plot').classList.toggle('dropready',drag.kind!=='fruit'&&inRect(e.clientX,e.clientY,$('plot')))}function dragEnd(e){if(!drag||drag.id!==e.pointerId)return;const kind=drag.kind;drag.el.classList.remove('drag-origin-hidden');drag.ghost.remove();drag=null;$('plot').classList.remove('dropready');if(kind==='seed'&&inRect(e.clientX,e.clientY,$('plot')))planted();else if(kind==='water'&&inRect(e.clientX,e.clientY,$('plot')))watered();else if(kind==='fruit'&&inRect(e.clientX,e.clientY,$('cat')))feed();focusNext()}document.addEventListener('pointerdown',dragStart);document.addEventListener('pointermove',e=>{if(drag&&drag.id===e.pointerId)move(e)});document.addEventListener('pointerup',dragEnd);document.addEventListener('pointercancel',()=>{if(drag){drag.el.classList.remove('drag-origin-hidden');drag.ghost.remove();drag=null;$('plot').classList.remove('dropready');focusNext()}});
+function wander(){if(!$('modal').classList.contains('open')&&!drag&&s.step!==6){$('cat').style.left=(20+Math.random()*57)+'%';$('cat').style.top=(36+Math.random()*17)+'%'}}render();setTimeout(wander,200);setInterval(wander,9000);
+</script></body></html>
