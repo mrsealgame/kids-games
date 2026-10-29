@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>小鱼冲冲冲 | Fishy Go Go Go!</title><style>*{box-sizing:border-box}body{margin:0;background:#dcf5fb;color:#21536a;font-family:system-ui,'Arial Rounded MT Bold',sans-serif;text-align:center}.app{max-width:1000px;margin:auto;padding:10px}h1{font-size:clamp(23px,4vw,36px);margin:3px 0 9px}.hud{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}.meter{background:#fff;border-radius:15px;padding:9px 12px;box-shadow:0 3px 8px #71b4c455}.label{display:flex;justify-content:space-between;font-weight:800;font-size:clamp(12px,2vw,18px)}.track{height:14px;border-radius:10px;background:#dcebf0;overflow:hidden;margin-top:6px}.fill{height:100%;transition:width .2s}.hp{background:#ee7984}.exp{background:#f5c44e}.mp{background:#a47deb}#level{font-weight:900;display:grid;place-items:center}.sea{position:relative;border:5px solid #7ac9da;border-radius:20px;overflow:hidden;background:#6bcce7;touch-action:none}canvas{display:block;width:100%;height:auto;aspect-ratio:10/5;touch-action:none}.question{font-weight:900;font-size:clamp(29px,5vw,45px);min-height:55px;margin:8px 0 0}.choices{display:flex;justify-content:center;gap:12px;margin:3px 0 8px}.choice{flex:1;max-width:210px;padding:12px 8px;border:0;border-radius:19px;background:#fff7d7;box-shadow:0 5px 0 #dec687;font-size:clamp(27px,5vw,40px);font-weight:900;color:#22556b;cursor:pointer}.choice:active{transform:translateY(3px)}.foot{font-size:14px;display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap}.pause{border:0;border-radius:12px;background:#7857bc;color:white;padding:10px 16px;font-weight:800;cursor:pointer}.pause:focus-visible{outline:3px solid #fff}.restart{border:0;border-radius:12px;background:#318fb0;color:white;padding:10px 16px;font-weight:800;cursor:pointer}.toast{position:absolute;top:12px;left:50%;transform:translateX(-50%);font-size:24px;font-weight:900;text-shadow:0 2px 5px #fff;background:#fff;border-radius:20px;padding:4px 15px;pointer-events:none;opacity:0;transition:opacity .15s}.toast.show{opacity:1}@media(max-width:560px){.hud{grid-template-columns:repeat(2,1fr);gap:5px}.meter{padding:7px}.app{padding:5px}.sea{border-width:3px}.question{min-height:48px}.choice{padding:9px}}</style></head><body><main class="app"><h1>🐠 小鱼冲冲冲</h1><div class="hud"><div class="meter"><div class="label"><span>❤️ HP</span><span id="hpnum"></span></div><div class="track"><div id="hpbar" class="fill hp"></div></div></div><div class="meter"><div class="label"><span>⭐ EXP</span><span id="expnum"></span></div><div class="track"><div id="expbar" class="fill exp"></div></div></div><div class="meter"><div class="label"><span>✨ MP</span><span id="mpnum"></span></div><div class="track"><div id="mpbar" class="fill mp"></div></div></div><div class="meter" id="level"></div></div><div class="sea" id="sea"><canvas id="canvas" width="1000" height="500"></canvas><div class="toast" id="toast"></div></div><div class="question" id="question"></div><div class="choices" id="choices"></div><div class="foot"><span>👆 点击水面游动 · 答对获得魔法 · 魔法自动攻击敌人</span><button class="pause" id="pauseBtn" onclick="togglePause()">⏸ 暂停</button><button class="restart" onclick="restart()">重新开始 ↻</button></div></main><script>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>小鱼冲冲冲 | Fishy Go Go Go!</title><style>*{box-sizing:border-box}body{margin:0;background:#dcf5fb;color:#21536a;font-family:system-ui,'Arial Rounded MT Bold',sans-serif;text-align:center}.app{max-width:1000px;margin:auto;padding:10px}h1{font-size:clamp(23px,4vw,36px);margin:3px 0 9px}.hud{display:grid;grid-template-columns:minmax(180px,1fr) minmax(200px,1fr);gap:8px;margin-bottom:10px}.meter{background:#fff;border-radius:15px;padding:9px 12px;box-shadow:0 3px 8px #71b4c455}.label{display:flex;justify-content:space-between;font-weight:800;font-size:clamp(12px,2vw,18px)}.track{height:14px;border-radius:10px;background:#dcebf0;overflow:hidden;margin-top:6px}.fill{height:100%;transition:width .2s}.hp{background:#ee7984}.exp{background:#f5c44e}.mp{background:#a47deb}#level{font-weight:900;display:grid;place-items:center}.sea{position:relative;border:5px solid #7ac9da;border-radius:20px;overflow:hidden;background:#6bcce7;touch-action:none}canvas{display:block;width:100%;height:auto;aspect-ratio:10/5;touch-action:none}.question{font-weight:900;font-size:clamp(29px,5vw,45px);min-height:55px;margin:8px 0 0}.choices{display:flex;justify-content:center;gap:12px;margin:3px 0 8px}.choice{flex:1;max-width:210px;padding:12px 8px;border:0;border-radius:19px;background:#fff7d7;box-shadow:0 5px 0 #dec687;font-size:clamp(27px,5vw,40px);font-weight:900;color:#22556b;cursor:pointer}.choice:active{transform:translateY(3px)}.foot{font-size:14px;display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap}.pause{border:0;border-radius:12px;background:#7857bc;color:white;padding:10px 16px;font-weight:800;cursor:pointer}.pause:focus-visible{outline:3px solid #fff}.restart{border:0;border-radius:12px;background:#318fb0;color:white;padding:10px 16px;font-weight:800;cursor:pointer}.toast{position:absolute;top:12px;left:50%;transform:translateX(-50%);font-size:24px;font-weight:900;text-shadow:0 2px 5px #fff;background:#fff;border-radius:20px;padding:4px 15px;pointer-events:none;opacity:0;transition:opacity .15s}.toast.show{opacity:1}@media(max-width:560px){.hud{grid-template-columns:repeat(2,1fr);gap:5px}.meter{padding:7px}.app{padding:5px}.sea{border-width:3px}.question{min-height:48px}.choice{padding:9px}} .math-help{min-height:0;margin:4px auto;max-width:760px}.math-help:not(.visible){display:none}.help-title{font-size:17px;font-weight:800;color:#4c6385;margin:4px}.fish-model{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;padding:7px 10px;background:#f0faff;border-radius:16px}.math-fish{font-size:clamp(23px,4vw,34px);display:inline-block;transition:opacity .5s,transform .6s,filter .3s}.math-fish.swim-away{opacity:.16;transform:translate(16px,-12px) scale(.65)}.math-fish.counting{filter:drop-shadow(0 0 5px #ffc107);transform:translateY(-7px) scale(1.2)}.choice:disabled{opacity:.65;cursor:not-allowed}.math-timer{font-size:14px;color:#75569b;font-weight:800;margin-top:4px}</style></head><body><main class="app"><h1>🐠 小鱼冲冲冲</h1><div class="hud"><div class="meter"><div class="label"><span>⭐ EXP</span><span id="expnum"></span></div><div class="track"><div id="expbar" class="fill exp"></div></div></div><div class="meter" id="level"></div></div><div class="sea" id="sea"><canvas id="canvas" width="1000" height="500"></canvas><div class="toast" id="toast"></div></div><div class="question" id="question"></div><div class="choices" id="choices"></div><div class="math-help" id="mathHelp" aria-live="polite"></div><div class="foot"><span>👆 点击水面游动 · 答对获得魔法 · 魔法自动攻击敌人</span><button class="pause" id="pauseBtn" onclick="togglePause()">⏸ 暂停</button><button class="restart" onclick="restart()">重新开始 ↻</button></div></main><script>
 "use strict";
 const W=1000,H=500,cv=document.getElementById('canvas'),ctx=cv.getContext('2d',{alpha:false}),sea=document.getElementById('sea');
 const question=document.getElementById('question'),choices=document.getElementById('choices'),toast=document.getElementById('toast');
@@ -19,6 +19,7 @@ const enemyData=[
 const ATTACK_RADIUS=110; // Same radius for the visible magic ring and automatic targeting.
 const rand=(a,b)=>a+Math.random()*(b-a),clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 let hp,mp,exp,level,stage,stageTime,fish,items,particles,floats,spawnTimer,attackTimer,invuln,clock,answer,paused,ended,last,audio,toastTime,transitionTime,projectiles,nextItemId,edgeStayTime,spawnCount;
+let mathA=0,mathB=0,mathMistakes=0,mathLockUntil=0,mathLockTimer=null,mathAnimationTimers=[],learningPause=false;const mathHelp=document.getElementById("mathHelp");
 const maxHP=()=>4+level,maxMP=()=>2+level,maxEXP=()=>6+level*2,atk=()=>1+Math.floor((level-1)/3);
 const zone=()=>Math.min(5,Math.floor((stage-1)/3));
 function beep(freq=520,dur=.12){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();let o=audio.createOscillator(),g=audio.createGain();o.type='sine';o.frequency.setValueAtTime(freq,audio.currentTime);o.frequency.exponentialRampToValueAtTime(Math.max(80,freq*.65),audio.currentTime+dur);g.gain.setValueAtTime(.07,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+dur);o.connect(g).connect(audio.destination);o.start();o.stop(audio.currentTime+dur)}catch(e){}}
@@ -40,7 +41,7 @@ function magicNote(frequency){
  }catch(e){}
 }
 function updateMagicMusic(dt){
- const playing=mp>0&&!paused&&!ended&&!document.hidden;
+ const playing=mp>0&&!paused&&!learningPause&&!ended&&!document.hidden;
  if(!playing){musicWasPlaying=false;musicCountdown=0;return}
  if(!audio||audio.state!=='running')return;
  if(!musicWasPlaying){musicWasPlaying=true;musicStep=0;musicCountdown=0}
@@ -49,11 +50,48 @@ function updateMagicMusic(dt){
 }
 function floatText(text,color,x=fish.x,y=fish.y-45){floats.push({text,color,x,y,t:1.15})}
 function say(text){toast.textContent=text;toast.classList.add('show');toastTime=1.35}
-function hud(){for(const [key,v,m] of [['hp',hp,maxHP()],['exp',exp,maxEXP()],['mp',mp,maxMP()]]){document.getElementById(key+'num').textContent=v+' / '+m;document.getElementById(key+'bar').style.width=clamp(v/m*100,0,100)+'%'}document.getElementById('level').innerHTML='<div style="font-size:23px;color:#8453b7">⭐ Lv.'+level+'</div><div style="font-size:13px">第'+stage+'关 · '+names[zone()]+'</div>'}
-function makeQuestion(){if(ended)return;const a=Math.floor(rand(1,11)),b=Math.floor(rand(0,a+1));answer=a-b;question.textContent=a+' − '+b+' = ?';const vals=new Set([answer]);while(vals.size<3)vals.add(clamp(answer+Math.floor(rand(-5,6)),0,10));choices.replaceChildren();for(const v of [...vals].sort(()=>Math.random()-.5)){const btn=document.createElement('button');btn.className='choice';btn.textContent=v;btn.onclick=()=>{if(paused||ended)return;if(v===answer){const gained=Math.min(1,maxMP()-mp);mp+=gained;floatText(gained?'+1 MP':'✨ MP 已满','#a557e5');beep(840);makeQuestion()}else{const lost=Math.min(1,mp);mp-=lost;if(lost)floatText('−1 MP','#b05add');beep(190,.2)}hud()};choices.appendChild(btn)}}
-function expGain(n,x=fish.x,y=fish.y){floatText('+'+n+' EXP','#ffc536',x,y-35);exp+=n;while(exp>=maxEXP()){exp-=maxEXP();level++;hp=maxHP();floatText('❤️ HP FULL!','#24b878');transitionTime=2.2;say('✨ Lv.'+level+' 升级！');beep(1150,.28)}hud()}
-function hurt(d){if(invuln>0)return;const n=Math.min(hp,d);hp-=n;invuln=1.15;floatText('−'+n+' HP','#f44f65');beep(170,.24);hud();if(hp<=0){ended=true;question.textContent='💔 游戏结束';choices.replaceChildren();say('点击重新开始')}}
-function potion(){const n=Math.min(2,maxHP()-hp);hp+=n;floatText('+'+n+' HP','#2db76b');beep(950);hud()}
+function hud(){for(const [key,v,m] of [['exp',exp,maxEXP()]]){document.getElementById(key+'num').textContent=v+' / '+m;document.getElementById(key+'bar').style.width=clamp(v/m*100,0,100)+'%'}document.getElementById('level').innerHTML='<div style="font-size:23px;color:#8453b7">⭐ Lv.'+level+'</div><div style="font-size:13px">第'+stage+'关 · '+names[zone()]+'</div>'}
+function clearMathTimers(){if(mathLockTimer!==null){clearTimeout(mathLockTimer);mathLockTimer=null}for(const id of mathAnimationTimers)clearTimeout(id);mathAnimationTimers=[]}
+function setChoiceLock(locked){for(const button of choices.querySelectorAll('button'))button.disabled=locked}
+function mathVisual(secondMistake=false){
+ mathHelp.classList.add('visible');mathHelp.replaceChildren();
+ const title=document.createElement('div');title.className='help-title';title.textContent=(secondMistake?'⏸ 游戏暂停 · 数一数留下的小鱼 🐠':'⏸ 游戏暂停 · 看看有几条小鱼游走了 🐠');mathHelp.appendChild(title);
+ const row=document.createElement('div');row.className='fish-model';mathHelp.appendChild(row);
+ const fishIcons=[];for(let i=0;i<mathA;i++){const el=document.createElement('span');el.className='math-fish';el.textContent='🐟';el.setAttribute('aria-label','小鱼');row.appendChild(el);fishIcons.push(el)}
+ // The last B fish swim away; the remaining A-B fish stay visible for counting.
+ const away=fishIcons.slice(mathA-mathB);away.forEach((el,i)=>{const id=setTimeout(()=>el.classList.add('swim-away'),300+i*180);mathAnimationTimers.push(id)});
+ if(secondMistake){fishIcons.slice(0,mathA-mathB).forEach((el,i)=>{const id=setTimeout(()=>{el.classList.add('counting');const reset=setTimeout(()=>el.classList.remove('counting'),390);mathAnimationTimers.push(reset)},850+i*500);mathAnimationTimers.push(id)})}
+}
+function mathWrong(){
+ mathMistakes++;learningPause=true;beep(190,.2);mathVisual(mathMistakes>=2);
+ // Keep all three choices unchanged; no elimination by color or hiding.
+ const duration=mathMistakes===1?2000:2600;
+ mathLockUntil=performance.now()+duration;setChoiceLock(true);
+ const hint=document.createElement('div');hint.className='math-timer';hint.textContent='想一想，再选答案…';mathHelp.appendChild(hint);
+ mathLockTimer=setTimeout(()=>{mathLockTimer=null;if(!ended){setChoiceLock(false);hint.remove()}},duration);
+}
+function makeQuestion(){
+ if(ended)return;clearMathTimers();mathHelp.replaceChildren();mathHelp.classList.remove('visible');mathMistakes=0;mathLockUntil=0;
+ mathA=Math.floor(rand(1,11));mathB=Math.floor(rand(0,mathA+1));answer=mathA-mathB;
+ question.textContent=mathA+' − '+mathB+' = ?';
+ const vals=new Set([answer]);while(vals.size<3)vals.add(clamp(answer+Math.floor(rand(-5,6)),0,10));
+ choices.replaceChildren();
+ for(const v of [...vals].sort(()=>Math.random()-.5)){
+  const btn=document.createElement('button');btn.className='choice';btn.textContent=v;
+  btn.onclick=()=>{
+   if(paused||ended||performance.now()<mathLockUntil)return;
+   if(v!==answer){mathWrong();return}
+   // First try +2 MP, second try +1 MP, third or later +0 MP.
+   const reward=mathMistakes===0?2:mathMistakes===1?1:0;
+   const gained=Math.min(reward,maxMP()-mp);mp+=gained;
+   floatText(gained?'+'+gained+' MP':(mp===maxMP()?'✨ MP 已满':'继续加油！'),'#a557e5');
+   learningPause=false;beep(840);hud();makeQuestion();
+  };choices.appendChild(btn)
+ }
+}
+function expGain(n,x=fish.x,y=fish.y){floatText('+'+n+' EXP','#ffc536',x,y-35);exp+=n;while(exp>=maxEXP()){exp-=maxEXP();level++;hp=maxHP();hpBarTimer=3;floatText('❤️ HP FULL!','#24b878');transitionTime=2.2;say('✨ Lv.'+level+' 升级！');beep(1150,.28)}hud()}
+function hurt(d){if(invuln>0)return;const n=Math.min(hp,d);hp-=n;hpBarTimer=3;invuln=1.15;floatText('−'+n+' HP','#f44f65');beep(170,.24);hud();if(hp<=0){ended=true;question.textContent='💔 游戏结束';choices.replaceChildren();say('点击重新开始')}}
+function potion(){const n=Math.min(2,maxHP()-hp);hp+=n;hpBarTimer=3;floatText('+'+n+' HP','#2db76b');beep(950);hud()}
 function makeItem(type,x=W+50,y=rand(35,H-35),tier=0){const data=type==='enemy'?enemyData[tier]:hazardData[type];items.push({type,tier,x,y,baseY:y,r:data?.r||25,hp:data?.hp||0,max:data?.hp||0,phase:rand(0,6),hitCooldown:0,tracking:false,verticalSpeed:0,id:++nextItemId,collided:false})}
 function spawn(){
  const z=zone(),r=Math.random(),x=W+rand(40,90);
@@ -75,18 +113,41 @@ function spawn(){
   const enemy=items[items.length-1];
   // Some enemies gently track the player's lane; others swim straight.
   enemy.tracking=Math.random()<Math.min(.55,.24+stage*.018);
-  enemy.verticalSpeed=rand(24,42);
+  enemy.verticalSpeed=rand(17,29);
  }
 }
-function reset(){musicWasPlaying=false;musicCountdown=0;musicStep=0;level=1;stage=1;stageTime=0;hp=maxHP();mp=0;exp=0;fish={x:185,y:250,tx:185,ty:250};items=[];particles=[];projectiles=[];floats=[];nextItemId=0;edgeStayTime=0;spawnCount=0;spawnTimer=1.5;attackTimer=0;invuln=0;clock=0;toastTime=0;transitionTime=0;paused=false;ended=false;document.getElementById('pauseBtn').textContent='⏸ 暂停';toast.classList.remove('show');makeItem('potion',560,160);makeItem('rock',750,340);makeItem('enemy',965,240,0);hud();makeQuestion();last=performance.now()}
+let hpBarTimer=0;
+function reset(){hpBarTimer=0;learningPause=false;clearMathTimers();mathHelp.replaceChildren();mathHelp.classList.remove("visible");musicWasPlaying=false;musicCountdown=0;musicStep=0;level=1;stage=1;stageTime=0;hp=maxHP();mp=0;exp=0;fish={x:185,y:250,tx:185,ty:250};items=[];particles=[];projectiles=[];floats=[];nextItemId=0;edgeStayTime=0;spawnCount=0;spawnTimer=1.5;attackTimer=0;invuln=0;clock=0;toastTime=0;transitionTime=0;paused=false;ended=false;document.getElementById('pauseBtn').textContent='⏸ 暂停';toast.classList.remove('show');makeItem('potion',560,160);makeItem('rock',750,340);makeItem('enemy',965,240,0);hud();makeQuestion();last=performance.now()}
 function restart(){reset()}
-function togglePause(){if(ended)return;paused=!paused;document.getElementById('pauseBtn').textContent=paused?'▶ 继续':'⏸ 暂停';if(paused){toast.textContent='⏸ 已暂停';toast.classList.add('show')}else{toast.classList.remove('show');toastTime=0}last=performance.now()}
-function aim(e){if(paused||ended)return;const r=cv.getBoundingClientRect();fish.tx=clamp((e.clientX-r.left)/r.width*W,50,W-65);fish.ty=clamp((e.clientY-r.top)/r.height*H,45,H-55)}
-sea.addEventListener('pointerdown',e=>{if(paused||ended)return;aim(e);beep(480,.09);sea.setPointerCapture(e.pointerId)});
+function togglePause(){if(ended||learningPause)return;paused=!paused;document.getElementById('pauseBtn').textContent=paused?'▶ 继续':'⏸ 暂停';if(paused){toast.textContent='⏸ 已暂停';toast.classList.add('show')}else{toast.classList.remove('show');toastTime=0}last=performance.now()}
+// The shelter occupies the lower-left corner. Entering it protects the fish,
+// but disables attacks; players must leave to earn EXP.
+const HOUSE={x:12,y:355,w:174,h:132};
+// Safe passage above the cottage roof; incoming objects begin steering well before it.
+const HOUSE_CLEARANCE=20;
+function steerAroundHouse(o,dt){
+ const roof=HOUSE.y-14, safeY=roof-o.r-HOUSE_CLEARANCE;
+ const approach=HOUSE.x+HOUSE.w+300;
+ if(o.x>approach||o.x<HOUSE.x-o.r-35)return;
+ const displayOffset=(o.type==='enemy'||o.type==='vortex')?13:0;
+ const target=Math.min(o.y,safeY-displayOffset);
+ if(o.y>target){
+   // Smooth vertical diversion; the longer lead-in prevents abrupt jumps.
+   o.y=Math.max(target,o.y-320*dt);
+   o.baseY=Math.min(o.baseY,o.y);
+   o.detouring=true;
+ }
+ if(o.detouring){o.tracking=false;o.y=Math.min(o.y,target);}
+}
+
+function inHouse(x=fish.x,y=fish.y){return x>=HOUSE.x+12&&x<=HOUSE.x+HOUSE.w-12&&y>=HOUSE.y+18&&y<=HOUSE.y+HOUSE.h-8}
+function houseOverlap(o,y){const cx=clamp(o.x,HOUSE.x,HOUSE.x+HOUSE.w),cy=clamp(y,HOUSE.y,HOUSE.y+HOUSE.h);return Math.hypot(o.x-cx,y-cy)<o.r+5}
+function aim(e){if(paused||learningPause||ended)return;const r=cv.getBoundingClientRect();fish.tx=clamp((e.clientX-r.left)/r.width*W,50,W-65);fish.ty=clamp((e.clientY-r.top)/r.height*H,45,H-55)}
+sea.addEventListener('pointerdown',e=>{if(paused||learningPause||ended)return;aim(e);beep(480,.09);sea.setPointerCapture(e.pointerId)});
 sea.addEventListener('pointermove',e=>{if(e.buttons)aim(e)});
 function tick(dt){
- if(paused||ended)return;
- clock+=dt;stageTime+=dt;attackTimer=Math.max(0,attackTimer-dt);
+ if(paused||ended||learningPause)return;
+ clock+=dt;hpBarTimer=Math.max(0,hpBarTimer-dt);stageTime+=dt;attackTimer=Math.max(0,attackTimer-dt);
  invuln=Math.max(0,invuln-dt);transitionTime=Math.max(0,transitionTime-dt);
  toastTime-=dt;if(toastTime<=0)toast.classList.remove('show');
  if(stageTime>=40){stageTime-=40;stage++;transitionTime=2.4;say('🌊 第 '+stage+' 关 · '+names[zone()]);beep(1000,.25);hud()}
@@ -94,20 +155,21 @@ function tick(dt){
  // Staying near either boundary is no longer a permanent safe strategy.
  edgeStayTime=(fish.y<90||fish.y>H-90)?edgeStayTime+dt:Math.max(0,edgeStayTime-dt*2);
  spawnTimer-=dt;if(spawnTimer<=0){spawn();spawnTimer=rand(1,1.7)*Math.max(.65,1-stage*.02)}
- const speed=125+Math.min(stage,25)*8;
+ const speed=80; // Fixed speed across all stages
  for(let i=items.length-1;i>=0;i--){
-  const o=items[i];o.x-=speed*dt*(o.type==='enemy'?1.12:1);o.phase+=dt*2.2;
-  if(o.type==='enemy'&&o.tracking&&o.x>fish.x+75){
+  const o=items[i];o.x-=speed*dt*(o.type==='enemy'?1.08:1);o.phase+=dt*2.2;
+  if(o.type==='enemy'&&o.tracking&&!o.detouring&&o.x>fish.x+75){
    const delta=fish.y-o.y;
    o.y+=clamp(delta,-o.verticalSpeed*dt,o.verticalSpeed*dt);
    o.y=clamp(o.y,38,H-38);
   }
   // Whirlpools drift vertically, making fixed-height hiding less effective.
   if(o.type==='vortex')o.y=clamp(o.baseY+Math.sin(o.phase*.65)*32,38,H-38);
+  steerAroundHouse(o,dt);
   if(o.x< -80){items.splice(i,1);continue}
   const y=o.y+(o.type==='enemy'||o.type==='vortex'?Math.sin(o.phase)*13:0);
-  if(o.type==='vortex'&&Math.hypot(o.x-fish.x,y-fish.y)<115)fish.y+=(y-fish.y)*dt*.35;
-  if(Math.hypot(o.x-fish.x,y-fish.y)<o.r+23){
+  if(o.type==='vortex'&&!inHouse()&&Math.hypot(o.x-fish.x,y-fish.y)<115)fish.y+=(y-fish.y)*dt*.35;
+  if(!inHouse()&&Math.hypot(o.x-fish.x,y-fish.y)<o.r+23){
    if(o.type==='potion'){items.splice(i,1);potion();continue}
    if(o.type==='enemy'){
     if(!o.collided&&invuln<=0){o.collided=true;hurt(enemyData[o.tier].damage)}
@@ -128,7 +190,7 @@ function tick(dt){
    projectiles.splice(i,1);
   }else{p.x+=dx/d*travel;p.y+=dy/d*travel}
  }
- if(mp>0&&attackTimer<=0){
+ if(mp>0&&!inHouse()&&attackTimer<=0){
   const targeted=new Set(projectiles.map(p=>p.targetId));
   const enemy=items.filter(o=>o.type==='enemy'&&o.hp>0&&Math.hypot(o.x-fish.x,(o.y+Math.sin(o.phase)*13)-fish.y)<=ATTACK_RADIUS&&!targeted.has(o.id)).sort((a,b)=>Math.hypot(a.x-fish.x,a.y-fish.y)-Math.hypot(b.x-fish.x,b.y-fish.y))[0];
   if(enemy){mp--;attackTimer=.55;projectiles.push({x:fish.x+32,y:fish.y,targetId:enemy.id,damage:atk()});beep(1080,.13);hud()}
@@ -142,13 +204,82 @@ if(z<=1){ctx.fillStyle='#ffffff2e';for(let j=0;j<5;j++){ctx.beginPath();ctx.move
 ctx.fillStyle=theme[2];ctx.beginPath();ctx.moveTo(0,H-40);for(let x=0;x<=W;x+=20)ctx.lineTo(x,H-40+Math.sin(x/90+clock*.2)*10);ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.fill();
 for(let i=0;i<15;i++){let x=(i*137-clock*14+2000)%1100-50,y=45+(i*97)%390;ctx.strokeStyle='#ffffff7a';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,3+i%5,0,Math.PI*2);ctx.stroke()}
 const decor=[['🌿','🐚'],['🪸','🐚'],['💎','🪨'],['🪨','🌀'],['🌋','🪨'],['✨','🏛️']][z];for(let i=0;i<7;i++){let x=(i*179-clock*24+3000)%1200-100;emoji(decor[i%2],x,H-42+(i%2)*12,48)}}
-function draw(){background();for(const o of items){const y=o.y+(o.type==='enemy'||o.type==='vortex'?Math.sin(o.phase)*13:0);let icon=o.type==='potion'?'🧪':o.type==='enemy'?enemyData[o.tier].icon:hazardData[o.type].icon;emoji(icon,o.x,y,o.type==='enemy'?o.r*2:50,o.type==='enemy');if(o.type==='enemy'){const w=66;ctx.fillStyle='#263e55';ctx.fillRect(o.x-w/2,y-o.r-27,w,10);ctx.fillStyle=o.hp/o.max>.4?'#6ee58a':'#f67d79';ctx.fillRect(o.x-w/2+2,y-o.r-25,(w-4)*o.hp/o.max,6)}}
+function drawHouse(){
+ const h=HOUSE,z=zone();ctx.save();
+ const walls=['#ffe3aa','#f4d4b8','#9fc8eb','#8cc9c8','#aa8390','#9a8ccf'];
+ const roofs=['#ec8b87','#ff9d79','#699bd6','#487b9b','#80546b','#7355a9'];
+ const trims=['#936b61','#a46b65','#5476a9','#407986','#dc9468','#a58ada'];
+ ctx.shadowColor='#18344e66';ctx.shadowBlur=14;
+ ctx.fillStyle=walls[z];ctx.strokeStyle=trims[z];ctx.lineWidth=5;
+ ctx.beginPath();ctx.roundRect(h.x+9,h.y+30,h.w-18,h.h-30,18);ctx.fill();ctx.stroke();
+ ctx.shadowBlur=0;ctx.fillStyle=roofs[z];ctx.strokeStyle=trims[z];ctx.lineWidth=5;
+ ctx.beginPath();ctx.moveTo(h.x-4,h.y+41);ctx.lineTo(h.x+h.w/2,h.y-13);ctx.lineTo(h.x+h.w+4,h.y+41);ctx.closePath();ctx.fill();ctx.stroke();
+ // Environmental architectural accents change with the sea region.
+ const emblems=['🌿','🪸','💎','🌀','🌋','✨'];
+ emoji(emblems[z],h.x+h.w-27,h.y+78,29);
+ ctx.fillStyle='#d4f1fc';ctx.strokeStyle=trims[z];ctx.lineWidth=3;
+ ctx.beginPath();ctx.arc(h.x+h.w-37,h.y+67,15,0,Math.PI*2);ctx.fill();ctx.stroke();
+ ctx.fillStyle='#497b98';ctx.beginPath();ctx.roundRect(h.x+25,h.y+60,76,h.h-60,[36,36,5,5]);ctx.fill();
+ // Plaque is fixed to the roof and uses a solid contrasting background.
+ ctx.shadowColor='#16334c55';ctx.shadowBlur=6;
+ ctx.fillStyle='#fff6d9';ctx.strokeStyle=trims[z];ctx.lineWidth=3;
+ ctx.beginPath();ctx.roundRect(h.x+7,h.y-31,h.w-14,34,8);ctx.fill();ctx.stroke();
+ ctx.shadowBlur=0;ctx.fillStyle='#324d63';ctx.font='bold 20px system-ui,"Noto Sans CJK SC",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+ ctx.fillText('安心刷题屋',h.x+h.w/2,h.y-14);
+ ctx.restore();
+}
+
+// Player-local HP and MP status bars remain visible at all times.
+function drawPlayerBars(){
+ const showHP=true,showMP=true;
+ if(!showHP&&!showMP)return;
+ const width=94,height=11,gap=7,top=fish.y-(showHP&&showMP?105:88);
+ const left=clamp(fish.x-width/2,6,W-width-6);
+ function bar(y,ratio,fill,label){
+  ctx.save();ctx.fillStyle='rgba(15,38,60,.75)';ctx.beginPath();ctx.roundRect(left-2,y-2,width+4,height+4,6);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.35)';ctx.fillRect(left,y,width,height);
+  ctx.fillStyle=fill;ctx.fillRect(left,y,Math.max(0,width*clamp(ratio,0,1)),height);
+  ctx.textAlign='right';ctx.textBaseline='middle';ctx.font='bold 15px system-ui';ctx.lineWidth=3;
+  ctx.strokeStyle='#15364e';ctx.strokeText(label,left-7,y+height/2);ctx.fillStyle='white';ctx.fillText(label,left-7,y+height/2);
+  ctx.restore();
+ }
+ let y=clamp(top,17,H-55);
+ if(showHP){bar(y,hp/maxHP(),'#f36b80','❤️');y+=height+gap}
+ if(showMP)bar(y,mp/maxMP(),'#a774ed','✨');
+}
+
+function draw(){background();for(const o of items){const y=o.y+(o.type==='enemy'||o.type==='vortex'?Math.sin(o.phase)*13:0);let icon=o.type==='potion'?'🧪':o.type==='enemy'?enemyData[o.tier].icon:hazardData[o.type].icon;emoji(icon,o.x,y,o.type==='enemy'?o.r*2:50,false); /* Enemy emoji naturally faces left. */if(o.type==='enemy'){const w=66;ctx.fillStyle='#263e55';ctx.fillRect(o.x-w/2,y-o.r-27,w,10);ctx.fillStyle=o.hp/o.max>.4?'#6ee58a':'#f67d79';ctx.fillRect(o.x-w/2+2,y-o.r-25,(w-4)*o.hp/o.max,6)}}
+drawHouse();
 for(const p of projectiles){ctx.save();ctx.shadowColor='#f1a3ff';ctx.shadowBlur=24;ctx.fillStyle='#bb64fa';ctx.beginPath();ctx.arc(p.x,p.y,13,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(p.x,p.y,6,0,Math.PI*2);ctx.fill();ctx.restore()}
 for(const p of particles){ctx.save();ctx.strokeStyle='#d88bff';ctx.lineWidth=7;ctx.shadowColor='#ffffff';ctx.shadowBlur=10;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.tx,p.ty);ctx.stroke();ctx.restore();emoji('✨',p.tx,p.ty,30)}
 // Draw the real attack boundary. It exactly matches the targeting distance.
-if(mp>0&&!ended){ctx.save();ctx.beginPath();ctx.arc(fish.x,fish.y,ATTACK_RADIUS,0,Math.PI*2);ctx.fillStyle='rgba(180,110,255,0.055)';ctx.fill();ctx.strokeStyle='rgba(182,102,255,0.78)';ctx.lineWidth=3;ctx.shadowColor='#b76aff';ctx.shadowBlur=12;ctx.stroke();ctx.restore()}
+if(mp>0&&!ended&&!inHouse()){
+ const fullMP=mp>=maxMP();
+ // Keep the attack radius unchanged. Full MP adds a softly pulsing translucent fill.
+ const pulse=(Math.sin(clock*Math.PI*4)+1)/2; // Two gentle pulses per second.
+ ctx.save();
+ ctx.beginPath();ctx.arc(fish.x,fish.y,ATTACK_RADIUS,0,Math.PI*2);
+ ctx.fillStyle=fullMP?`rgba(181,105,255,${(0.10+0.08*pulse).toFixed(3)})`:'rgba(180,110,255,0.055)';
+ ctx.fill();
+ ctx.strokeStyle=fullMP?`rgba(204,137,255,${(0.68+0.30*pulse).toFixed(3)})`:'rgba(182,102,255,0.78)';
+ ctx.lineWidth=fullMP?3.5:3;
+ ctx.shadowColor='#b76aff';ctx.shadowBlur=fullMP?14+10*pulse:12;
+ ctx.stroke();ctx.restore();
+ if(fullMP){
+  for(let j=0;j<7;j++){
+   const angle=clock*0.75+j*Math.PI*2/7;
+   const r=ATTACK_RADIUS-8+4*Math.sin(clock*2+j);
+   const sx=fish.x+Math.cos(angle)*r,sy=fish.y+Math.sin(angle)*r;
+   ctx.save();ctx.globalAlpha=0.35+0.55*(0.5+0.5*Math.sin(clock*5+j*2));
+   ctx.fillStyle='#f5e3ff';ctx.shadowColor='#fff';ctx.shadowBlur=9;
+   ctx.beginPath();ctx.arc(sx,sy,2.2+1.3*pulse,0,Math.PI*2);ctx.fill();ctx.restore();
+  }
+ }
+}
+if(inHouse()){ctx.save();ctx.fillStyle='#ffffff';ctx.strokeStyle='#497b98';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(HOUSE.x+14,HOUSE.y-85,158,30,12);ctx.fill();ctx.stroke();ctx.fillStyle='#327b72';ctx.textAlign='center';ctx.font='bold 17px system-ui';ctx.fillText('🛡️ 安全学习中',HOUSE.x+93,HOUSE.y-64);ctx.restore()}
 if(invuln===0||Math.floor(clock*13)%2===0){if(mp>0){for(let j=0;j<3;j++){let a=clock*2+j*Math.PI*2/3;emoji('✨',fish.x+Math.cos(a)*49,fish.y+Math.sin(a)*43,18)}}
 const form=forms[Math.min(5,Math.floor((level-1)/3))];emoji(form,fish.x,fish.y+Math.sin(clock*6)*3,level>=10?76:64,true);if(mp>0)emoji('⚡',fish.x,fish.y-47,23)}
+drawPlayerBars();
 for(const f of floats){ctx.save();ctx.globalAlpha=Math.min(1,f.t*2);ctx.textAlign='center';ctx.font='900 30px system-ui';ctx.lineWidth=5;ctx.strokeStyle='white';ctx.strokeText(f.text,f.x,f.y);ctx.fillStyle=f.color;ctx.fillText(f.text,f.x,f.y);ctx.restore()}
 if(transitionTime>0){ctx.save();ctx.globalAlpha=Math.min(1,transitionTime);emoji('🌟',fish.x+60,fish.y-45,35);emoji('✨',fish.x-55,fish.y+45,33);ctx.restore()}
 if(ended){ctx.fillStyle='#15283caa';ctx.fillRect(0,0,W,H);ctx.fillStyle='white';ctx.textAlign='center';ctx.font='bold 60px system-ui';ctx.fillText('游戏结束',W/2,H/2)}}
