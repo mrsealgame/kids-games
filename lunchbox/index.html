@@ -1,0 +1,118 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>🍱 Lunchbox Prototype</title><style>
+:root{--bg:#f7f0df;--ink:#645b4e;--wood:#c8a987;--accent:#789b80}*{box-sizing:border-box}body{margin:0;background:linear-gradient(#faf4e8,#e9ddc9);font-family:system-ui,-apple-system,sans-serif;color:var(--ink)}button{font:inherit;cursor:pointer;border:0;border-radius:14px;padding:10px 14px;background:#e7d6b9;color:var(--ink)}button:disabled{opacity:.45;cursor:not-allowed}.app{max-width:1100px;margin:auto;padding:16px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.brand{font-size:27px;font-weight:850}.shiba{font-size:38px}.card{background:#fffaf0cc;border:2px solid #e5d5bc;border-radius:23px;padding:16px;box-shadow:0 6px 15px #74604713}.stats{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.progress{width:170px;height:13px;background:#e5ddc9;border-radius:20px;overflow:hidden}.progress i{display:block;height:100%;width:0;background:#91ae8b;transition:width .3s}.grid{display:grid;grid-template-columns:1.1fr 1fr;gap:16px;margin-top:16px}.title{font-size:20px;font-weight:800;margin:0 0 12px}.queue{display:flex;gap:12px;align-items:center}.customer{font-size:45px}.pill{display:inline-block;background:#eee4d0;border-radius:18px;padding:5px 10px;font-size:13px}.conveyor{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:12px 0}.ingredient{min-height:100px;background:#e8ddc9;border:2px dashed #cbb89b;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;touch-action:none;user-select:none}.ingredient b{font-size:34px}.ingredient,.compartment.filled{border-color:var(--food-color,#cbb89b);border-style:solid;border-width:3px}.compartment.filled{background:var(--food-bg,#f5ebd7)}.ingredient small{font-size:12px}.pot{min-height:165px;border:5px solid #a6a09a;border-radius:42px;background:radial-gradient(circle,#e2d4ba,#bbb0a0);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center}.cookProgress{width:76%;height:12px;border-radius:20px;background:#eee7d9;overflow:hidden;border:1px solid #b5a995}.cookProgress i{display:block;width:0;height:100%;background:#86a98b;transition:width .06s linear}.pot .food{font-size:36px;min-height:45px}.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.lunchbox{border:10px solid #b9a17c;background:#e8d9ba;border-radius:26px;min-height:185px;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:9px}.compartment{border:2px solid #b6a182;border-radius:13px;background:#f5ebd7;display:grid;place-items:center;text-align:center;font-size:36px;min-height:65px}.compartment span{display:block;font-size:12px}.nutrition{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}.nut{display:flex;flex-direction:column;align-items:center;font-size:11px;gap:3px}.nut i{font-style:normal;display:grid;place-items:center;width:43px;height:43px;border-radius:50%;background:#ded0b6;filter:grayscale(1);opacity:.55;font-size:23px}.nut.on i{filter:none;opacity:1;background:#e5ebd4}.log{margin-top:16px;min-height:48px}.footer{font-size:12px;opacity:.75;margin-top:14px}.overlay{position:fixed;inset:0;background:#423c35a9;display:none;place-items:center;padding:20px}.overlay.show{display:grid}.modal{max-width:420px;width:100%;background:#fff7e8;border-radius:24px;padding:28px;text-align:center}.big{font-size:54px}.dragGhost{position:fixed;pointer-events:none;font-size:46px;z-index:20;transform:translate(-50%,-50%)}@media(max-width:720px){.grid{grid-template-columns:1fr}.ingredient{min-height:80px}.ingredient b{font-size:28px}.app{padding:10px}.brand{font-size:22px}}
+ .cookSlots{display:grid;grid-template-columns:repeat(2,minmax(110px,1fr));gap:12px;width:90%;margin:12px auto}
+.cookSlot{background:#f7eddb;border:2px solid #b9ab94;border-radius:16px;padding:10px;min-height:100px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:7px}
+.cookSlot .icon{font-size:34px}.cookSlot small{font-size:11px}
+.cookSlot .cookProgress{width:100%}
+.ingredient{cursor:grab}.ingredient:active{cursor:grabbing}
+.pot.dragTarget{outline:4px solid #89a98a;outline-offset:4px}
+.ignite{margin:12px auto 4px;display:block;padding:11px 38px;border:0;border-radius:14px;background:#bc8966;color:white;font-size:17px;font-weight:700;cursor:pointer}.ignite:disabled{opacity:.4;cursor:default}.readyFood{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid #8fac82;border-radius:14px;background:#fff4df;min-width:100px;padding:8px;touch-action:none;cursor:grab}.readyFood b{font-size:30px}.readyFood small{font-size:11px}.compartment.dropTarget{outline:4px solid #7ca580;outline-offset:-4px}#stopFire{background:#829c89}</style></head><body><main class="app"><header class="top card"><div><div class="brand"><span class="shiba">🐕</span> Lunchbox <span style="font-size:12px">Prototype</span></div><div>暖暖的午餐，从这里开始 ☀️</div></div><div class="stats"><b id="level">Day 1 · Level 1</b><span>🪙 <b id="coins">0</b></span><span>⭐ <b id="score">0</b></span><div><small>今日目标 <span id="goal">0/3</span></small><div class="progress"><i id="bar"></i></div></div></div></header><div class="grid"><section class="card"><h2 class="title">👩‍🍳 厨房 · Kitchen</h2><div class="conveyor" id="conveyor"></div><div class="pot" id="pot"><div style="font-size:14px">🍲 Cooking Pot</div><div class="cookSlots" id="cookSlots"></div><button id="ignite" class="ignite" disabled>▶ 开火</button><button id="stopFire" class="ignite" disabled>■ 停火</button><div id="readyTray" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px"></div></div></section><section class="card"><h2 class="title">🍱 装盒 · Lunchbox</h2><div class="queue"><div class="customer" id="avatar">👧</div><div><b id="customer">小悠</b><div id="request">想要一份营养均衡的午餐！</div><span class="pill" id="order">订单 1 / 3</span></div></div><div style="height:14px"></div><div class="lunchbox" id="box"><div class="compartment" id="c0"></div><div class="compartment" id="c1"></div><div class="compartment" id="c2"></div><div class="compartment" id="c3"></div></div><div class="nutrition" id="nutrition"></div><div class="controls"><button id="serve" disabled>🎁 交付饭盒</button></div></section></div></main><div class="overlay" id="overlay"><div class="modal"><div class="big" id="modalIcon">🎉</div><h2 id="modalTitle">今日完成！</h2><p id="modalText"></p><button id="next">开启下一天 →</button></div></div><script>
+const foods=[{e:'🍚',n:'米饭',t:'Grain'},{e:'🍞',n:'面包',t:'Grain'},{e:'🥦',n:'西兰花',t:'Vegetable'},{e:'🥕',n:'胡萝卜',t:'Vegetable'},{e:'🍄',n:'蘑菇',t:'Vegetable'},{e:'🍗',n:'鸡肉',t:'Protein'},{e:'🥚',n:'鸡蛋',t:'Protein'},{e:'🥩',n:'牛肉',t:'Protein'},{e:'🍎',n:'苹果',t:'Fruit'},{e:'🍓',n:'草莓',t:'Fruit'},{e:'🧀',n:'奶酪',t:'Dairy'},{e:'🥛',n:'牛奶',t:'Dairy'}];const palette={Grain:['#c7a46d','#f4e7cd'],Vegetable:['#8fac82','#e5efde'],Protein:['#c68f82','#f2dfd8'],Fruit:['#d7a0a1','#f6e3e3'],Dairy:['#9aaec4','#e4ebf2']};const cookedIcons={'🍚':'🍙','🍞':'🥪','🥦':'🥦','🥕':'🥕','🍄':'🍄','🍗':'🍖','🥚':'🍳','🥩':'🍖','🍎':'🥧','🍓':'🍰','🧀':'🫕','🥛':'🥣'};function cook(f){return {...f,e:cookedIcons[f.e]||f.e,n:({'米饭':'饭团','面包':'三明治','西兰花':'熟西兰花','胡萝卜':'熟胡萝卜','蘑菇':'炒蘑菇','鸡肉':'熟鸡肉','鸡蛋':'煎蛋','牛肉':'熟牛肉','苹果':'苹果派','草莓':'草莓甜点','奶酪':'融化奶酪','牛奶':'热牛奶'})[f.n]||f.n}}const recipes=[
+ {a:['鸡蛋','米饭'],e:'🍳',n:'蛋炒饭'},
+ {a:['鸡肉','米饭'],e:'🍛',n:'鸡肉饭'},
+ {a:['牛肉','米饭'],e:'🍛',n:'牛肉盖饭'},
+ {a:['鸡蛋','面包'],e:'🥪',n:'鸡蛋三明治'},
+ {a:['鸡肉','面包'],e:'🥪',n:'鸡肉三明治'},
+ {a:['奶酪','面包'],e:'🥪',n:'芝士三明治'},
+ {a:['鸡蛋','奶酪'],e:'🧀',n:'芝士蛋'},
+ {a:['鸡蛋','西兰花'],e:'🥘',n:'西兰花炒蛋'},
+ {a:['鸡蛋','蘑菇'],e:'🍳',n:'蘑菇炒蛋'},
+ {a:['牛肉','蘑菇'],e:'🥘',n:'蘑菇炒牛肉'},
+ {a:['鸡肉','胡萝卜'],e:'🍲',n:'胡萝卜炖鸡'},
+ {a:['牛肉','胡萝卜'],e:'🍲',n:'胡萝卜炖牛肉'},
+ {a:['草莓','牛奶'],e:'🥤',n:'草莓奶昔'},
+ {a:['苹果','牛奶'],e:'🥤',n:'苹果奶昔'}
+];
+function cookBatch(jobs){
+ if(jobs.length===2){
+  const names=jobs.map(x=>x.food.n);
+  const r=recipes.find(r=>r.a.every(n=>names.includes(n)));
+  if(r)return [{e:r.e,n:r.n,t:jobs[0].food.t,types:[...new Set(jobs.map(x=>x.food.t))],combined:true}];
+ }
+ return jobs.map(j=>cook(j.food));
+}
+function foodTypes(f){return f.types||[f.t]}
+const cats=[['Grain','🌾','谷物'],['Vegetable','🌿','蔬菜'],['Protein','🍖','蛋白质'],['Fruit','🍎','水果'],['Dairy','🥛','乳制品'],['Deliciousness','✨','美味']];const customers=[['👧','小悠','想要一份营养均衡的午餐！'],['👨','阿明','今天想吃得丰盛一点！'],['👩','小晴','来点美味的能量午餐吧！'],['🧑','阿乐','希望吃完元气满满！']];let day=1,done=0,score=0,coins=0,slots=[],pot=[],active=[null,null],cooking=false,fireStart=0,fireFrame=0,ready=[];const $=id=>document.getElementById(id),randomFood=()=>foods[Math.floor(Math.random()*foods.length)];function log(s){}function draw(){
+$('level').textContent=`Day ${day} · Level ${day}`;$('score').textContent=score;$('coins').textContent=coins;$('goal').textContent=`${done}/3`;$('bar').style.width=done/3*100+'%';$('conveyor').innerHTML='';
+slots.forEach((f,i)=>{let b=document.createElement('button');b.className='ingredient';b.style.setProperty('--food-color',palette[f.t][0]);b.style.setProperty('--food-bg',palette[f.t][1]);b.innerHTML=`<b>${f.e}</b><small>${f.n}</small>`;b.disabled=cooking||pot.length+ready.length+active.filter(Boolean).length>=4;b.addEventListener('click',()=>take(i));b.addEventListener('pointerdown',ev=>drag(ev,i,f));$('conveyor').append(b)});
+$('cookSlots').innerHTML=active.map((job,i)=>`<div class="cookSlot"><div class="icon">${job?job.food.e:'＋'}</div><small>${job?(cooking?(job.progress>=100?'快停火！':'烹饪中…'):'待烹饪'):'空位'}</small><div class="cookProgress"><i style="width:${job?job.progress:0}%"></i></div></div>`).join('');
+$('serve').disabled=cooking||active.some(Boolean)||ready.length>0||pot.length===0;$('ignite').disabled=cooking||!active.some(Boolean);$('stopFire').disabled=!cooking;
+[0,1,2,3].forEach(i=>{let f=pot[i];$('c'+i).classList.toggle('filled',!!f);$('c'+i).style.setProperty('--food-color',f?palette[f.t][0]:'#b6a182');$('c'+i).style.setProperty('--food-bg',f?palette[f.t][1]:'#f5ebd7');$('c'+i).innerHTML=f?`${f.e}<span>${f.n}</span>`:''});
+$('readyTray').innerHTML='';
+ready.forEach((f,i)=>{
+ const el=document.createElement('div');el.className='readyFood';el.style.borderColor=palette[f.t][0];
+ el.innerHTML=`<b>${f.e}</b><small>${f.n}</small>`;
+ el.addEventListener('pointerdown',ev=>dragReady(ev,i,f));
+ $('readyTray').append(el);
+});
+let types=[...new Set(pot.filter(Boolean).flatMap(foodTypes))];if(['Grain','Vegetable','Protein'].every(t=>types.includes(t)))types.push('Deliciousness');
+$('nutrition').innerHTML=cats.map(([t,e,n])=>`<div class="nut ${types.includes(t)?'on':''}"><i>${e}</i>${n}</div>`).join('');
+let c=customers[(done+(day-1))%customers.length];$('avatar').textContent=c[0];$('customer').textContent=c[1];$('request').textContent=c[2];$('order').textContent=`订单 ${done+1} / 3`;
+}
+function take(i){
+ if(cooking)return;
+ const free=active.findIndex(j=>!j);
+ if(free<0||pot.length+active.filter(Boolean).length>=4)return;
+ const f=slots[i];slots.splice(i,1);slots.push(randomFood());
+ active[free]={food:f,progress:0};draw();
+}
+$('ignite').onclick=()=>{
+ if(cooking||!active.some(Boolean))return;
+ cooking=true;fireStart=performance.now();draw();
+ function tick(now){
+  if(!cooking)return;
+  const progress=Math.min(100,(now-fireStart)/10);
+  active.forEach((job,i)=>{
+   if(!job)return;
+   job.progress=progress;
+   const bar=$('cookSlots').children[i]?.querySelector('i');
+   if(bar){bar.style.width=progress+'%';bar.style.background=now-fireStart>1600?'#a85e4c':'#86a98b'}
+  });
+  fireFrame=requestAnimationFrame(tick);
+ }
+ fireFrame=requestAnimationFrame(tick);
+};
+$('stopFire').onclick=()=>{
+ if(!cooking)return;
+ const elapsed=performance.now()-fireStart;
+ cooking=false;cancelAnimationFrame(fireFrame);
+ const jobs=active.filter(Boolean);
+ if(elapsed>=1800){
+  ready.push({e:'🖤',n:'焦掉的食物',t:'Protein',types:[],burnt:true});
+ }else if(elapsed>=1000){
+  ready.push(...cookBatch(jobs));
+ }else{
+  // 停火过早：食材保持在锅里，可以重新开火。
+  active.forEach(job=>{if(job)job.progress=0});
+  draw();return;
+ }
+ active=[null,null];draw();
+};
+function dragReady(ev,i,f){
+ if(ev.pointerType==='mouse'&&ev.button!==0)return;
+ const x=ev.clientX,y=ev.clientY;let ghost=null,moved=false;
+ const move=e=>{
+  if(!moved&&Math.hypot(e.clientX-x,e.clientY-y)<8)return;
+  moved=true;
+  if(!ghost){ghost=document.createElement('div');ghost.className='dragGhost';ghost.textContent=f.e;document.body.append(ghost)}
+  ghost.style.left=e.clientX+'px';ghost.style.top=e.clientY+'px';
+  document.querySelectorAll('.compartment').forEach(el=>{
+   const r=el.getBoundingClientRect();el.classList.toggle('dropTarget',e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom&&!pot[Number(el.id.slice(1))]);
+  });
+ };
+ const up=e=>{
+  window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);
+  ghost?.remove();document.querySelectorAll('.compartment').forEach(el=>el.classList.remove('dropTarget'));
+  if(!moved)return;
+  const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('.compartment');
+  if(!target)return;
+  const idx=Number(target.id.slice(1));
+  if(pot[idx]||ready[i]!==f)return;
+  pot[idx]=f;ready.splice(i,1);draw();
+ };
+ window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);
+}
+function drag(ev,i,f){if(ev.pointerType==='mouse'&&ev.button!==0)return;let x=ev.clientX,y=ev.clientY,ghost=null,moved=false;const move=e=>{if(Math.hypot(e.clientX-x,e.clientY-y)<9&&!moved)return;moved=true;if(!ghost){ghost=document.createElement('div');ghost.className='dragGhost';ghost.textContent=f.e;document.body.append(ghost)}ghost.style.left=e.clientX+'px';ghost.style.top=e.clientY+'px'};const up=e=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);ghost?.remove();if(moved&&(()=>{let r=$('pot').getBoundingClientRect();return e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom})()){ev.currentTarget?.addEventListener('click',e=>e.stopImmediatePropagation(),{once:true,capture:true});take(i)}};window.addEventListener('pointermove',move);window.addEventListener('pointerup',up)}
+$('serve').onclick=()=>{if(cooking||active.some(Boolean)||ready.length||!pot.some(Boolean))return;let types=[...new Set(pot.filter(Boolean).flatMap(foodTypes))];let balanced=['Grain','Vegetable','Protein'].every(t=>types.includes(t));let pts=10+(balanced?5:0)+Math.max(0,types.length-1)*2-(pot.some(f=>f?.burnt)?5:0);score+=pts;coins+=balanced?8:5;done++;log(`${balanced?'🌟 营养均衡！Balance Bonus +5！':'🍱 午餐送达！'} 获得 ${pts} 分，顾客开心地吃起饭盒。`);pot=[];ready=[];draw();if(done===3){$('modalIcon').textContent='🎉';$('modalTitle').textContent=`Day ${day} 完成！`;$('modalText').textContent=`今天服务了 3 位顾客。累计 ${score} 分、${coins} 金币。明天继续让大家吃得开心吧！`;$('overlay').classList.add('show')}};
+$('next').onclick=()=>{day++;done=0;$('overlay').classList.remove('show');draw();log('☀️ 新的一天开始！新的顾客正在排队。')};slots=Array.from({length:4},randomFood);draw();
+</script></body></html>
