@@ -12,75 +12,198 @@
 .map-end{text-align:right;font-size:12px;font-weight:900;color:#9b7846;margin:4px 6px 14px}
 #next:disabled{opacity:.55;cursor:wait}
 @media(max-width:540px){.map-icon{width:25px;height:25px;font-size:13px;border-width:2px}.map-node{font-size:11px}.map-road{padding-left:3px;padding-right:3px}}
-</style></head><body><div id="app"><header><span>🐣 Chicken Math</span><span id="levelTitle">Level 1 · Spring Meadow</span><span class="collection" id="collection" title="Egg Collection">🥚 0/10</span></header><div class="game"><aside class="side"><div style="font-size:35px">🐥</div><strong id="count">0 / 10</strong><div class="track"><div class="fill" id="fill"></div></div><span>GOAL <b id="goal">10</b></span></aside><div class="farm" id="farm"><div class="hill"></div><div class="deco" style="left:8%;top:52%">🌳</div><div class="deco" style="right:9%;top:59%">🌼</div><div class="deco" style="left:25%;bottom:8%">🌷</div><div class="coop" id="coop"><div class="roof" id="roof"></div><div class="house" id="house"><div class="door"></div></div></div></div></div><div class="controls"><div class="equation" id="question">2 + 3 = ?</div><div class="choices" id="choices" aria-label="Choose an answer"></div></div><div class="msg" id="msg">Choose the correct answer!</div><div id="helpPanel" class="help-panel" hidden><div id="helpTitle"></div><div id="helpVisual" class="help-visual"></div><button id="retry" type="button">Try Again ↻</button></div></div><div id="overlay"><div class="modal" id="modal"></div></div><script>
-const levels=[['Spring Meadow',10,'#ffdc60','#c56849','🥚','🌳','🌷'],['Flower Garden',12,'#ffe09c','#dd8eaa','🩷','🌸','🌺'],['Sunflower Farm',15,'#ffbe48','#e3a44d','💛','🌻','🌻'],['Apple Orchard',18,'#b98b5b','#c44d42','💚','🌳','🍎'],['Lakeside Farm',20,'#f7f6e9','#5796ba','💙','🌊','🪷'],['Autumn Forest',22,'#e9cb80','#b67c4e','🥚','🍄','🍁'],['Pumpkin Farm',25,'#f9a64d','#da7c38','🧡','🎃','🌾'],['Snowy Farm',28,'#fffaf4','#8db4ce','🤍','❄️','⛄'],['Cherry Blossom Farm',30,'#f4b8d0','#cc86a5','🩷','🌸','🌸'],['Rainbow Farm',35,'#d8c8f9','#9b83d4','🌈','🌈','✨']];
-let level=Math.min(+(localStorage.getItem('chickenLevel')||0),9),collected=+(localStorage.getItem('chickenEggs')||0),count=0,answer=0,busy=false,chicks=[],lastQuestion='',audio;const $=id=>document.getElementById(id),farm=$('farm');
+ .map-road{display:grid!important;grid-template-columns:repeat(10,minmax(0,1fr));row-gap:22px;padding:35px 5px 35px!important;min-height:170px!important}.map-road:before{display:none}.map-node{min-width:0}.map-traveler{top:0}.map-icon{width:29px;height:29px;font-size:15px}.modal{max-width:760px} .wolf-visitor{position:absolute;bottom:10%;left:-95px;font-size:66px;z-index:200;transition:left .8s ease-in-out;pointer-events:none;filter:drop-shadow(0 4px 4px #0004)}.wolf-visitor.wolf-in{left:25%}.wolf-visitor.wolf-out{left:110%}.chick.wolf-escape{transition:transform .65s ease-in,opacity .65s!important;transform:translateX(220px) scale(.3)!important;opacity:0!important} .demo-number{font-size:58px;font-weight:1000;color:#d07c35;min-height:75px}.demo-equation{font-size:46px;font-weight:1000;color:#61412b;min-height:65px}.demo-bird.leaving{transition:transform 2.2s ease-in-out,opacity 2.2s!important;transform:translateX(650px) translateY(-25px)!important;opacity:0!important}.coyote-art{display:block;width:175px;height:110px;filter:drop-shadow(2px 5px 3px #0003)}.wolf-visitor{font-size:initial!important;width:175px!important;height:110px!important} 
+/* Winding connected farm adventure map */
+.map-road{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:18px 5px!important;padding:24px 14px 28px!important;min-height:430px!important;background:linear-gradient(145deg,#b9df9b,#f5e4b4 52%,#b2d8a4)!important;overflow:visible!important;isolation:isolate}
+.map-path{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:visible}
+.map-path path{fill:none;stroke:#fff9e9;stroke-width:15;stroke-linecap:round;stroke-linejoin:round}
+.map-path path.route-line{stroke:#c99459;stroke-width:5;stroke-dasharray:8 7}
+.map-node{z-index:2;min-height:75px;justify-content:center;gap:3px!important}
+.map-icon{width:48px!important;height:48px!important;font-size:24px!important;box-shadow:0 3px 0 #8c9e6b55;position:relative}
+.map-node.done .map-icon,.map-node.current .map-icon{background:var(--chicken-color,#ffe084)!important}
+.map-node.done{opacity:1!important}
+.map-node .farm-name{font-size:9px;line-height:1.15;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.map-traveler{z-index:4;top:0;left:0;transition:left 1.05s ease-in-out,top 1.05s ease-in-out;font-size:30px;transform:translate(-50%,-115%)}
+@media(max-width:540px){.map-road{padding:18px 5px 20px!important;gap:12px 2px!important;min-height:380px!important}.map-icon{width:35px!important;height:35px!important;font-size:18px!important}.map-node{min-height:65px}.map-node .farm-name{display:none}.modal{padding:12px!important}.map-heading{font-size:17px}}
+</style></head><body><div id="app"><header><span>🐣 Chicken Math</span><span id="levelTitle">Level 1 · Spring Meadow</span></header><div class="game"><aside class="side"><div style="font-size:35px">🐥</div><strong id="count">0 / 10</strong><div class="track"><div class="fill" id="fill"></div></div><span>GOAL <b id="goal">10</b></span></aside><div class="farm" id="farm"><div class="hill"></div><div class="deco" style="left:8%;top:52%">🌳</div><div class="deco" style="right:9%;top:59%">🌼</div><div class="deco" style="left:25%;bottom:8%">🌷</div><div class="coop" id="coop"><div class="roof" id="roof"></div><div class="house" id="house"><div class="door"></div></div></div></div></div><div class="controls"><div class="equation" id="question">2 + 3 = ?</div><div class="choices" id="choices" aria-label="Choose an answer"></div></div><div class="msg" id="msg">Choose the correct answer!</div><div id="helpPanel" class="help-panel" hidden><div id="helpTitle"></div><div id="helpVisual" class="help-visual"></div><button id="retry" type="button">Try Again ↻</button></div></div><div id="overlay"><div class="modal" id="modal"></div></div><script>
+const levels=[["Spring Meadow", 10, "#ffdc60", "#c56849", "", "🌳", "🌷"], ["Flower Garden", 12, "#ffe09c", "#dd8eaa", "", "🌸", "🌼"], ["Sunflower Farm", 12, "#ffbe48", "#e3a44d", "", "🌻", "🍀"], ["Apple Orchard", 15, "#b98b5b", "#c44d42", "", "🍎", "🌺"], ["Butterfly Field", 15, "#f5d77b", "#a48ad1", "", "🦋", "🌷"], ["Lakeside Farm", 18, "#f7f6e9", "#5796ba", "", "🌊", "🌼"], ["Autumn Forest", 18, "#e9cb80", "#b67c4e", "", "🍁", "🍀"], ["Pumpkin Patch", 20, "#f9a64d", "#da7c38", "", "🎃", "🌺"], ["Pine Woods", 18, "#d7b87d", "#8d664c", "", "🌲", "🌷"], ["Golden Prairie", 20, "#f2d56b", "#c9a13c", "", "🌾", "🌼"], ["Mushroom Valley", 22, "#e5d8ae", "#ad795a", "", "🍄", "🍀"], ["Windmill Farm", 22, "#f0c785", "#d27d55", "", "🌻", "🌺"], ["Cherry Grove", 24, "#f4b8d0", "#cc86a5", "", "🌸", "🌷"], ["Mountain Farm", 22, "#e7d1ad", "#698f88", "", "⛰️", "🌼"], ["Lavender Field", 24, "#d9c8f4", "#a78ac2", "", "🪻", "🍀"], ["Snowy Farm", 25, "#fffaf4", "#8db4ce", "", "❄️", "🌺"], ["Crystal Lake", 24, "#d8f0f3", "#73abc7", "", "💎", "🌷"], ["Starlight Meadow", 12, "#e3d3ff", "#7d75b4", "", "⭐", "🌼"], ["Rainbow Hills", 20, "#d8c8f9", "#9b83d4", "", "🌈", "🍀"], ["Grand Farm", 25, "#ffda8a", "#d89b48", "", "🏆", "🌺"]];
+let level=Math.min(+(localStorage.getItem('chickenLevel')||0),19),collected=+(localStorage.getItem('chickenCompletedLevels')||0),count=0,answer=0,busy=false,chicks=[],lastQuestion='',audio;const $=id=>document.getElementById(id),farm=$('farm');
 function sound(freq=650,dur=.12,type='sine',volume=.045){try{audio??=new (window.AudioContext||window.webkitAudioContext)();let o=audio.createOscillator(),g=audio.createGain();o.type=type;o.frequency.setValueAtTime(freq,audio.currentTime);o.frequency.exponentialRampToValueAtTime(Math.max(90,freq*.68),audio.currentTime+dur);g.gain.setValueAtTime(volume,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+dur);o.connect(g).connect(audio.destination);o.start();o.stop(audio.currentTime+dur)}catch(e){}}
-function cluck(){sound(430,.18,'sawtooth',.025);setTimeout(()=>sound(350,.2,'triangle',.035),150);setTimeout(()=>sound(400,.17,'triangle',.025),320)}
-function chirp(){sound(1000+Math.random()*400,.09,'sine',.027);setTimeout(()=>sound(1250+Math.random()*300,.08,'sine',.023),65)}
-function update(){let goal=levels[level][1];$('count').textContent=count+' / '+goal;$('goal').textContent=goal;$('fill').style.height=Math.min(100,count/goal*100)+'%';$('collection').textContent='🥚 '+collected+'/10'}
+// Offline sound engine: no network files, works on GitHub Pages and local HTML.
+let audioReady=false;
+function getAudio(){
+ try{audio??=new (window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();audioReady=true;return audio}catch(e){return null}
+}
+function animalTone(ctx,at,freq,duration,volume,wave='sine',endFreq=freq){
+ const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type=wave;
+ osc.frequency.setValueAtTime(freq,at);osc.frequency.exponentialRampToValueAtTime(Math.max(40,endFreq),at+duration);
+ gain.gain.setValueAtTime(.0001,at);gain.gain.exponentialRampToValueAtTime(volume,at+.018);
+ gain.gain.exponentialRampToValueAtTime(.0001,at+duration);
+ osc.connect(gain);gain.connect(ctx.destination);osc.start(at);osc.stop(at+duration+.01);
+}
+function playAnimal(kind){
+ const ctx=getAudio();if(!ctx)return;
+ const t=ctx.currentTime+.02;
+ if(kind==='chick'){
+  for(let i=0;i<3;i++){const f=1650+Math.random()*250;animalTone(ctx,t+i*.19,f,.14,.16,'sine',f*.65);animalTone(ctx,t+i*.19,f*.52,.12,.045,'triangle',f*.45)}
+ }else if(kind==='hen'){
+  // Low, throaty, irregular clucks: filtered breath/noise plus a soft pitch bend.
+  // Avoid the loud sawtooth notes that made the previous hen sound electronic.
+  const pulses=[0,.23,.43,.76,.98];
+  for(const [i,offset] of pulses.entries()){
+   const duration=.105+(i%3)*.026, at=t+offset;
+   const length=Math.ceil(ctx.sampleRate*duration),buffer=ctx.createBuffer(1,length,ctx.sampleRate);
+   const data=buffer.getChannelData(0);
+   for(let j=0;j<length;j++)data[j]=(Math.random()*2-1);
+   const noise=ctx.createBufferSource();noise.buffer=buffer;
+   const filter=ctx.createBiquadFilter();filter.type='bandpass';filter.frequency.value=620+(i%2)*90;filter.Q.value=.8;
+   const gain=ctx.createGain();gain.gain.setValueAtTime(.0001,at);
+   gain.gain.exponentialRampToValueAtTime(.10,at+.018);
+   gain.gain.exponentialRampToValueAtTime(.0001,at+duration);
+   noise.connect(filter).connect(gain).connect(ctx.destination);noise.start(at);noise.stop(at+duration);
+   animalTone(ctx,at,235+(i%2)*35,duration,.028,'triangle',155);
+  }
+ }else if(kind==='coyote'){
+  animalTone(ctx,t,230,1.65,.14,'sawtooth',470);
+  animalTone(ctx,t+.28,460,1.55,.14,'triangle',320);
+  animalTone(ctx,t+.35,235,1.4,.055,'sine',160);
+ }
+ const status=document.getElementById('soundStatus');if(status)status.textContent='🔊 '+kind+' sound played (offline synthesized)';
+}
+function cluck(){playAnimal('hen')}
+function chirp(){playAnimal('chick')}
+// Ambient farm calls: only hatched chicks and grown hens vocalize.
+// One bird at a time keeps a large farm from becoming too noisy.
+let nextFarmCall=performance.now()+3000;
+function scheduleFarmCall(){
+ const now=performance.now();
+ if(now<nextFarmCall)return;
+ nextFarmCall=now+2400+Math.random()*3400;
+ if(document.hidden || $('overlay').style.display==='flex' || !$('helpPanel').hidden)return;
+ const birds=chicks.filter(c=>c.el.isConnected && (c.stage==='chick'||c.stage==='hen'));
+ if(!birds.length)return;
+ const bird=birds[Math.floor(Math.random()*birds.length)];
+ if(bird.stage==='hen')cluck();else chirp();
+}
+setInterval(scheduleFarmCall,500);
+function update(){let goal=levels[level][1];$('count').textContent=count+' / '+goal;$('goal').textContent=goal;$('fill').style.height=Math.min(100,count/goal*100)+'%'}
 function renderChoices(){const values=new Set([answer]);while(values.size<3){let n=Math.max(0,Math.min(10,answer+(Math.floor(Math.random()*9)-4)));values.add(n)}const arr=[...values].sort(()=>Math.random()-.5);$('choices').innerHTML='';for(const n of arr){const button=document.createElement('button');button.className='choice';button.textContent=n;button.onclick=()=>submit(n);$('choices').appendChild(button)}}
 let mistakes=0,currentA=0,currentB=0,currentOp="+",needsCorrectClick=false;
+const questionPools=[
+ [[2,1],[3,1]],[[3,1],[4,1],[5,1]],[[3,2],[4,2],[5,2]],[[5,3],[4,2],[3,1],[5,2]],[[5,4],[4,3],[5,2],[5,1]],
+ [[6,1],[6,2],[5,1]],[[6,3],[5,2],[6,2]],[[7,1],[7,2],[7,3]],[[7,4],[7,5],[6,3]],[[7,6],[6,4],[5,3],[7,3]],
+ [[8,1],[8,2],[8,3]],[[8,4],[8,5],[7,3]],[[9,1],[9,2],[9,3]],[[9,4],[9,5],[9,6]],[[9,7],[8,6],[7,5],[9,4]],
+ [[10,1],[10,2],[10,3]],[[10,4],[10,5],[10,6]],[[10,7],[10,8],[10,9]],[[10,0],[8,8],[9,0],[7,7],[8,3]],[[10,7],[9,6],[8,5],[7,4],[10,2],[9,3],[8,2]]
+];
 function newQuestion(){
  mistakes=0;needsCorrectClick=false;
- let a,b,key,max=level<2?5:10;
- for(let i=0;i<120;i++){
-   a=1+Math.floor(Math.random()*max);
-   b=Math.floor(Math.random()*(a+1));
-   if(level<2 && b===0)continue;
-   if(level>=2 && level<5 && b===0)continue;
-   if(level>=5 && level<8 && (a-b>5 || b<2))continue;
-   if(level>=8 && a<7)continue;
-   key=`${a}-${b}`;if(key!==lastQuestion)break;
- }
- lastQuestion=key;currentA=a;currentB=b;currentOp='-';answer=a-b;
+ const pool=questionPools[level];
+ let available=pool.filter(([a,b])=>`${a}-${b}`!==lastQuestion);
+ if(!available.length)available=pool;
+ const [a,b]=available[Math.floor(Math.random()*available.length)];
+ lastQuestion=`${a}-${b}`;currentA=a;currentB=b;currentOp='-';answer=a-b;
  $('question').textContent=`${a} − ${b} = ?`;
  renderChoices();$('msg').textContent='Choose the correct answer!';
 }
-function makeChick(){let el=document.createElement('div');el.className='chick egg-stage';let col=levels[level][2];if(level===9)col=['#f4c3d9','#d9d3ff','#ffe8a3','#bce9d5'][Math.floor(Math.random()*4)];el.style.setProperty('--feather',col);el.innerHTML='<span class="egg-shell">🥚</span><span class="tuft">⌃</span><span class="body"></span><span class="eyes">••</span><span class="beak"></span><span class="feet">⌁</span><span class="hen-comb"></span><span class="hen-tail">◕</span>';farm.appendChild(el);let w=farm.clientWidth,h=farm.clientHeight;let x=20,y=h*.7;let best=-1;for(let k=0;k<120;k++){let cx=12+Math.random()*Math.max(1,w-85),cy=h*.60+Math.random()*Math.max(1,h*.32-60);let distance=chicks.reduce((m,c)=>Math.min(m,Math.hypot(cx-c.x,cy-c.y)),Infinity);if(distance>best){best=distance;x=cx;y=cy}if(distance>=70)break;}let chick={el,x,y,tx:x,ty:y,speed:24+Math.random()*28,wait:0,stage:'egg'};chicks.push(chick);moveTarget(chick);setTimeout(()=>{if(!el.isConnected)return;chick.stage='chick';el.classList.remove('egg-stage');el.classList.add('hatched');chirp();setTimeout(()=>{if(!el.isConnected)return;chick.stage='hen';el.classList.add('grown');cluck()},5200+Math.random()*2200)},2100+Math.random()*1400);return chick}
+function makeChick(){let el=document.createElement('div');el.className='chick egg-stage';let col=levels[level][2];if(level===19)col=['#f4c3d9','#d9d3ff','#ffe8a3','#bce9d5'][Math.floor(Math.random()*4)];el.style.setProperty('--feather',col);el.innerHTML='<span class="egg-shell">🥚</span><span class="tuft">⌃</span><span class="body"></span><span class="eyes">••</span><span class="beak"></span><span class="feet">⌁</span><span class="hen-comb"></span><span class="hen-tail">◕</span>';farm.appendChild(el);let w=farm.clientWidth,h=farm.clientHeight;let x=20,y=h*.7;let best=-1;for(let k=0;k<120;k++){let cx=12+Math.random()*Math.max(1,w-85),cy=h*.60+Math.random()*Math.max(1,h*.32-60);let distance=chicks.reduce((m,c)=>Math.min(m,Math.hypot(cx-c.x,cy-c.y)),Infinity);if(distance>best){best=distance;x=cx;y=cy}if(distance>=70)break;}let chick={el,x,y,tx:x,ty:y,speed:24+Math.random()*28,wait:0,stage:'egg'};chicks.push(chick);moveTarget(chick);setTimeout(()=>{if(!el.isConnected)return;chick.stage='chick';el.classList.remove('egg-stage');el.classList.add('hatched');chirp();setTimeout(()=>{if(!el.isConnected)return;chick.stage='hen';el.classList.add('grown');cluck()},5200+Math.random()*2200)},2100+Math.random()*1400);return chick}
 function moveTarget(c){let w=farm.clientWidth,h=farm.clientHeight;for(let k=0;k<25;k++){let x=20+Math.random()*(w-75),y=h*.62+Math.random()*(h*.34-42);if(Math.abs(x-w*.5)<110&&y<h*.73)continue;c.tx=x;c.ty=y;break}}
 let last=performance.now();function animate(now){let dt=Math.min(.05,(now-last)/1000);last=now;if(!$('overlay').style.display.includes('flex') && $('helpPanel').hidden)for(let c of chicks){if(c.stage==='egg'){c.el.style.left=c.x+'px';c.el.style.top=c.y+'px';continue}if(c.wait>0){c.wait-=dt;c.el.classList.remove('walk')}else{let dx=c.tx-c.x,dy=c.ty-c.y,d=Math.hypot(dx,dy);if(d<5){c.wait=.5+Math.random()*2.5;moveTarget(c)}else{c.x+=dx/d*c.speed*dt;c.y+=dy/d*c.speed*dt;c.el.classList.add('walk');c.el.classList.toggle('flip',dx<0)}}c.el.style.left=c.x+'px';c.el.style.top=c.y+'px';c.el.style.zIndex=5+Math.floor(c.y/10)}requestAnimationFrame(animate)}requestAnimationFrame(animate);
+let demoSequence=0;
 function showMathHelp(){
+ const sequence=++demoSequence;
  const panel=$('helpPanel'),title=$('helpTitle'),visual=$('helpVisual');
- panel.hidden=false;document.querySelectorAll('.choice').forEach(b=>b.disabled=true);
- title.textContent='🐥 Watch the chicks and count!';
- const total=currentOp==='+'?currentA+currentB:currentA;
- visual.innerHTML='<div class="chicken-demo"><div id="demoLabel">First, there are '+currentA+' chicks</div><div class="demo-birds">'+Array.from({length:total},(_,i)=>'<span class="demo-bird" style="--i:'+i+'">🐥</span>').join('')+'</div><div id="demoQuestion"></div></div>';
- const birds=[...visual.querySelectorAll('.demo-bird')],label=visual.querySelector('#demoLabel'),question=visual.querySelector('#demoQuestion');
- $('retry').disabled=true;$('retry').textContent='Watch the animation first';
- if(currentOp==='−'||currentOp==='-'){
-   setTimeout(()=>{if(!panel.hidden){label.textContent=currentB+' chicks walk away...';birds.slice(-currentB).forEach((b,i)=>{setTimeout(()=>b.classList.add('leaving'),i*250)})}},1100);
-   setTimeout(()=>{if(!panel.hidden){question.textContent='How many chicks are left?';$('retry').disabled=false;$('retry').textContent='Try Again ↻'}},2600+currentB*250);
- }else{
-   birds.slice(currentA).forEach(b=>b.classList.add('not-arrived'));
-   setTimeout(()=>{if(!panel.hidden){label.textContent='Here come '+currentB+' more chicks...';birds.slice(currentA).forEach((b,i)=>setTimeout(()=>b.classList.remove('not-arrived'),i*230))}},1100);
-   setTimeout(()=>{if(!panel.hidden){question.textContent='How many chicks are there now?';$('retry').disabled=false;$('retry').textContent='Try Again ↻'}},2600+currentB*230);
- }
- $('msg').textContent='⏸ 看完小鸡演示，再Choose an answer！';
+ panel.hidden=false;
+ document.querySelectorAll('.choice').forEach(b=>b.disabled=true);
+ title.textContent='🐥 Watch the chicks!';
+ visual.innerHTML='<div class="chicken-demo"><div id="demoLabel">Look at the chicks!</div><div class="demo-birds">'+Array.from({length:currentA},()=>'<span class="demo-bird">🐥</span>').join('')+'</div><div id="demoNumber" class="demo-number"></div><div id="demoQuestion" class="demo-equation"></div></div>';
+ const birds=[...visual.querySelectorAll('.demo-bird')];
+ const label=visual.querySelector('#demoLabel'),number=visual.querySelector('#demoNumber'),question=visual.querySelector('#demoQuestion');
+ const later=(delay,fn)=>setTimeout(()=>{if(sequence===demoSequence&&!panel.hidden)fn()},delay);
+ $('retry').disabled=true;$('retry').textContent='Watch the chicks first';
+ later(1100,()=>{number.textContent=String(currentA);label.textContent=currentA+' chicks';});
+ later(2400,()=>{
+   number.textContent='';
+   label.textContent=currentB+' chick'+(currentB===1?'':'s')+' walk away...';
+   birds.slice(currentA-currentB).forEach((bird,i)=>later(i*650,()=>bird.classList.add('leaving')));
+ });
+ later(3700+currentB*650,()=>{
+   number.textContent='';
+   question.textContent=currentA+' − '+currentB+' = ?';
+   label.textContent='How many chicks are left?';
+ });
+ later(4700+currentB*650,()=>{
+   $('retry').disabled=false;$('retry').textContent='Choose Again ↻';
+ });
+ $('msg').textContent='Watch the subtraction, then choose an answer!';
 }
 $('retry').onclick=()=>{ $('helpPanel').hidden=true;document.querySelectorAll('.choice').forEach(b=>b.disabled=false);if(mistakes>=3){needsCorrectClick=true;$('msg').textContent='Please choose the correct answer: '+answer+' ✓'}else $('msg').textContent='Try again! 🐣'};
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));async function submit(selected){if(busy || !$('helpPanel').hidden)return;if(selected!==answer){mistakes++;sound(320,.16);showMathHelp();return}busy=true;document.querySelectorAll('.choice').forEach(b=>b.disabled=true);$('msg').textContent=`Great job! +${answer} eggs 🥚`;sound(740,.14);await sleep(250);$('coop').classList.add('open');await sleep(320);for(let i=0;i<answer;i++){makeChick();count++;update();await sleep(180)}if(answer===0){$('msg').textContent='Great job! Zero eggs this time! 🐣';chirp();await sleep(600)}$('coop').classList.remove('open');await sleep(450);if(count>=levels[level][1])victory();else{newQuestion();busy=false}}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function wolfHowl(){playAnimal('coyote')}
+async function wolfAttack(){
+ const available=chicks.filter(c=>c.el.isConnected),taken=Math.min(available.length,1+Math.floor(Math.random()*3));
+ const wolf=document.createElement('div');wolf.className='wolf-visitor';wolf.innerHTML=`<svg class='coyote-art' viewBox='0 0 220 130' xmlns='http://www.w3.org/2000/svg' aria-label='Full body coyote'><path d='M54 63 Q23 38 6 42 Q21 59 45 78Z' fill='#997353' stroke='#604c3d' stroke-width='3'/><path d='M48 60 Q80 41 141 56 L170 73 139 91 66 90Z' fill='#b58a60' stroke='#604c3d' stroke-width='3'/><path d='M67 85 L63 119 76 119 84 87 M121 85 L125 119 139 119 140 82' fill='#8b674c' stroke='#604c3d' stroke-width='3'/><path d='M142 63 L151 26 170 44 185 24 195 61 210 76 187 86 167 79 153 92Z' fill='#b58a60' stroke='#604c3d' stroke-width='3'/><path d='M151 27 L158 50 169 43 M186 26 L185 51 194 57' fill='#d9a98b'/><path d='M183 73 L208 76 193 85 178 83Z' fill='#e8d8c1'/><circle cx='182' cy='63' r='3.5' fill='#27241f'/><circle cx='207' cy='76' r='3.2' fill='#27241f'/><path d='M70 65 Q108 54 145 71' fill='none' stroke='#e4c8a1' stroke-width='7'/></svg>`;farm.appendChild(wolf);
+ document.querySelectorAll('.choice').forEach(b=>b.disabled=true);
+ $('msg').textContent='A coyote is coming!';wolfHowl();
+ await sleep(650);wolf.classList.add('wolf-in');await sleep(850);
+ // No graphic violence: selected chickens run away and leave the farm.
+ const victims=available.sort(()=>Math.random()-.5).slice(0,taken);
+ victims.forEach(c=>{c.el.classList.add('wolf-escape');});
+ await sleep(700);victims.forEach(c=>{c.el.remove();let i=chicks.indexOf(c);if(i>=0)chicks.splice(i,1)});
+ count=Math.max(0,count-victims.length);update();
+ $('msg').textContent=taken?`The coyote took ${taken} chicken${taken===1?'':'s'}! Try again.`:'The coyote found no chickens! Try again.';
+ wolf.classList.remove('wolf-in');wolf.classList.add('wolf-out');await sleep(550);wolf.remove();
+}
+async function submit(selected){if(busy || !$('helpPanel').hidden)return;if(selected!==answer){busy=true;mistakes++;await wolfAttack();showMathHelp();busy=false;return}busy=true;document.querySelectorAll('.choice').forEach(b=>b.disabled=true);$('msg').textContent=`Great job! +${answer} eggs 🥚`;sound(740,.14);await sleep(250);$('coop').classList.add('open');await sleep(320);for(let i=0;i<answer;i++){makeChick();count++;update();await sleep(180)}if(answer===0){$('msg').textContent='Great job! Zero eggs this time! 🐣';chirp();await sleep(600)}$('coop').classList.remove('open');await sleep(450);if(count>=levels[level][1])victory();else{newQuestion();busy=false}}
 function mapMarkup(){
  let nodes=levels.map((l,i)=>{
-   let status=i<level?'done':i===level?'current':'locked';
-   return `<div class="map-node ${status}" data-stop="${i}"><span class="map-icon">${i<level?'⭐':i===level?'🏁':'🥚'}</span><span>${i+1}</span></div>`;
+   const done=i<=level || i<collected;
+   const status=done?'done':i===level+1?'current':'locked';
+   // Alternate direction on each row, like a winding board-game trail.
+   const row=Math.floor(i/5), col=i%5;
+   const order=row*5+(row%2===0?col:4-col);
+   const color=l[2];
+   return `<div class="map-node ${status}" data-stop="${i}" style="grid-row:${row+1};grid-column:${(row%2===0?col:4-col)+1};--chicken-color:${color}"><span class="map-icon">${done?'🐔':i===level+1?'🐾':'🌱'}</span><span>${i+1}</span><span class="farm-name">${l[0]}</span></div>`;
  }).join('');
- return `<div class="map-heading">🗺️ Farm Adventure Map</div><div class="map-road">${nodes}<div class="map-traveler" id="mapTraveler">🐔</div></div><div class="map-end">🏆 FINISH LINE</div>`;
+ return `<div class="map-heading">🗺️ 20-Farm Adventure</div><div class="map-road"><svg class="map-path" id="mapPath" aria-hidden="true"></svg>${nodes}<div class="map-traveler" id="mapTraveler">🐔</div></div><div class="map-end">🏆 FINISH LINE · LEVEL 20</div>`;
 }
+function drawMapPath(road){
+ const svg=road.querySelector('#mapPath');if(!svg)return;
+ const nodes=[...road.querySelectorAll('[data-stop]')].sort((a,b)=>Number(a.dataset.stop)-Number(b.dataset.stop));
+ const bounds=road.getBoundingClientRect();
+ const points=nodes.map(n=>{const r=n.querySelector('.map-icon').getBoundingClientRect();return {x:r.left+r.width/2-bounds.left,y:r.top+r.height/2-bounds.top}});
+ const d=points.map((p,i)=>(i?'L':'M')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
+ svg.setAttribute('viewBox',`0 0 ${road.clientWidth} ${road.clientHeight}`);
+ svg.innerHTML=`<path d="${d}"/><path class="route-line" d="${d}"/>`;
+ return points;
+}
+
 function victory(){
  collected=Math.max(collected,level+1);
- localStorage.setItem('chickenEggs',collected);
- localStorage.setItem('chickenLevel',Math.min(level+1,9));
+ localStorage.setItem('chickenCompletedLevels',collected);
+ localStorage.setItem('chickenLevel',Math.min(level+1,19));
  update();
  for(let i=0;i<5;i++)setTimeout(()=>sound(520+i*125,.2,'sine',.07),i*130);
- $('modal').innerHTML=`<h1>🎉 Level Complete!</h1><div class="egg">${levels[level][4]}</div><h2>You earned a special egg!</h2><p>🥚 ${count} / ${levels[level][1]} eggs</p>${mapMarkup()}<button id="next" disabled>${level===9?'🏆 Adventure Complete! Play Again':'🐔 Travel to Next Farm ➜'}</button>`;
+ $('modal').innerHTML=`<h1>🎉 Level Complete!</h1><h2>🐔 Your farm is growing!</h2><p>🐔 ${count} chickens raised · Goal ${levels[level][1]}</p>${mapMarkup()}<button id="next" disabled>${level===19?'🏆 Adventure Complete! Play Again':'🐔 Travel to Next Farm ➜'}</button>`;
  $('overlay').style.display='flex';
  const traveler=$('mapTraveler'),road=$('modal').querySelector('.map-road');
- function moveTo(i){let node=road.querySelector('[data-stop="'+i+'"]');if(node)traveler.style.left=(node.offsetLeft+node.offsetWidth/2)+'px'}
- requestAnimationFrame(()=>{moveTo(Math.max(0,level-1));setTimeout(()=>{moveTo(level);setTimeout(()=>{$('next').disabled=false},900)},350)});
- $('next').onclick=()=>{level=level===9?0:level+1;start()};
+ function moveTo(i){
+  const node=road.querySelector('[data-stop="'+i+'"]');if(!node)return;
+  const icon=node.querySelector('.map-icon').getBoundingClientRect(),bounds=road.getBoundingClientRect();
+  traveler.style.left=(icon.left+icon.width/2-bounds.left)+'px';
+  traveler.style.top=(icon.top+icon.height/2-bounds.top)+'px';
+ }
+ requestAnimationFrame(()=>{
+  drawMapPath(road);
+  // Start on the farm just completed, then travel to the NEXT numbered farm.
+  traveler.style.transition='none';moveTo(level);
+  requestAnimationFrame(()=>setTimeout(()=>{
+   traveler.style.transition='left 1.15s ease-in-out,top 1.15s ease-in-out';
+   moveTo(Math.min(level+1,19));
+   setTimeout(()=>{$('next').disabled=false},1250);
+  },280));
+ });
+ $('next').onclick=()=>{level=level===19?0:level+1;start()};
 }
-function start(){count=0;busy=false;for(let c of chicks)c.el.remove();chicks=[];$('overlay').style.display='none';$('app').className='theme'+(level+1);$('levelTitle').textContent=`Level ${level+1} · ${levels[level][0]}`;$('roof').style.background=levels[level][3];$('house').style.background=level===7?'#dcecf2':level===6?'#eda36c':level===9?'#d9b6e5':'#e9b579';farm.querySelectorAll('.deco').forEach((e,i)=>e.textContent=levels[level][5+i%2]);update();newQuestion()}
-$('collection').onclick=()=>{let eggs=levels.map((l,i)=>i<collected?l[4]:'🔒').join('　');$('modal').innerHTML=`<h1>🥚 Egg Collection</h1><p style="line-height:2.4;font-size:27px">${eggs}</p><p class="mini">Collected: ${collected} / 10</p><button id="close">Back to Farm</button>`;$('overlay').style.display='flex';$('close').onclick=()=>$('overlay').style.display='none'};
+function start(){nextFarmCall=performance.now()+2500;count=0;busy=false;for(let c of chicks)c.el.remove();chicks=[];$('overlay').style.display='none';$('app').className='theme'+(level+1);$('levelTitle').textContent=`Level ${level+1} · ${levels[level][0]}`;$('roof').style.background=levels[level][3];$('house').style.background=level===15?'#dcecf2':level===7?'#eda36c':level===19?'#d9b6e5':'#e9b579';farm.querySelectorAll('.deco').forEach((e,i)=>e.textContent=levels[level][5+i%2]);update();newQuestion()}
 start();
-</script></body></html>
+</script><div style="font:11px system-ui;color:#777;text-align:center;padding:5px 12px">Offline sound effects generated by the browser. No internet required. These are synthesized approximations, not real animal recordings.</div></body></html>
