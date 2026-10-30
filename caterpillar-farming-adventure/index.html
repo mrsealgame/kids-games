@@ -341,7 +341,7 @@ const nurseryStore=()=>localStorage.setItem(NURSERY_REVIEW_KEY,JSON.stringify(nu
 const nurseryUnlocked=()=>s.unlocked>=3||s.level>=3;
 const nurseryPool=()=>Math.max(1,Math.min(20,s.unlocked));
 function nurseryWant(){nursery.want=Math.floor(Math.random()*nurseryPool());nurseryStore()}
-function nurseryStage(){const m=nursery.meals%12;return m>=9?'🟤':m>=6?'🐛':m>=3?'🐛':'🥚'}
+function nurseryStage(){if(nursery.meals>0&&nursery.meals%12===0&&nursery.phase==='rest')return '🦋';const m=nursery.meals%12;return m>=9?'🟤':m>=6?'🐛':m>=3?'🐛':'🥚'}
 function nurseryRefresh(){
  if(nurseryDrag)return;
  const area=$('ranchUnlock');if(!area)return;
