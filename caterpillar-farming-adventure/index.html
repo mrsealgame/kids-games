@@ -255,6 +255,17 @@ function openReading(){if(s.level>=20||s.step!==2)return;const d=cur();openModal
  });
 }
 window.addEventListener('resize',alignMapPaths);
+const BUTTERFLY_GATES=[5,8,11,14,17];
+const GATE_KEY='caterpillarNurseryButterflyGatesV1';
+let gateData;try{gateData=JSON.parse(localStorage.getItem(GATE_KEY))}catch(e){}
+if(!gateData||typeof gateData!=='object')gateData={done:[],baseline:{}};
+if(!Array.isArray(gateData.done))gateData.done=[];
+if(!gateData.baseline||typeof gateData.baseline!=='object')gateData.baseline={};
+function gateSave(){localStorage.setItem(GATE_KEY,JSON.stringify(gateData))}
+function activeGate(){return BUTTERFLY_GATES.find(g=>s.book.some(b=>b.level===g-1)&&!gateData.done.includes(g))||null}
+function gateBlocked(level){const g=activeGate();return !!g&&level>=g}
+function gateNotice(){const g=activeGate();if(!g)return;openModal('🦋 Nursery Mission',`<p>🔒 Level ${g+1} is locked!</p><p>Raise one NEW caterpillar into a butterfly to unlock Level ${g+1}.</p><p>Go to the nursery on the right and feed your caterpillar.</p><button onclick="closeModal()">Let's go! 🐛</button>`,'nursery-gate')}
+function gateCheck(){const g=activeGate();if(!g)return;const baseline=Number(gateData.baseline[g]??0);if(nursery.meals-baseline<12)return;gateData.done.push(g);gateSave();s.unlocked=Math.max(s.unlocked,g);s.level=g;s.step=0;s.listened=false;s.water=0;delete s.chosen;save();render();openModal('🎉 Level Unlocked!',`<p>🦋 You raised a butterfly!</p><p>Level ${g+1} is now unlocked!</p><button onclick="closeModal()">Continue ▶</button>`,'nursery-gate')}
 function farmMap(){
  const route=[];
  for(let row=0;row<4;row++){
@@ -268,11 +279,11 @@ function farmMap(){
  const cells=Array.from({length:20},(_,gridIndex)=>{
    const row=Math.floor(gridIndex/5),col=gridIndex%5;
    const i=row*5+(row%2===0?col:4-col);
-   return `<button type="button" class="map-node ${i<s.unlocked?'done':i===s.level?'current':''} ${i<=s.unlocked||i===3?'selectable':''}" title="Level ${i+1}${i<s.unlocked?' complete — replay':''}" ${i>s.unlocked&&i!==3?'disabled':''} onclick="selectLevel(${i})">${i<s.unlocked?emojis[i]:`<small>${i+1}</small>`}</button>`;
+   return `<button type="button" class="map-node ${i<s.unlocked?'done':i===s.level?'current':''} ${i<=s.unlocked&&!gateBlocked(i)?'selectable':''}" title="Level ${i+1}${i<s.unlocked?' complete — replay':''}" ${i>s.unlocked||gateBlocked(i)?'disabled':''} onclick="selectLevel(${i})">${i<s.unlocked?emojis[i]:`<small>${i+1}</small>`}</button>`;
  }).join('');
  return `<div class="map" aria-label="20 level connected farm progress"><svg class="map-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${segments}</svg>${cells}</div><div class="map-caption">${Math.min(s.unlocked,20)} / 20 levels completed</div>`;
 }
-function selectLevel(level){if(level<0||level>19||(level>s.unlocked&&level!==3))return;clearTimeout(timer);clearTimeout(catTimer);speechSynthesis?.cancel?.();window.pouringNow=false;s.level=level;s.step=0;s.water=0;delete s.chosen;s.listened=false;waitingForSpeech=false;writingMistakes=0;delete s.pendingSentence;$('heart').classList.remove('show');closeModal();render()}
+function selectLevel(level){if(level<0||level>19||(level>s.unlocked||gateBlocked(level)))return;clearTimeout(timer);clearTimeout(catTimer);speechSynthesis?.cancel?.();window.pouringNow=false;s.level=level;s.step=0;s.water=0;delete s.chosen;s.listened=false;waitingForSpeech=false;writingMistakes=0;delete s.pendingSentence;$('heart').classList.remove('show');closeModal();render()}
 function openLevelMap(){openModal('🗺️ Level Map',farmMap(),'map');requestAnimationFrame(alignMapPaths)}
 
 function feed(){if(s.step!==5)return;if(chosen()!==s.level){
@@ -288,7 +299,7 @@ function feed(){if(s.step!==5)return;if(chosen()!==s.level){
     setTimeout(()=>{$('heart').classList.remove('show');$('heart').textContent='❤️'},1250);
   },800);
   return;
-}s.step=6;render();chomp();$('cat').animate([{transform:'scale(1)'},{transform:'scale(1.22)'},{transform:'scale(1)'}],{duration:700,iterations:2});$('heart').textContent='⭐ LEVEL UP!';$('heart').classList.add('show');const old=s.level;clearTimeout(catTimer);catTimer=setTimeout(()=>{const entry={level:old,item:cur()[0],sentence:cur()[2],writing:s.pendingSentence||cur()[6].replace('___',cur()[7])};const existing=s.book.findIndex(b=>b.level===old);if(existing>=0)s.book[existing]=entry;else{s.book.push(entry);s.book.sort((a,b)=>a.level-b.level)}delete s.pendingSentence;s.level++;s.unlocked=Math.max(s.unlocked,s.level);if(s.level<s.unlocked)s.level=s.unlocked;s.step=0;s.listened=false;waitingForSpeech=false;s.water=0;delete s.chosen;writingMistakes=0;$('heart').classList.remove('show');$('heart').textContent='❤️';render()},2000)}
+}s.step=6;render();chomp();$('cat').animate([{transform:'scale(1)'},{transform:'scale(1.22)'},{transform:'scale(1)'}],{duration:700,iterations:2});$('heart').textContent='⭐ LEVEL UP!';$('heart').classList.add('show');const old=s.level;clearTimeout(catTimer);catTimer=setTimeout(()=>{const entry={level:old,item:cur()[0],sentence:cur()[2],writing:s.pendingSentence||cur()[6].replace('___',cur()[7])};const existing=s.book.findIndex(b=>b.level===old);if(existing>=0)s.book[existing]=entry;else{s.book.push(entry);s.book.sort((a,b)=>a.level-b.level)}delete s.pendingSentence;const gate=BUTTERFLY_GATES.includes(old+1)&&!gateData.done.includes(old+1);if(gate){gateData.baseline[old+1]=nursery.meals;gateSave();s.level=old;s.unlocked=Math.max(s.unlocked,old);s.step=7;}else{s.level++;s.unlocked=Math.max(s.unlocked,s.level);if(s.level<s.unlocked)s.level=s.unlocked;}s.step=0;s.listened=false;waitingForSpeech=false;s.water=0;delete s.chosen;writingMistakes=0;$('heart').classList.remove('show');$('heart').textContent='❤️';save();render();if(gate)gateNotice()},2000)}
 let page=0;function openBook(){page=Math.max(0,s.book.length-1);drawBook()}function drawBook(){const total=s.book.length,b=s.book[page];openModal('📖 My Storybook',`<p>${total} / 20 pages unlocked</p>${b?`<div class="bookpage"><div style="font-size:65px">${emojis[b.level]}</div><b>Page ${page+1}</b><p>${b.sentence}</p><p>✏️ ${b.writing}</p><button onclick="listenStoryPage()">🔊 Listen</button></div>`:'<div class="bookpage">📖</div>'}<button ${page===0?'disabled':''} onclick="page--;drawBook()">◀</button><button ${page>=total-1?'disabled':''} onclick="page++;drawBook()">▶</button>`,'book')}function listenStoryPage(){const entry=s.book[page];if(entry&&entry.sentence)speak(entry.sentence)}function resetGame(){if(!confirm('Reset ALL Caterpillar Farming Adventure progress, storybook, and nursery? This cannot be undone.'))return;for(const key of Object.keys(localStorage)){if(key.startsWith('caterpillarFarming')||key.startsWith('caterpillarNursery'))localStorage.removeItem(key)}location.reload()}
 function inRect(x,y,el){const r=el.getBoundingClientRect();return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom}function dragStart(e){const el=e.target.closest('[data-kind]');if(!el)return;const kind=el.dataset.kind;if((kind==='seed'&&s.step!==1)||(kind==='water'&&(s.step!==2||s.water<1))||(kind==='fruit'&&s.step!==5))return;e.preventDefault();e.stopPropagation();const ghost=document.createElement('div');ghost.className='dragghost';if(kind==='seed'){ghost.classList.add('seedbag-ghost');ghost.innerHTML=el.innerHTML;}else{ghost.textContent=kind==='water'?'🪣':emojis[chosen()];}document.body.appendChild(ghost);drag={id:e.pointerId,kind,ghost,el};el.classList.add('drag-origin-hidden');for(const id of ['crate','bag','well','bucket','plot','fruit','cat'])$(id).classList.remove('next-focus');if(kind!=='fruit')$('plot').classList.add('next-focus');else $('cat').classList.add('next-focus');move(e);el.setPointerCapture(e.pointerId)}function move(e){if(!drag)return;drag.ghost.style.left=e.clientX+'px';drag.ghost.style.top=e.clientY+'px';$('plot').classList.toggle('dropready',drag.kind!=='fruit'&&inRect(e.clientX,e.clientY,$('plot')))}function dragEnd(e){if(!drag||drag.id!==e.pointerId)return;const kind=drag.kind;drag.el.classList.remove('drag-origin-hidden');drag.ghost.remove();drag=null;$('plot').classList.remove('dropready');if(kind==='seed'&&inRect(e.clientX,e.clientY,$('plot')))planted();else if(kind==='water'&&inRect(e.clientX,e.clientY,$('plot')))watered();else if(kind==='fruit'&&inRect(e.clientX,e.clientY,$('cat')))feed();focusNext()}document.addEventListener('pointerdown',dragStart);document.addEventListener('pointermove',e=>{if(drag&&drag.id===e.pointerId)move(e)});document.addEventListener('pointerup',dragEnd);document.addEventListener('pointercancel',()=>{if(drag){drag.el.classList.remove('drag-origin-hidden');drag.ghost.remove();drag=null;$('plot').classList.remove('dropready');focusNext()}});
 function wander(){if(stageIndex(Math.min(s.level,19))===0)return;if(!$('modal').classList.contains('open')&&!drag&&s.step!==6){$('cat').style.left=(5+Math.random()*35)+'%';$('cat').style.top=(54+Math.random()*20)+'%'}}render();if(stageIndex(Math.min(s.level,19))===0){$('cat').style.left='8%';$('cat').style.top='72%';}else setTimeout(wander,200);setInterval(wander,9000);
@@ -330,14 +341,14 @@ const nurseryStore=()=>localStorage.setItem(NURSERY_REVIEW_KEY,JSON.stringify(nu
 const nurseryUnlocked=()=>s.unlocked>=3||s.level>=3;
 const nurseryPool=()=>Math.max(1,Math.min(20,s.unlocked));
 function nurseryWant(){nursery.want=Math.floor(Math.random()*nurseryPool());nurseryStore()}
-function nurseryStage(){return nursery.meals>=12?'🦋':nursery.meals>=9?'🟤':nursery.meals>=6?'🐛':nursery.meals>=3?'🐛':'🥚'}
+function nurseryStage(){const m=nursery.meals%12;return m>=9?'🟤':m>=6?'🐛':m>=3?'🐛':'🥚'}
 function nurseryRefresh(){
  if(nurseryDrag)return;
  const area=$('ranchUnlock');if(!area)return;
  area.style.display=nurseryUnlocked()?'block':'none';if(!nurseryUnlocked())return;
  if(nursery.phase==='rest'&&Date.now()>=nursery.nextHungry){nursery.phase='hungry';nurseryWant()}
  if(nursery.want>=nurseryPool())nursery.want=0;
- const roaming=nursery.meals>=3;
+ const roaming=nursery.meals%12>=3;
  const heart=Date.now()<nurseryHeartUntil?'<div class="nursery-fed-heart">❤️</div>':'';
  const residents=$('ranchResidents');
  const key=`${nurseryStage()}|${nursery.phase}|${nursery.want}|${heart?'heart':''}`;
@@ -372,7 +383,7 @@ function nurseryAnswer(which,value){const it=items[nursery.want];const correct=w
  closeModal();sound('ripe');nursery.phase=which==='listen'?'seed':which==='read'?'sprout':'fruit';nurseryRefresh();
 }
 function nurseryPlant(){if(nursery.phase!=='seed')return;nursery.phase='water';sound('sow');nurseryRefresh()}
-function nurseryFeed(){if(nursery.phase!=='fruit')return;nursery.meals++;nursery.phase='rest';nursery.nextHungry=Date.now()+3000;nurseryHeartUntil=Date.now()+1500;sound('ripe');nurseryRefresh();setTimeout(nurseryRefresh,1600)}
+function nurseryFeed(){if(nursery.phase!=='fruit')return;nursery.meals++;nurseryStore();if(nursery.meals%12===0){nurseryHeartUntil=Date.now()+2500;gateCheck()}nursery.phase='rest';nursery.nextHungry=Date.now()+3000;nurseryHeartUntil=Date.now()+1500;sound('ripe');nurseryRefresh();setTimeout(nurseryRefresh,1600)}
 let nurseryDrag=null;
 document.addEventListener('pointerdown',e=>{let packet=e.target.closest('#nurseryPacket'),fruit=e.target.closest('#nurseryFruit');if(!packet&&!fruit)return;e.preventDefault();e.stopPropagation();const kind=packet?'seed':'fruit';const ghost=document.createElement('div');ghost.className='nursery-drag-ghost';if(kind==='seed'){ghost.classList.add('packet-ghost');ghost.innerHTML=emojis[nursery.want]+'<br><small>'+items[nursery.want][0]+'</small>'}else ghost.textContent=emojis[nursery.want];document.body.appendChild(ghost);nurseryDrag={kind,ghost,id:e.pointerId};try{e.target.setPointerCapture(e.pointerId)}catch(err){}if(packet)packet.style.opacity='.35';ghost.style.left=e.clientX+'px';ghost.style.top=e.clientY+'px';});
 document.addEventListener('pointermove',e=>{if(nurseryDrag&&e.pointerId===nurseryDrag.id){nurseryDrag.ghost.style.left=e.clientX+'px';nurseryDrag.ghost.style.top=e.clientY+'px';const soil=$('nurserySoil');if(soil)soil.classList.toggle('nursery-dropready',nurseryDrag.kind==='seed'&&inRect(e.clientX,e.clientY,soil))}});
