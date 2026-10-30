@@ -323,9 +323,9 @@ function ranchRender(){
   if(!area)return;
   area.style.display=unlocked?'block':'none';
   if(!unlocked)return;
-  if(!ranch.pets.length){ranch.pets.push({meals:0});ranchSave()}if(nurseryCount()<ranch.pets.length)saveNurseryCount(ranch.pets.length)
-  document.getElementById('ranchResidents').innerHTML=ranch.pets.map((p,i)=>
-    `<div class="ranch-pet" style="left:${32+(i%2)*27}%;top:${27+Math.floor(i/2)*25}%"><div>${p.meals>=5?'🦋':p.meals>=1?'🐛':'🥚'}</div><small>${p.meals>=5?'Butterfly':p.meals>=1?'Caterpillar':'Egg'}</small></div>`).join('');
+  if(!ranch.pets.length){ranch.pets.push(newPet());ranchSave()}if(nurseryCount()<ranch.pets.length)saveNurseryCount(ranch.pets.length)
+  /* Resident visuals are managed by nurseryRefresh. */ /* ranch.pets.map((p,i)=>
+    `<div class="ranch-pet" style="left:${32+(i%2)*27}%;top:${27+Math.floor(i/2)*25}%"><div>${p.meals>=5?'🦋':p.meals>=1?'🐛':'🥚'}</div><small>${p.meals>=5?'Butterfly':p.meals>=1?'Caterpillar':'Egg'}</small></div>`).join(''); */
 }
 ranchRender();
 // The level-up transition refreshes the nursery when Level 4 is reached.
@@ -341,21 +341,31 @@ const nurseryStore=()=>localStorage.setItem(NURSERY_REVIEW_KEY,JSON.stringify(nu
 const nurseryUnlocked=()=>s.unlocked>=3||s.level>=3;
 const nurseryPool=()=>Math.max(1,Math.min(20,s.unlocked));
 function nurseryWant(){nursery.want=Math.floor(Math.random()*nurseryPool());nurseryStore()}
-function nurseryStage(){if(nursery.meals>0&&nursery.meals%12===0&&nursery.phase==='rest')return '🦋';const m=nursery.meals%12;return m>=9?'🟤':m>=6?'🐛':m>=3?'🐛':'🥚'}
+// Each nursery resident has its own saved feeding progress and egg color.
+const NURSERY_COLORS=[['white',70],['yellow',10],['blue',8],['pink',6],['purple',4],['rainbow',2]];
+function eggColor(){let r=Math.random()*100;for(const [name,pct] of NURSERY_COLORS){r-=pct;if(r<0)return name}return 'white'}
+function newPet(){return {id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),meals:0,color:eggColor()}}
+if(!ranch.pets.length)ranch.pets=[newPet()];
+ranch.pets=ranch.pets.map(p=>({...p,id:p.id||Date.now().toString(36)+Math.random().toString(36).slice(2,7),color:p.color||'white',meals:Number.isFinite(p.meals)?p.meals:0}));
+if(!nursery.activeId||!ranch.pets.some(p=>p.id===nursery.activeId))nursery.activeId=ranch.pets[0].id;
+const nurseryPet=()=>ranch.pets.find(p=>p.id===nursery.activeId)||ranch.pets[0];
+if(nursery.meals>0&&ranch.pets.length===1&&ranch.pets[0].meals===0)ranch.pets[0].meals=nursery.meals%15;
+function nurseryStageFor(p){const m=p.meals;return m>=12?'🦋':m>=9?'🟤':m>=6?'🐛':m>=3?'🐛':'🥚'}
+function nurseryStage(){return nurseryStageFor(nurseryPet())}
+function chooseNurseryPet(id){if(nursery.phase!=='hungry'&&nursery.phase!=='rest')return;nursery.activeId=id;nurseryStore();nurseryRefresh()}
+function nurseryPetVisual(p){const stage=nurseryStageFor(p);const tint={white:'#f7f4e7',yellow:'#ffe18b',blue:'#91c6f5',pink:'#f6a8cf',purple:'#c4a3f5',rainbow:'linear-gradient(90deg,#f4a4aa,#f6df88,#9ddac7,#a6baf7,#d5a3ee)'}[p.color];return `<span style="display:inline-block;filter:drop-shadow(0 1px 2px #735b4d);background:${tint};border-radius:50%;padding:3px">${stage}</span>`}
+function nurseryResidentsHTML(){return ranch.pets.slice(0,100).map((p,i)=>`<div class="nursery-animal ${p.meals>=3?'roaming':''} ${p.id===nursery.activeId?'nursery-active':''}" style="left:${5+(i%8)*11}%;top:${12+Math.floor(i/8)*18}%;cursor:pointer" onclick="chooseNurseryPet('${p.id}')"><div class="nursery-wish ${p.id===nursery.activeId&&nursery.phase!=='rest'?'':'hidden'} ${nursery.phase==='hungry'?'nursery-wish-ready':'nursery-wish-waiting'}" ${p.id===nursery.activeId&&nursery.phase==='hungry'?'onclick="event.stopPropagation();nurseryAsk(\\'listen\\')"':''}>${emojis[nursery.want]}</div><div class="nursery-pet">${nurseryPetVisual(p)}</div>${p.id===nursery.activeId&&Date.now()<nurseryHeartUntil?'<div class="nursery-fed-heart">❤️</div>':''}</div>`).join('')}
+function nurseryBirth(){const parent=nurseryPet();if(!parent||parent.meals<15)return;const eggs=Math.min(100-ranch.pets.length+1,2+Math.floor(Math.random()*2));for(let i=0;i<eggs;i++)ranch.pets.push(newPet());nursery.phase='flyaway';nursery.nextHungry=Date.now()+3000;nurseryStore();ranchSave();nurseryRefresh();setTimeout(()=>{const index=ranch.pets.findIndex(p=>p.id===parent.id);if(index>=0)ranch.pets.splice(index,1);if(!ranch.pets.length)ranch.pets.push(newPet());nursery.activeId=ranch.pets[0].id;nursery.phase='hungry';nurseryWant();ranchSave();nurseryStore();nurseryRefresh()},3000)}
+
 function nurseryRefresh(){
  if(nurseryDrag)return;
  const area=$('ranchUnlock');if(!area)return;
  area.style.display=nurseryUnlocked()?'block':'none';if(!nurseryUnlocked())return;
  if(nursery.phase==='rest'&&Date.now()>=nursery.nextHungry){nursery.phase='hungry';nurseryWant()}
  if(nursery.want>=nurseryPool())nursery.want=0;
- const roaming=nursery.meals%12>=3;
- const heart=Date.now()<nurseryHeartUntil?'<div class="nursery-fed-heart">❤️</div>':'';
  const residents=$('ranchResidents');
- const key=`${nurseryStage()}|${nursery.phase}|${nursery.want}|${heart?'heart':''}`;
- if(residents.dataset.nurseryKey!==key || !residents.querySelector('.nursery-animal')){
-  residents.innerHTML=`<div class="nursery-animal ${roaming?'roaming':''}"><div class="nursery-wish ${nursery.phase==='rest'?'hidden':''} ${nursery.phase==='hungry'?'nursery-wish-ready':'nursery-wish-waiting'}" ${nursery.phase==='hungry'?`onclick="nurseryAsk('listen')" title="Review this story"`:'title="Grow this fruit and feed it to your caterpillar"'}>${emojis[nursery.want]}</div><div class="nursery-pet">${nurseryStage()}</div>${heart}</div>`;
-  residents.dataset.nurseryKey=key;
- }
+ const key=ranch.pets.map(p=>p.id+':'+p.meals).join('|')+'|'+nursery.activeId+'|'+nursery.phase+'|'+nursery.want+'|'+(Date.now()<nurseryHeartUntil);
+ if(residents.dataset.nurseryKey!==key){residents.innerHTML=nurseryResidentsHTML();residents.dataset.nurseryKey=key}
  const slot=$('ranchSlot');slot.innerHTML=`<div class="nursery-soil" id="nurserySoil"><span class="nursery-slot-title">${['water','sprout','fruit'].includes(nursery.phase)?'SEEDS':''}</span><div class="nursery-action" id="nurseryAction"></div></div><div class="nursery-packet" id="nurseryPacket" title="Drag seed to farm"><span class="packet-icon">${emojis[nursery.want]}</span><span class="packet-name">${items[nursery.want][0][0].toUpperCase()+items[nursery.want][0].slice(1)}</span></div>`;
  const action=$('nurseryAction'),packet=$('nurseryPacket');
  packet.style.display=nursery.phase==='seed'?'flex':'none';
@@ -383,7 +393,7 @@ function nurseryAnswer(which,value){const it=items[nursery.want];const correct=w
  closeModal();sound('ripe');nursery.phase=which==='listen'?'seed':which==='read'?'sprout':'fruit';nurseryRefresh();
 }
 function nurseryPlant(){if(nursery.phase!=='seed')return;nursery.phase='water';sound('sow');nurseryRefresh()}
-function nurseryFeed(){if(nursery.phase!=='fruit')return;nursery.meals++;nurseryStore();if(nursery.meals%12===0){nurseryHeartUntil=Date.now()+2500;gateCheck()}nursery.phase='rest';nursery.nextHungry=Date.now()+3000;nurseryHeartUntil=Date.now()+1500;sound('ripe');nurseryRefresh();setTimeout(nurseryRefresh,1600)}
+function nurseryFeed(){if(nursery.phase!=='fruit')return;const pet=nurseryPet();pet.meals++;nursery.meals++;nursery.phase='rest';nursery.nextHungry=Date.now()+3000;nurseryHeartUntil=Date.now()+1500;ranchSave();nurseryStore();sound('ripe');nurseryRefresh();if(pet.meals===12)gateCheck();if(pet.meals>=15)nurseryBirth();else setTimeout(nurseryRefresh,1600)}
 let nurseryDrag=null;
 document.addEventListener('pointerdown',e=>{let packet=e.target.closest('#nurseryPacket'),fruit=e.target.closest('#nurseryFruit');if(!packet&&!fruit)return;e.preventDefault();e.stopPropagation();const kind=packet?'seed':'fruit';const ghost=document.createElement('div');ghost.className='nursery-drag-ghost';if(kind==='seed'){ghost.classList.add('packet-ghost');ghost.innerHTML=emojis[nursery.want]+'<br><small>'+items[nursery.want][0]+'</small>'}else ghost.textContent=emojis[nursery.want];document.body.appendChild(ghost);nurseryDrag={kind,ghost,id:e.pointerId};try{e.target.setPointerCapture(e.pointerId)}catch(err){}if(packet)packet.style.opacity='.35';ghost.style.left=e.clientX+'px';ghost.style.top=e.clientY+'px';});
 document.addEventListener('pointermove',e=>{if(nurseryDrag&&e.pointerId===nurseryDrag.id){nurseryDrag.ghost.style.left=e.clientX+'px';nurseryDrag.ghost.style.top=e.clientY+'px';const soil=$('nurserySoil');if(soil)soil.classList.toggle('nursery-dropready',nurseryDrag.kind==='seed'&&inRect(e.clientX,e.clientY,soil))}});
