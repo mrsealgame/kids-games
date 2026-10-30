@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>🌾 Caterpillar Farming Adventure V5</title><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>🌾 Caterpillar Farming Adventure — Open Meadow</title><style>
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
 *{box-sizing:border-box}body{margin:0;background:#e6e8cb;color:#43523a;font-family:Nunito,system-ui,sans-serif;overflow-x:hidden}
 button{font:800 17px Nunito,system-ui,sans-serif;background:#f8e5ae;border:3px solid #a77c4e;color:#634e36;border-radius:15px;padding:9px 17px;box-shadow:0 4px 0 #9b744d;cursor:pointer}button:active{transform:translateY(3px);box-shadow:0 1px 0 #9b744d}button:disabled{opacity:.4}
@@ -67,36 +67,87 @@ header{background:#4e7757;color:#fff8dd;text-align:center;padding:10px 12px;bord
 .map-node.selectable{cursor:pointer;transition:transform .15s}.map-node.selectable:hover{transform:scale(1.12)}.map-node:disabled{cursor:default;opacity:1}.map-node{padding:0;font-family:inherit} 
 
 .collection-tabs{display:flex;gap:10px;justify-content:center;margin:10px 0 18px;flex-wrap:wrap}.collection-tabs button.active{background:#d7e9b7;border-color:#8cb064}.collection-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;max-height:55vh;overflow-y:auto;padding:6px}.collection-card{border:2px solid #d8c49a;background:#fffaf0;border-radius:16px;padding:12px;text-align:center;min-height:175px}.collection-card.locked{background:#f1eee8;opacity:.65}.collection-art{height:90px}.collection-art svg{height:90px;max-width:130px}.collection-emoji{font-size:57px;height:80px}.collection-card b,.collection-card small{display:block}.collection-card small{color:#7b796f;margin-top:4px}.collection-card p{font-size:12px;line-height:1.35}
+.heart{left:50%;bottom:108%;transform:translateX(-50%);white-space:nowrap;font-size:28px;font-weight:1000;color:#fff7b5;text-shadow:0 3px #8d6b37,2px 0 #8d6b37,-2px 0 #8d6b37;animation:levelUpFloat .75s ease-in-out infinite alternate;pointer-events:none}@keyframes levelUpFloat{from{transform:translate(-50%,0) scale(1)}to{transform:translate(-50%,-15px) scale(1.12)}}
 
-/* Dual-farm layout */
-.dual-world{display:grid;grid-template-columns:minmax(0,45fr) minmax(0,55fr);gap:12px;max-width:1500px;margin:0 auto;padding:0 12px;align-items:stretch}
-.dual-world .farm{width:100%;min-width:0;margin:0;height:610px;overflow:hidden}
-.farm-side,.ranch-side{min-width:0}.side-title{text-align:center;font-size:20px;margin:9px 0;color:#5a7048}
-.ranch-side{background:linear-gradient(#cce9d5,#f6eac4);border:5px solid #9eae76;border-radius:24px;padding:8px 12px 18px;min-height:610px;box-shadow:inset 0 0 0 3px #f9efcc}
-.ranch-summary{text-align:center;font-size:13px;font-weight:bold;color:#657553;margin:4px 0 8px}
-.ranch-fence{background:repeating-linear-gradient(90deg,#d6a36d 0 8px,#b27c4d 8px 12px,transparent 12px 39px);border:5px solid #9d7145;border-radius:18px;min-height:178px;padding:12px;display:flex;flex-wrap:wrap;align-content:center;gap:8px;position:relative}
-.ranch-pet{position:relative;background:#fff8df;border:3px solid #b7a67c;border-radius:17px;width:94px;height:108px;display:flex;align-items:center;flex-direction:column;justify-content:center;cursor:pointer;user-select:none;touch-action:none}
-.ranch-pet svg{width:76px;height:68px}.ranch-pet .pet-emoji{font-size:43px}.ranch-pet .wish{position:absolute;top:-17px;right:-7px;background:white;border:2px solid #dcba72;border-radius:20px;padding:2px 5px;font-size:22px;z-index:2;animation:focusPulse 1s infinite alternate}
-.ranch-pet small{font-size:11px;color:#6b725b}.ranch-pet.evolving{animation:focusPulse .25s infinite alternate;filter:drop-shadow(0 0 15px gold)}
-.ranch-pet.flying{animation:ranchFly 1.1s forwards}@keyframes ranchFly{to{transform:translate(150px,-170px) rotate(25deg);opacity:0}}
-.ranch-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}
-.ranch-field{background:repeating-linear-gradient(0deg,#a5774e 0 12px,#845b3c 12px 22px);border:4px solid #9b744b;border-radius:16px;min-height:107px;position:relative;text-align:center;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;touch-action:none;color:#fffbe8}
-.ranch-field.locked{background:#b8b2a2;opacity:.65;cursor:default}.ranch-field .field-icon{font-size:34px}.ranch-field .field-label{font-size:12px;font-weight:900;text-shadow:0 1px 3px #453221}
-.ranch-field .water-mark{font-size:23px;position:absolute;right:7px;top:0}.ranch-field .field-fruit{font-size:39px;touch-action:none;cursor:grab}
-.ranch-tray{display:flex;align-items:center;justify-content:center;gap:12px;min-height:52px;padding:7px;background:#fff8dc;border:3px dashed #cba971;border-radius:15px;margin-top:10px;font-size:13px;color:#716346}
-.ranch-seed{font-size:30px;cursor:grab;touch-action:none;display:inline-block;background:#f3d39b;border:2px solid #8f6a3c;border-radius:9px;padding:3px}
-.ranch-hint{font-size:12px;color:#6a7556;text-align:center;margin:8px 0}
-@media(max-width:850px){.dual-world{grid-template-columns:1fr}.dual-world .farm{height:540px}.ranch-side{min-height:0}.side-title{font-size:18px}}
-</style></head><body>
+/* One seamless 16:9 meadow: story objects left, ranch open grass right */
+.game-layout{position:relative;width:min(1600px,calc(100vw - 20px));aspect-ratio:16/9;max-height:calc(100vh - 116px);min-height:450px;margin:0 auto;overflow:hidden;border:7px solid #a98253;border-radius:23px;box-shadow:0 8px 0 #8b6b46,0 16px 30px #3d54332b}
+.main-side{position:absolute;inset:0}.game-layout .farm{width:100%;height:100%;min-height:0;margin:0;border:0;border-radius:0;box-shadow:none;background:linear-gradient(#a0d9e5 0 37%,#d1e6b5 37% 46%,#8fc573 46% 100%)}
+.game-layout .farm .hill,.game-layout .farm .fence,.game-layout .farm .grass{width:100%}
+.game-layout .crate{left:4%;top:37%;transform:scale(.85);transform-origin:top left}
+.game-layout .well{left:31%;right:auto;top:32%;transform:scale(.85);transform-origin:top left}
+.game-layout .plot{left:19%;bottom:9%;width:23%;height:28%;min-height:125px}
+.game-layout .cat{width:112px;height:83px}
+.game-layout .flowers{letter-spacing:10px;max-width:47%;overflow:hidden}
+.ranch-side{position:absolute;inset:0 0 0 52%;pointer-events:none;z-index:4}
+.ranch-field{position:absolute;inset:0;pointer-events:none}
+.ranch-sign{position:absolute;top:35%;left:21%;background:#d6a36b;border:5px solid #956c43;border-radius:12px;color:#69452e;font-size:clamp(15px,1.7vw,25px);font-weight:1000;padding:7px 15px;transform:rotate(-2deg);box-shadow:0 6px #805a37}
+.ranch-sign:before,.ranch-sign:after{content:'';position:absolute;top:100%;height:27px;width:12px;background:#916b42}.ranch-sign:before{left:20%}.ranch-sign:after{right:20%}
+.ranch-header{position:absolute;top:3%;right:3%;font-weight:900;font-size:clamp(13px,1.4vw,20px);pointer-events:auto}.ranch-header strong{background:#fff5d8;border:3px solid #b58b5a;border-radius:14px;padding:7px 13px}
+.ranch-residents{position:absolute;inset:47% 2% 14% 2%;pointer-events:none}
+.ranch-pet{position:absolute;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:clamp(24px,3.2vw,50px);text-shadow:0 3px 3px #3c612766;animation:ranchBob 2.3s ease-in-out infinite alternate;pointer-events:auto;cursor:pointer}
+.ranch-pet small{font-size:clamp(10px,1vw,13px);font-weight:900;background:#fff9dfdc;border-radius:12px;padding:2px 5px}.ranch-pet .pet-hunger{font-size:11px;font-weight:900;color:#6d5535;background:#fff6d8d9;border-radius:10px;padding:1px 5px}
+.ranch-shop{position:absolute;right:2%;bottom:2%;pointer-events:auto;display:flex;align-items:center;gap:7px;background:#fff5d9d9;border:3px solid #b88c57;border-radius:15px;padding:7px;box-shadow:0 4px #927249}
+.ranch-buttons{display:flex;gap:6px}.ranch-buttons button{font-size:clamp(11px,1.05vw,15px);padding:7px 9px}
+.ranch-status{position:absolute;right:2%;bottom:11%;background:#fff7dfdc;border-radius:10px;padding:3px 8px;font-size:12px;font-weight:800;color:#58714d;max-width:80%}
+@keyframes ranchBob{to{transform:translateY(-7px)}}
+.top{max-width:1600px;margin:5px auto;padding:0 10px}.top button{padding:5px 10px;font-size:14px}header{padding:5px}header h1{font-size:22px}.bottom{margin:5px}
+@media(max-width:850px){.game-layout{min-height:340px}.game-layout .crate{transform:scale(.55)}.game-layout .well{transform:scale(.55)}.game-layout .plot{min-height:70px;border-width:6px}.game-layout .cat{width:75px;height:58px}.ranch-shop{padding:3px;bottom:1%}.ranch-buttons button{font-size:10px;padding:4px}.ranch-sign{padding:4px;font-size:13px}.ranch-status{font-size:10px}}
+
+/* Seamless nursery, unlocked at level 4; no coin economy */
+.ranch-unlock{display:none;position:absolute;inset:0}
+.ranch-sign{top:28%;left:26%;z-index:3;font-size:clamp(13px,1.45vw,22px)}
+.nursery-fence{position:absolute;left:14%;right:10%;top:42%;height:30%;border:8px dashed #a97945;border-radius:20px;background:#a6d57b55;box-shadow:inset 0 0 0 3px #e9c88a66}
+.fence-rail{position:absolute;left:0;right:0;height:9px;background:#d5aa70;border:2px solid #9d7046;border-radius:9px;pointer-events:none}
+.rail-one{top:14%}.rail-two{bottom:15%}.rail-three{display:none}
+.ranch-residents{inset:0}
+.ranch-pet{z-index:2;font-size:clamp(30px,4vw,60px)}
+.ranch-slot{position:absolute;top:77%;left:25%;width:58%;height:19%;display:flex;align-items:center;justify-content:center;gap:12px;font-size:clamp(12px,1.2vw,18px);color:#624b2f}
+.slot-soil{border:5px solid #9e724a;border-radius:16px;background:repeating-linear-gradient(155deg,#855b3c 0 11px,#966746 11px 21px);color:#fff3d6;padding:12px;text-align:center;font-size:clamp(11px,1vw,15px)}
+
+/* Small farm label, matching SEEDS / WELL; seed packet centered without X */
+.game-layout .plot-label{font-size:13.6px;font-weight:900;letter-spacing:0;padding:3px 12px;border-radius:10px;top:-31px;line-height:1.2}
+.crateArt::before,.crateArt::after{content:none!important;display:none!important}
+.crateArt .seedmark{left:50%!important;top:50%!important;transform:translate(-50%,-50%);width:62px;height:70px}
+/* Egg must never slide, wander, or bob during listening. */
+.cat.egg-stationary{left:8%!important;top:72%!important;transition:none!important;animation:none!important}
+.cat.egg-stationary.speaking{animation:none!important}
+</style>
+<style>
+.nursery-animal{position:absolute;left:35%;top:7%;display:flex;align-items:center;flex-direction:column;gap:3px;z-index:7;pointer-events:auto}.nursery-pet{font-size:clamp(36px,4.5vw,72px);line-height:1.2}.nursery-wish{cursor:pointer;background:#fffef1;border:3px solid #a57b4c;border-radius:25px;padding:4px 13px;font-size:clamp(25px,2.6vw,43px);box-shadow:0 4px 8px #594d3538;position:relative;animation:wishBob 1.6s ease-in-out infinite alternate}.nursery-wish:after{content:'';position:absolute;bottom:-12px;left:46%;border-width:10px 8px 0;border-style:solid;border-color:#a57b4c transparent transparent}.nursery-wish.hidden{display:none}.nursery-wish-waiting{cursor:default;animation:none;opacity:.95}.nursery-wish-ready{cursor:pointer}.nursery-growth{font-size:clamp(10px,1vw,14px);font-weight:900;background:#fff8d9dd;padding:3px 8px;border-radius:12px;white-space:nowrap}@keyframes wishBob{to{transform:translateY(-5px)}}.nursery-soil{width:57%;height:95%;border-radius:22px;background:repeating-linear-gradient(0deg,#9e6a3c,#9e6a3c 9px,#ad7845 11px);border:5px solid #7d5738;display:flex;align-items:center;justify-content:center;position:relative}.nursery-slot-title{position:absolute;top:1px;font-size:clamp(10px,1vw,14px);font-weight:900;color:#fff2d4}.nursery-action button{font-size:clamp(28px,3vw,46px);background:none;border:0;cursor:pointer;padding:0}.nursery-soil-dots{color:#e9c393;font-size:28px}.nursery-packet{display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:grab;touch-action:none;background:#f8e4ad;border:3px solid #b5894e;border-radius:12px;padding:7px;font-size:clamp(20px,2vw,33px);white-space:nowrap}.nursery-packet small{font-size:10px}.nursery-fruit{font-size:clamp(28px,3vw,48px);cursor:grab;touch-action:none}.nursery-drag-ghost{position:fixed;transform:translate(-50%,-50%);z-index:99999;font-size:55px;pointer-events:none}.ranch-slot{left:15%;width:75%;top:76%;height:22%}.nursery-fence{top:39%;height:34%}
+/* Nursery reward seed is violet, distinct from the main farm's tan packet. */
+.nursery-packet{min-width:84px;min-height:78px;background:linear-gradient(155deg,#d9c3fa,#a98bd6)!important;border:3px solid #7756a5!important;color:#47305f;box-shadow:0 5px 0 #70518e,0 7px 10px #3e2b5540;position:relative;user-select:none;touch-action:none;cursor:grab;animation:seedDrop .55s cubic-bezier(.18,1.3,.35,1) both}
+.ranch-slot,.nursery-soil,.nursery-packet,.nursery-fruit{pointer-events:auto!important}
+.nursery-soil.nursery-dropready{outline:5px solid #e7f6aa;outline-offset:3px}
+.nursery-hungry-bubble{background:#fff9e6;border:2px solid #a57b4c;border-radius:16px;padding:3px 9px;font-size:15px;font-weight:900;color:#8d553b;white-space:nowrap}
+.nursery-packet .packet-icon{font-size:clamp(25px,2.5vw,38px);line-height:1.1}.nursery-packet .packet-name{font-size:11px;font-weight:900;line-height:1.1;text-transform:capitalize}.nursery-packet .packet-caption{font-size:10px;font-weight:800}
+.nursery-packet:before{content:'SEED';position:absolute;top:-12px;background:#7956a7;color:white;padding:2px 9px;border-radius:8px;font-size:10px;letter-spacing:1px}
+.nursery-soil.nursery-dropready{outline:5px solid #f8e985;outline-offset:4px;filter:brightness(1.15)}
+.nursery-drag-ghost.packet-ghost{font-size:28px;background:linear-gradient(155deg,#d9c3fa,#a98bd6);border:3px solid #7756a5;border-radius:12px;padding:10px 15px;box-shadow:0 6px 12px #0003;min-width:70px;text-align:center}
+@keyframes seedDrop{from{transform:translateY(-75px) rotate(-12deg) scale(.75);opacity:0}70%{transform:translateY(6px) rotate(4deg) scale(1.08);opacity:1}to{transform:translateY(0) rotate(0) scale(1);opacity:1}}
+
+/* Nursery creatures roam inside their fence; eggs stay still. */
+.nursery-animal.roaming{animation:nurseryRoam 9s ease-in-out infinite alternate;}
+@keyframes nurseryRoam{0%{transform:translate(0,0)}25%{transform:translate(35px,-5px)}50%{transform:translate(-18px,12px)}75%{transform:translate(20px,22px)}100%{transform:translate(-30px,3px)}}
+.nursery-fed-heart{position:absolute;bottom:95%;left:50%;transform:translateX(-50%);font-size:38px;pointer-events:none;animation:nurseryHeartPop 1.4s ease-out forwards;z-index:10}
+@keyframes nurseryHeartPop{0%{opacity:0;transform:translate(-50%,8px) scale(.6)}25%{opacity:1;transform:translate(-50%,-8px) scale(1.2)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-42px) scale(1)}}
+</style>
+</head><body>
 <header><h1>🌾 Caterpillar Farming Adventure</h1></header>
 <div class="top"><button id="level" class="level-button" onclick="openLevelMap()" aria-label="Open level map"></button><button onclick="openBook()">📖 My Storybook</button><button onclick="openCollection()">📚 图鉴</button></div>
-<div class="dual-world"><section class="farm-side"><h2 class="side-title">📖 Main Farm · Learn</h2><main class="farm" id="farm">
+<div class="game-layout"><section class="main-side"><main class="farm" id="farm">
 <div class="sky"><div class="sun"></div><div class="cloud"></div><div class="cloud two"></div></div>
 <div class="hill"></div><div class="hill two"></div><div class="fence"></div><div class="grass"></div><div class="path"></div><div class="flowers">🌼 🌸 🌼 🌷</div>
 <div class="obj crate" id="crate" onclick="openCrate()"><div class="crateArt"><div class="seedmark"><div class="package-picture"><div class="seed-dots"><i></i><i></i><i></i><i></i><i></i></div></div></div></div><div class="sign">SEEDS</div><div id="bag" class="bag" data-kind="seed"><span id="bagIcon">🍎</span></div></div>
 <div class="obj well" id="well" onclick="openReading()"><div class="wellArt"><div class="wellRoof"></div><div class="wellPost left"></div><div class="wellPost right"></div><div class="wellStone"></div><div class="wellHole"></div><div class="wellRope"></div></div><div class="sign">WELL</div><div id="bucket" class="bucket" data-kind="water">🪣</div></div><div class="plot" id="plot" onclick="clickPlot()"><div class="plot-label">FARM</div><div class="growbar" id="growbar"><div class="growfill" id="growfill"></div></div><div id="seedsOnSoil" class="soil-seeds" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div id="crop" class="crop"></div><div id="waterfall" class="waterfall">💦</div><div id="fruit" class="fruit" data-kind="fruit"></div></div>
 <div class="cat" id="cat" onclick="clickCat()"><svg viewBox="0 0 150 105" aria-label="Caterpillar" role="img"><g stroke="#5d8c48" stroke-width="3"><ellipse cx="38" cy="66" rx="23" ry="25" fill="#91c66a"/><ellipse cx="62" cy="58" rx="26" ry="30" fill="#a4d478"/><ellipse cx="88" cy="54" rx="28" ry="33" fill="#b1da80"/><circle cx="118" cy="48" r="34" fill="#b6df84"/></g><path d="M113 17 Q103 0 95 11 M128 16 Q139 -1 145 10" stroke="#618a51" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="110" cy="43" r="4" fill="#354b37"/><circle cx="135" cy="43" r="4" fill="#354b37"/><path d="M114 58 Q122 68 133 57" fill="none" stroke="#526c47" stroke-width="3" stroke-linecap="round"/><circle cx="102" cy="55" r="6" fill="#efaaa0" opacity=".65"/><circle cx="142" cy="55" r="5" fill="#efaaa0" opacity=".65"/><g stroke="#6c9c57" stroke-width="5" stroke-linecap="round"><path d="M32 84l-4 12M64 85l-4 12M94 85l-4 12"/></g></svg><div id="bubble" class="bubble">...</div><div id="heart" class="heart">❤️</div></div>
-</main></section><section class="ranch-side" id="ranchSide"><h2 class="side-title">🏡 Caterpillar Ranch · Review</h2><div id="ranchSummary" class="ranch-summary"></div><div class="ranch-fence" id="ranchFence"></div><div id="ranchTray" class="ranch-tray"></div><div id="ranchFields" class="ranch-fields"></div><p class="ranch-hint">Tap a hungry caterpillar → answer → drag seed to soil → 💧 quiz → 🌱 quiz → drag fruit to its owner.</p></section></div>
+</main></section>
+<section class="ranch-side"><div class="ranch-field">
+<div id="ranchUnlock" class="ranch-unlock">
+  <div class="ranch-sign">🐛 Caterpillar Nursery</div>
+  <div class="nursery-fence"><span class="fence-rail rail-one"></span><span class="fence-rail rail-two"></span><span class="fence-rail rail-three"></span><div id="ranchResidents" class="ranch-residents"></div></div>
+  <div class="ranch-slot" id="ranchSlot"><strong>🌱 Farm Slot</strong><div class="slot-soil">Empty growing plot</div></div>
+</div>
+</div></section></div>
 <div class="bottom"><button onclick="resetGame()">↺ Reset</button></div>
 <div class="modal" id="modal"><div class="panel"><h2 id="mtitle"></h2><div id="mbody"></div><p id="feedback" class="feedback"></p><button class="close" id="closeBtn" onclick="closeModal()">Close</button></div></div>
 <script>
@@ -123,7 +174,15 @@ const items=[
 ["butterfly","beautiful","A beautiful butterfly flies over the flowers.","What flies over the flowers?",["A butterfly","A frog","A dog"],0,"The butterfly is ___.","beautiful"]];
 const emojis=['🍎','🍐','🟣','🍓','🍊','🫐','🍌','🍒','🍑','🍈','🥕','🌽','🍅','🫛','🎃','🌼','🍃','🌻','🟤','🦋'];
 
-const KEY='caterpillarFarmingV18';const $=id=>document.getElementById(id);let s;try{s=JSON.parse(localStorage.getItem(KEY))}catch{}if(!s||!Number.isInteger(s.level)||s.level<0||s.level>20)s={level:0,step:0,book:[],water:0};if(!Array.isArray(s.book))s.book=[];if(typeof s.listened!=='boolean')s.listened=false;if(!Number.isInteger(s.unlocked))s.unlocked=s.level;if(s.unlocked<s.level)s.unlocked=s.level;const cur=()=>items[Math.min(s.level,19)];const chosen=()=>Number.isInteger(s.chosen)?s.chosen:Math.min(s.level,19);let writingMistakes=0,drag=null,modalMode='',timer=null,catTimer=null,waitingForSpeech=false;let audioCtx;function sound(name){try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();const t=audioCtx.currentTime;function note(freq,start,duration,type='sine',gain=.075,endFreq){const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.setValueAtTime(freq,t+start);if(endFreq)o.frequency.exponentialRampToValueAtTime(endFreq,t+start+duration);g.gain.setValueAtTime(.0001,t+start);g.gain.exponentialRampToValueAtTime(gain,t+start+.015);g.gain.exponentialRampToValueAtTime(.0001,t+start+duration);o.connect(g).connect(audioCtx.destination);o.start(t+start);o.stop(t+start+duration+.02)}
+const KEY='caterpillarFarmingV18';const $=id=>document.getElementById(id);let s;try{s=JSON.parse(localStorage.getItem(KEY))}catch{}if(!s||!Number.isInteger(s.level)||s.level<0||s.level>20)s={level:0,step:0,book:[],water:0};if(!Array.isArray(s.book))s.book=[];
+// Restore missing Storybook pages for previously completed/unlocked levels.
+// Keep any existing pages and their original writing unchanged.
+for(let i=0;i<Math.min(5,Math.max(s.unlocked||0,s.level||0));i++){
+ if(!s.book.some(b=>b.level===i)){
+  const d=items[i];s.book.push({level:i,item:d[0],sentence:d[2],writing:d[6].replace('___',d[7])});
+ }
+}
+s.book.sort((a,b)=>a.level-b.level);if(typeof s.listened!=='boolean')s.listened=false;if(!Number.isInteger(s.unlocked))s.unlocked=s.level;if(s.unlocked<s.level)s.unlocked=s.level;s.unlocked=Math.max(5,s.unlocked);const cur=()=>items[Math.min(s.level,19)];const chosen=()=>Number.isInteger(s.chosen)?s.chosen:Math.min(s.level,19);let writingMistakes=0,drag=null,modalMode='',timer=null,catTimer=null,waitingForSpeech=false;let audioCtx;function sound(name){try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();const t=audioCtx.currentTime;function note(freq,start,duration,type='sine',gain=.075,endFreq){const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.setValueAtTime(freq,t+start);if(endFreq)o.frequency.exponentialRampToValueAtTime(endFreq,t+start+duration);g.gain.setValueAtTime(.0001,t+start);g.gain.exponentialRampToValueAtTime(gain,t+start+.015);g.gain.exponentialRampToValueAtTime(.0001,t+start+duration);o.connect(g).connect(audioCtx.destination);o.start(t+start);o.stop(t+start+duration+.02)}
 if(name==='package'){note(550,0,.12,'triangle');note(420,.13,.18,'triangle')}
 if(name==='sow'){for(let i=0;i<4;i++)note(250+i*50,i*.09,.11,'triangle',.045)}
 if(name==='water'){for(let i=0;i<8;i++)note(500-i*34,i*.06,.12,'sine',.025,180+i*8)}
@@ -167,20 +226,20 @@ function creatureSVG(index){
  if(index===4)return `<svg viewBox="0 0 150 105" aria-label="Butterfly"><ellipse cx="47" cy="30" rx="33" ry="29" transform="rotate(-25 47 30)" fill="${c}" stroke="#ad7293" stroke-width="3"/><ellipse cx="103" cy="30" rx="33" ry="29" transform="rotate(25 103 30)" fill="${c}" stroke="#ad7293" stroke-width="3"/><ellipse cx="48" cy="75" rx="27" ry="22" transform="rotate(20 48 75)" fill="#f8d78d" stroke="#b59a6b" stroke-width="3"/><ellipse cx="102" cy="75" rx="27" ry="22" transform="rotate(-20 102 75)" fill="#f8d78d" stroke="#b59a6b" stroke-width="3"/><ellipse cx="75" cy="54" rx="11" ry="36" fill="#806e63"/><path d="M70 22 Q57 2 50 9 M80 22 Q93 2 100 9" stroke="#806e63" stroke-width="3" fill="none"/><circle cx="72" cy="36" r="2" fill="white"/><circle cx="79" cy="36" r="2" fill="white"/></svg>`;
  const big=index===2;return `<svg viewBox="0 0 150 105" aria-label="${st.name}"><g stroke="${big?'#477fa3':'#679f55'}" stroke-width="3"><ellipse cx="38" cy="66" rx="${big?25:18}" ry="${big?27:20}" fill="${c}"/><ellipse cx="62" cy="58" rx="${big?27:22}" ry="${big?31:25}" fill="${c}"/><ellipse cx="88" cy="54" rx="${big?29:24}" ry="${big?33:27}" fill="${c}"/><circle cx="118" cy="48" r="${big?34:29}" fill="${c}"/></g><path d="M113 17 Q103 0 95 11 M128 16 Q139 -1 145 10" stroke="#618a51" stroke-width="4" fill="none"/>${eyes}<g stroke="#679f55" stroke-width="5"><path d="M32 84l-4 12M64 85l-4 12M94 85l-4 12"/></g></svg>`;
 }
-function drawCreature(){const el=$('cat');const idx=stageIndex(Math.min(s.level,19));if(el.dataset.stage!==String(idx)){el.querySelector('svg').outerHTML=creatureSVG(idx);el.dataset.stage=String(idx)}}
+function drawCreature(){const el=$('cat');const idx=stageIndex(Math.min(s.level,19));if(idx===0){el.classList.add('egg-stationary');el.style.left='8%';el.style.top='72%';}else{el.classList.remove('egg-stationary');}if(el.dataset.stage!==String(idx)){el.querySelector('svg').outerHTML=creatureSVG(idx);el.dataset.stage=String(idx)}}
 let collectionTab='creature';
 function openCollection(tab='creature'){collectionTab=tab;drawCollection()}
 function drawCollection(){
- const max=20; // Testing mode: all encyclopedia entries visible regardless of progress
+ const max=Math.min(20,s.unlocked); // Only previously unlocked entries are visible
  const buttons=`<div class="collection-tabs"><button class="${collectionTab==='creature'?'active':''}" onclick="openCollection('creature')">🐛 毛毛虫图鉴</button><button class="${collectionTab==='fruit'?'active':''}" onclick="openCollection('fruit')">🍎 水果图鉴</button></div>`;
  let cards;
- if(collectionTab==='creature')cards=stages.map((st,i)=>{const unlocked=max>=([0,3,6,9,12][i]);return `<div class="collection-card ${unlocked?'':'locked'}"><div class="collection-art">${unlocked?creatureSVG(i):'❔'}</div><b>${unlocked?st.name:'??? · 未解锁'}</b><small>${st.range}</small><p>${unlocked?st.desc:'继续闯关解锁'}</p></div>`}).join('');
- else cards=items.map((it,i)=>{const unlocked=i<=max;return `<div class="collection-card ${unlocked?'':'locked'}"><div class="collection-emoji">${unlocked?emojis[i]:'❔'}</div><b>${unlocked?it[0][0].toUpperCase()+it[0].slice(1):'???'}</b><small>Level ${i+1}</small><p>${unlocked?it[6].replace('___',it[7]):'未解锁'}</p></div>`}).join('');
+ if(collectionTab==='creature')cards=stages.filter((st,i)=>max>=([0,3,6,9,12][i]+1)).map((st)=>{const i=stages.indexOf(st);const unlocked=true;return `<div class="collection-card ${unlocked?'':'locked'}"><div class="collection-art">${unlocked?creatureSVG(i):'❔'}</div><b>${unlocked?st.name:'??? · 未解锁'}</b><small>${st.range}</small><p>${unlocked?st.desc:'继续闯关解锁'}</p></div>`}).join('');
+ else cards=items.slice(0,max).map((it,i)=>{const unlocked=true;return `<div class="collection-card ${unlocked?'':'locked'}"><div class="collection-emoji">${unlocked?emojis[i]:'❔'}</div><b>${unlocked?it[0][0].toUpperCase()+it[0].slice(1):'???'}</b><small>Level ${i+1}</small><p>${unlocked?it[6].replace('___',it[7]):'未解锁'}</p></div>`}).join('');
  openModal('📚 Farm Encyclopedia',`${buttons}<div class="collection-grid">${cards}</div>`,'collection');
 }
 function render(){drawCreature();let done=s.level>=20;$('level').textContent=done?'🦋 Level 20':`🌟 Level ${s.level+1}`;let plot=$('plot');plot.className='obj plot';if(s.step===2||(s.step===3&&window.pouringNow))plot.classList.add('planted');if(s.step>=3&&!(s.step===3&&window.pouringNow))plot.classList.add('wet');if(s.step===4)plot.classList.add('ready');$('seedsOnSoil').classList.toggle('visible',!done&&(s.step===2||s.step===3));$('crop').textContent=done?'🌸':s.step===0?'':s.step===1||s.step===2?'':s.step===3?'':s.step===4?'🌱':s.step===7?'🌿':s.step>=5?'': '';$('bagIcon').textContent=done?'🌱':emojis[chosen()];$('bag').classList.toggle('show',!done&&s.step===1);$('bucket').classList.toggle('show',!done&&s.water>0&&s.step===2);$('fruit').classList.toggle('show',!done&&s.step===5);$('fruit').textContent=done?'':emojis[chosen()];$('cat').querySelector('svg').style.display=done?'none':'block';save();focusNext()}function clickCat(){if(s.level>=20){speak('A beautiful butterfly flies over the flowers.',true);return}if(s.step===6)return;if(s.step===0&&!s.listened){waitingForSpeech=true;focusNext()}speak(cur()[2],true)}function openCrate(){if(s.level>=20||s.step!==0||!s.listened||waitingForSpeech)return;const choices=items.slice(0,s.level+1).map((item,i)=>({name:item[0],index:i}));for(let i=choices.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[choices[i],choices[j]]=[choices[j],choices[i]];}openModal('📦 Choose a Seed',`<div class="choices">${choices.map(x=>`<button onclick="chooseSeed(${x.index})">${x.name}</button>`).join('')}</div>`,'seed')}
 function chooseSeed(index){if(index<0||index>s.level)return;s.chosen=index;s.step=1;closeModal();render();sound('package')}
-function openReading(){if(s.level>=20||s.step!==2)return;const d=cur();openModal('📖 Reading',`<p style="font-size:23px">${d[2]}</p><h3>${d[3]}</h3><div class="choices">${d[4].map((x,i)=>`<button onclick="checkReading(${i})">${String.fromCharCode(65+i)}. ${x}</button>`).join('')}</div>`,'reading')}function checkReading(n){if(n!==cur()[5]){fb('🌷 Listen and try again!');speak(cur()[2]);return}s.water=1;closeModal();render();animateBucket();sound('water')}function animateBucket(){const b=$('bucket');b.animate([{transform:'translateY(55px)',opacity:.2},{transform:'translateY(-12px)',opacity:1},{transform:'translateY(0)',opacity:1}],{duration:1200,easing:'ease-out'})}function clickPlot(){if(s.step===4)openWriting()}function startGrow(next){$('growbar').classList.add('show');$('growfill').style.transition='none';$('growfill').style.width='0';requestAnimationFrame(()=>requestAnimationFrame(()=>{$('growfill').style.transition='width 500ms linear';$('growfill').style.width='100%'}));clearTimeout(timer);timer=setTimeout(()=>{$('growbar').classList.remove('show');$('growfill').style.width='0';s.step=next;render();sound(next===4?'sprout':'ripe');$('crop').classList.add('sprout');setTimeout(()=>$('crop').classList.remove('sprout'),500)},500)}function planted(){s.step=2;render();sound('sow')}function watered(){s.water=0;window.pouringNow=true;s.step=3;render();const plot=$('plot');const pouring=document.createElement('div');pouring.className='pour-bucket';pouring.textContent='🪣';plot.appendChild(pouring);$('waterfall').classList.add('show');setTimeout(()=>{pouring.remove();$('waterfall').classList.remove('show');window.pouringNow=false;render();startGrow(4)},1100)}function openWriting(){if(s.step!==4)return;const d=items[chosen()];openModal('✏️ Writing',`<h3>${d[6]}</h3><input id="writingAnswer" autocomplete="off" spellcheck="false" placeholder="Missing word"><p><button onclick="checkWriting()">Check Answer</button></p>`,'writing');$('writingAnswer').focus()}function checkWriting(){const d=items[chosen()],word=d[7],answer=$('writingAnswer').value.trim().toLowerCase().replace(/[.!?]/g,'');if(answer!==word){writingMistakes++;let audio,msg;if(writingMistakes===1){audio=d[2];msg='🌼 Listen to the story.'}else if(writingMistakes===2){audio=d[6].replace('___','blank');msg='🌷 Listen to the sentence.'}else if(writingMistakes===3){audio='The answer is '+word+'.';msg='💛 You can do it!'}else{audio=word.toUpperCase().split('').join(', ')+'. '+word+'.';msg='⭐ '+word.toUpperCase().split('').join(' · ')}fb(msg);speak(audio);return}s.pendingSentence=d[6].replace('___',answer);s.step=7;closeModal();render();startGrow(5)}function chomp(){try{const ctx=new (window.AudioContext||window.webkitAudioContext)();for(let i=0;i<3;i++){const t=ctx.currentTime+i*.17;const o=ctx.createOscillator(),g=ctx.createGain();o.type='triangle';o.frequency.setValueAtTime(310-i*45,t);o.frequency.exponentialRampToValueAtTime(95,t+.13);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.14,t+.018);g.gain.exponentialRampToValueAtTime(.0001,t+.15);o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+.16)}setTimeout(()=>ctx.close(),1300)}catch{}}function alignMapPaths(){
+function openReading(){if(s.level>=20||s.step!==2)return;const d=cur();openModal('📖 Reading',`<p style="font-size:23px">${d[2]}</p><h3>${d[3]}</h3><div class="choices">${d[4].map((x,i)=>`<button onclick="checkReading(${i})">${String.fromCharCode(65+i)}. ${x}</button>`).join('')}</div>`,'reading')}function checkReading(n){if(n!==cur()[5]){fb('🌷 Listen and try again!');speak(cur()[2]);return}s.water=1;closeModal();render();animateBucket();sound('water')}function animateBucket(){const b=$('bucket');b.animate([{transform:'translateY(55px)',opacity:.2},{transform:'translateY(-12px)',opacity:1},{transform:'translateY(0)',opacity:1}],{duration:1200,easing:'ease-out'})}function clickPlot(){if(s.step===4)openWriting()}function startGrow(next){$('growbar').classList.add('show');$('growfill').style.transition='none';$('growfill').style.width='0';requestAnimationFrame(()=>requestAnimationFrame(()=>{$('growfill').style.transition='width 500ms linear';$('growfill').style.width='100%'}));clearTimeout(timer);timer=setTimeout(()=>{$('growbar').classList.remove('show');$('growfill').style.width='0';s.step=next;render();sound(next===4?'sprout':'ripe');$('crop').classList.add('sprout');setTimeout(()=>$('crop').classList.remove('sprout'),500)},500)}function planted(){s.step=2;render();sound('sow')}function watered(){s.water=0;window.pouringNow=true;s.step=3;render();const plot=$('plot');const pouring=document.createElement('div');pouring.className='pour-bucket';pouring.textContent='🪣';plot.appendChild(pouring);$('waterfall').classList.add('show');setTimeout(()=>{pouring.remove();$('waterfall').classList.remove('show');window.pouringNow=false;render();startGrow(4)},1100)}function openWriting(){if(s.step!==4)return;const d=items[chosen()];openModal('✏️ Writing',`<p>Type the missing word from the story.</p><input id="writingAnswer" autocomplete="off" spellcheck="false" placeholder="Missing word"><p><button onclick="checkWriting()">Check Answer</button></p>`,'writing');$('writingAnswer').focus()}function checkWriting(){const d=items[chosen()],word=d[7],answer=$('writingAnswer').value.trim().toLowerCase().replace(/[.!?]/g,'');if(answer!==word){writingMistakes++;let audio,msg;if(writingMistakes===1){audio=d[2];msg='🌼 Listen to the story.'}else if(writingMistakes===2){audio=d[6].replace('___','blank');msg='🌷 Listen to the sentence.'}else if(writingMistakes===3){audio='The answer is '+word+'.';msg='💛 You can do it!'}else{audio=word.toUpperCase().split('').join(', ')+'. '+word+'.';msg='⭐ '+word.toUpperCase().split('').join(' · ')}fb(msg);speak(audio);return}s.pendingSentence=d[6].replace('___',answer);s.step=7;closeModal();render();startGrow(5)}function chomp(){try{const ctx=new (window.AudioContext||window.webkitAudioContext)();for(let i=0;i<3;i++){const t=ctx.currentTime+i*.17;const o=ctx.createOscillator(),g=ctx.createGain();o.type='triangle';o.frequency.setValueAtTime(310-i*45,t);o.frequency.exponentialRampToValueAtTime(95,t+.13);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.14,t+.018);g.gain.exponentialRampToValueAtTime(.0001,t+.15);o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+.16)}setTimeout(()=>ctx.close(),1300)}catch{}}function alignMapPaths(){
  const map=document.querySelector('.map');if(!map)return;
  const nodes=[...map.querySelectorAll('.map-node')];
  const box=map.getBoundingClientRect();
@@ -209,11 +268,11 @@ function farmMap(){
  const cells=Array.from({length:20},(_,gridIndex)=>{
    const row=Math.floor(gridIndex/5),col=gridIndex%5;
    const i=row*5+(row%2===0?col:4-col);
-   return `<button type="button" class="map-node ${i<s.unlocked?'done':i===s.level?'current':''} ${i<=s.unlocked?'selectable':''}" title="Level ${i+1}${i<s.unlocked?' complete — replay':''}" ${i>s.unlocked?'disabled':''} onclick="selectLevel(${i})">${i<s.unlocked?emojis[i]:`<small>${i+1}</small>`}</button>`;
+   return `<button type="button" class="map-node ${i<s.unlocked?'done':i===s.level?'current':''} ${i<=s.unlocked||i===3?'selectable':''}" title="Level ${i+1}${i<s.unlocked?' complete — replay':''}" ${i>s.unlocked&&i!==3?'disabled':''} onclick="selectLevel(${i})">${i<s.unlocked?emojis[i]:`<small>${i+1}</small>`}</button>`;
  }).join('');
  return `<div class="map" aria-label="20 level connected farm progress"><svg class="map-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${segments}</svg>${cells}</div><div class="map-caption">${Math.min(s.unlocked,20)} / 20 levels completed</div>`;
 }
-function selectLevel(level){if(level<0||level>Math.min(s.unlocked,19))return;clearTimeout(timer);clearTimeout(catTimer);speechSynthesis?.cancel?.();window.pouringNow=false;s.level=level;s.step=0;s.water=0;delete s.chosen;s.listened=false;waitingForSpeech=false;writingMistakes=0;delete s.pendingSentence;$('heart').classList.remove('show');closeModal();render()}
+function selectLevel(level){if(level<0||level>19||(level>s.unlocked&&level!==3))return;clearTimeout(timer);clearTimeout(catTimer);speechSynthesis?.cancel?.();window.pouringNow=false;s.level=level;s.step=0;s.water=0;delete s.chosen;s.listened=false;waitingForSpeech=false;writingMistakes=0;delete s.pendingSentence;$('heart').classList.remove('show');closeModal();render()}
 function openLevelMap(){openModal('🗺️ Level Map',farmMap(),'map');requestAnimationFrame(alignMapPaths)}
 
 function feed(){if(s.step!==5)return;if(chosen()!==s.level){
@@ -229,71 +288,89 @@ function feed(){if(s.step!==5)return;if(chosen()!==s.level){
     setTimeout(()=>{$('heart').classList.remove('show');$('heart').textContent='❤️'},1250);
   },800);
   return;
-}s.step=6;render();chomp();$('cat').animate([{transform:'scale(1)'},{transform:'scale(1.22)'},{transform:'scale(1)'}],{duration:700,iterations:2});$('heart').classList.add('show');const old=s.level;clearTimeout(catTimer);catTimer=setTimeout(()=>{const entry={level:old,item:cur()[0],sentence:cur()[2],writing:s.pendingSentence||cur()[6].replace('___',cur()[7])};const existing=s.book.findIndex(b=>b.level===old);if(existing>=0)s.book[existing]=entry;else{s.book.push(entry);s.book.sort((a,b)=>a.level-b.level)}delete s.pendingSentence;s.level++;s.unlocked=Math.max(s.unlocked,s.level);ranchUnlock();if(s.level<s.unlocked)s.level=s.unlocked;s.step=0;s.listened=false;waitingForSpeech=false;s.water=0;delete s.chosen;writingMistakes=0;$('heart').classList.remove('show');$('heart').textContent='❤️';render();if(s.level===20){openModal('🦋 Congratulations!',`<p>All 20 levels complete!</p>${farmMap()}<button onclick="closeModal();openBook()">📖 My Storybook</button>`,'complete')}else{openModal('⭐ Level Complete!',`<div style="font-size:60px">${emojis[old]} 🐛 ❤️</div>${farmMap()}<button onclick="closeModal()">Level ${s.level+1} ➜</button>`,'complete')}},2000)}
-let page=0;function openBook(){page=Math.max(0,s.book.length-1);drawBook()}function drawBook(){const total=s.book.length,b=s.book[page];openModal('📖 My Storybook',`<p>${total} / 20 pages unlocked</p>${b?`<div class="bookpage"><div style="font-size:65px">${emojis[b.level]}</div><b>Page ${page+1}</b><p>${b.sentence}</p><p>✏️ ${b.writing}</p><button onclick="listenStoryPage()">🔊 Listen</button></div>`:'<div class="bookpage">📖</div>'}<button ${page===0?'disabled':''} onclick="page--;drawBook()">◀</button><button ${page>=total-1?'disabled':''} onclick="page++;drawBook()">▶</button>`,'book')}function listenStoryPage(){const entry=s.book[page];if(entry&&entry.sentence)speak(entry.sentence)}function resetGame(){if(confirm('Erase progress and storybook?')){localStorage.removeItem(KEY);localStorage.removeItem(RANCH_KEY);location.reload()}}
+}s.step=6;render();chomp();$('cat').animate([{transform:'scale(1)'},{transform:'scale(1.22)'},{transform:'scale(1)'}],{duration:700,iterations:2});$('heart').textContent='⭐ LEVEL UP!';$('heart').classList.add('show');const old=s.level;clearTimeout(catTimer);catTimer=setTimeout(()=>{const entry={level:old,item:cur()[0],sentence:cur()[2],writing:s.pendingSentence||cur()[6].replace('___',cur()[7])};const existing=s.book.findIndex(b=>b.level===old);if(existing>=0)s.book[existing]=entry;else{s.book.push(entry);s.book.sort((a,b)=>a.level-b.level)}delete s.pendingSentence;s.level++;s.unlocked=Math.max(s.unlocked,s.level);if(s.level<s.unlocked)s.level=s.unlocked;s.step=0;s.listened=false;waitingForSpeech=false;s.water=0;delete s.chosen;writingMistakes=0;$('heart').classList.remove('show');$('heart').textContent='❤️';render()},2000)}
+let page=0;function openBook(){page=Math.max(0,s.book.length-1);drawBook()}function drawBook(){const total=s.book.length,b=s.book[page];openModal('📖 My Storybook',`<p>${total} / 20 pages unlocked</p>${b?`<div class="bookpage"><div style="font-size:65px">${emojis[b.level]}</div><b>Page ${page+1}</b><p>${b.sentence}</p><p>✏️ ${b.writing}</p><button onclick="listenStoryPage()">🔊 Listen</button></div>`:'<div class="bookpage">📖</div>'}<button ${page===0?'disabled':''} onclick="page--;drawBook()">◀</button><button ${page>=total-1?'disabled':''} onclick="page++;drawBook()">▶</button>`,'book')}function listenStoryPage(){const entry=s.book[page];if(entry&&entry.sentence)speak(entry.sentence)}function resetGame(){if(confirm('Erase progress and storybook?')){localStorage.removeItem(KEY);localStorage.removeItem('caterpillarNurseryMeadowV2');localStorage.removeItem('caterpillarNurseryReviewV1');location.reload()}}
 function inRect(x,y,el){const r=el.getBoundingClientRect();return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom}function dragStart(e){const el=e.target.closest('[data-kind]');if(!el)return;const kind=el.dataset.kind;if((kind==='seed'&&s.step!==1)||(kind==='water'&&(s.step!==2||s.water<1))||(kind==='fruit'&&s.step!==5))return;e.preventDefault();e.stopPropagation();const ghost=document.createElement('div');ghost.className='dragghost';if(kind==='seed'){ghost.classList.add('seedbag-ghost');ghost.innerHTML=el.innerHTML;}else{ghost.textContent=kind==='water'?'🪣':emojis[chosen()];}document.body.appendChild(ghost);drag={id:e.pointerId,kind,ghost,el};el.classList.add('drag-origin-hidden');for(const id of ['crate','bag','well','bucket','plot','fruit','cat'])$(id).classList.remove('next-focus');if(kind!=='fruit')$('plot').classList.add('next-focus');else $('cat').classList.add('next-focus');move(e);el.setPointerCapture(e.pointerId)}function move(e){if(!drag)return;drag.ghost.style.left=e.clientX+'px';drag.ghost.style.top=e.clientY+'px';$('plot').classList.toggle('dropready',drag.kind!=='fruit'&&inRect(e.clientX,e.clientY,$('plot')))}function dragEnd(e){if(!drag||drag.id!==e.pointerId)return;const kind=drag.kind;drag.el.classList.remove('drag-origin-hidden');drag.ghost.remove();drag=null;$('plot').classList.remove('dropready');if(kind==='seed'&&inRect(e.clientX,e.clientY,$('plot')))planted();else if(kind==='water'&&inRect(e.clientX,e.clientY,$('plot')))watered();else if(kind==='fruit'&&inRect(e.clientX,e.clientY,$('cat')))feed();focusNext()}document.addEventListener('pointerdown',dragStart);document.addEventListener('pointermove',e=>{if(drag&&drag.id===e.pointerId)move(e)});document.addEventListener('pointerup',dragEnd);document.addEventListener('pointercancel',()=>{if(drag){drag.el.classList.remove('drag-origin-hidden');drag.ghost.remove();drag=null;$('plot').classList.remove('dropready');focusNext()}});
-function wander(){if(!$('modal').classList.contains('open')&&!drag&&s.step!==6){$('cat').style.left=(20+Math.random()*57)+'%';$('cat').style.top=(36+Math.random()*17)+'%'}}
-// Ranch: separate review questions, land and creatures. All state survives refresh.
-const RANCH_KEY='caterpillarReviewRanchV1';let ranch;try{ranch=JSON.parse(localStorage.getItem(RANCH_KEY))}catch{};
-if(!ranch||!Array.isArray(ranch.pets))ranch={pets:[],plots:Array.from({length:6},()=>({stage:0})),seed:null,nextId:1,firstEgg:false};
-if(!Array.isArray(ranch.plots))ranch.plots=[];
-while(ranch.plots.length<6)ranch.plots.push({stage:0});
-const ranchSave=()=>localStorage.setItem(RANCH_KEY,JSON.stringify(ranch));
-const ranchLand=()=>s.unlocked<3?0:Math.min(6,1+Math.floor((s.unlocked-3)/3));
-const ranchCapacity=()=>s.unlocked<3?0:s.unlocked<8?3:s.unlocked<14?6:s.unlocked<20?12:20;
-const ranchStages=['🥚','🐛','🐛','🟤','🦋'];
-const ranchNeeds=[1,2,3,2,1];
-const ranchUnlocked=()=>Math.min(20,Math.max(0,s.unlocked));
-let ranchQuestion=null;
-function ranchUnlock(){if(s.unlocked>=3&&!ranch.firstEgg){ranch.firstEgg=true;ranch.pets.push({id:ranch.nextId++,stage:0,fed:0,wish:null,hungry:true,at:Date.now()});}ranchSave();ranchRender()}
-function ranchPet(id){return ranch.pets.find(p=>p.id===id)}
-function ranchRender(){
- const capacity=ranchCapacity(),land=ranchLand();
- $('ranchSummary').textContent=land?`🐛 ${ranch.pets.length}/${capacity} residents · 🌱 ${land}/6 plots unlocked`:'🔒 Complete Level 3 to unlock the ranch';
- $('ranchFence').innerHTML=land?ranch.pets.map(p=>`<div class="ranch-pet" data-pet="${p.id}" onclick="ranchClickPet(${p.id})"><span class="wish">${p.wish!==null?emojis[p.wish]:p.hungry?'🍽️':''}</span><span class="pet-emoji">${ranchStages[p.stage]}</span><small>${['Egg','Baby','Grown','Pupa','Butterfly'][p.stage]} ${p.fed}/${ranchNeeds[p.stage]}</small></div>`).join(''):'<div style="margin:auto;font-size:38px">🔒 🥚</div>';
- $('ranchTray').innerHTML=land?(ranch.seed!==null?`🎒 Seed earned: <span class="ranch-seed" data-ranch-seed="1" title="Drag to an empty ranch plot">${emojis[ranch.seed]} 🌱</span>`:'🎒 Answer a hungry caterpillar’s quiz to earn seeds'):'Finish 3 main levels to start breeding';
- $('ranchFields').innerHTML=Array.from({length:6},(_,i)=>{let p=ranch.plots[i];if(i>=land)return `<div class="ranch-field locked"><div class="field-icon">🔒</div><div class="field-label">Unlock Level ${3+i*3}</div></div>`;return `<div class="ranch-field" data-plot="${i}" onclick="ranchClickPlot(${i})"><div class="water-mark">${p.stage===1?'💧':''}</div><div class="field-icon">${p.stage===0?'🌱':p.stage===1?'🌰':p.stage===2?'🌿':p.stage===3?`<span class="field-fruit" data-ranch-fruit="${i}">${emojis[p.crop]}</span>`:'🌱'}</div><div class="field-label">Plot ${i+1} · ${['Empty','Needs water','Tap to grow','Harvest!'][p.stage]||'Empty'}</div></div>`}).join('');
- ranchSave();
-}
-function ranchClickPet(id){const p=ranchPet(id);if(!p||s.unlocked<3||p.wish!==null||!p.hungry)return;
- if(ranch.seed!==null){openModal('🎒 Plant your seed first','<p>Drag the seed packet into an empty ranch field.</p>','ranch');return}
- const crop=Math.floor(Math.random()*ranchUnlocked());p.wish=crop;ranchSave();ranchRender();ranchQuiz(crop,'seed',id);
-}
-function ranchQuiz(crop,action,target){const d=items[crop];ranchQuestion={crop,action,target};
- const type=['listen','read','write'][Math.floor(Math.random()*3)];ranchQuestion.type=type;
- if(type==='write'){openModal('✏️ Ranch Review · Writing',`<p>🌱 ${emojis[crop]} ${d[2]}</p><h3>${d[6]}</h3><input id="ranchAnswer" placeholder="Missing word" autocomplete="off"><p><button onclick="ranchCheckWrite()">Check Answer</button></p>`,'ranch');return}
- const title=type==='listen'?'🔊 Ranch Review · Listening':'📖 Ranch Review · Reading';
- openModal(title,`${type==='listen'?'<p>🔊 Listen carefully!</p><button onclick="ranchSpeak()">🔊 Listen again</button>':`<p>${d[2]}</p>`}<h3>${d[3]}</h3><div class="choices">${d[4].map((x,i)=>`<button onclick="ranchCheckChoice(${i})">${String.fromCharCode(65+i)}. ${x}</button>`).join('')}</div>`,'ranch');if(type==='listen')setTimeout(()=>speak(d[2]),250);
-}
-function ranchSpeak(){if(ranchQuestion)speak(items[ranchQuestion.crop][2])}
-function ranchCheckChoice(n){if(!ranchQuestion)return;if(n!==items[ranchQuestion.crop][5]){fb('🌼 Try again!');speak(items[ranchQuestion.crop][2]);return}ranchSuccess()}
-function ranchCheckWrite(){if(!ranchQuestion)return;const input=$('ranchAnswer');if(!input)return;const answer=input.value.trim().toLowerCase().replace(/[.!?]/g,'');if(answer!==items[ranchQuestion.crop][7]){fb('🌷 Listen and try again!');speak(items[ranchQuestion.crop][6].replace('___',items[ranchQuestion.crop][7]));return}ranchSuccess()}
-function ranchSuccess(){const q=ranchQuestion;if(!q)return;ranchQuestion=null;closeModal();sound('ripe');if(q.action==='seed'){ranch.seed=q.crop}else if(q.action==='water'){ranch.plots[q.target].stage=2}else if(q.action==='grow'){ranch.plots[q.target].stage=3}ranchRender()}
-function ranchClickPlot(i){const p=ranch.plots[i];if(i>=ranchLand())return;if(p.stage===1)ranchQuiz(p.crop,'water',i);else if(p.stage===2)ranchQuiz(p.crop,'grow',i)}
-function ranchPlant(i){if(i>=ranchLand()||ranch.seed===null||ranch.plots[i].stage!==0)return;ranch.plots[i]={stage:1,crop:ranch.seed};ranch.seed=null;sound('sow');ranchRender()}
-function ranchFeed(i,id){const plot=ranch.plots[i],pet=ranchPet(id);if(!plot||plot.stage!==3||!pet||pet.wish!==plot.crop)return;
- plot.stage=0;delete plot.crop;pet.wish=null;pet.hungry=false;pet.fed++;pet.at=Date.now();chomp();
- const stage=pet.stage;
- if(pet.fed>=ranchNeeds[stage]){
-  if(stage===4){const vacant=Math.max(0,ranchCapacity()-ranch.pets.length);const eggs=Math.min(vacant,1+Math.floor(Math.random()*3));const node=document.querySelector(`[data-pet="${id}"]`);if(node)node.classList.add('evolving');
-   for(let n=0;n<eggs;n++)ranch.pets.push({id:ranch.nextId++,stage:0,fed:0,wish:null,hungry:true,at:Date.now()});
-   ranchSave();setTimeout(()=>{const el=document.querySelector(`[data-pet="${id}"]`);if(el)el.classList.add('flying');setTimeout(()=>{ranch.pets=ranch.pets.filter(p=>p.id!==id);ranchRender()},1050)},650);
-   openModal('🦋 Butterfly lays eggs!',`<div style="font-size:55px">${'🥚'.repeat(eggs)||'🦋'}</div><p>${eggs?`Laid ${eggs} egg${eggs>1?'s':''}!`:'The ranch is full. No eggs this time.'}</p><p>The butterfly flies away after laying.</p>`,'ranch');
-  }else{pet.stage++;pet.fed=0;pet.hungry=true;pet.at=Date.now();sound('ripe');const el=document.querySelector(`[data-pet="${id}"]`);if(el)el.classList.add('evolving');setTimeout(ranchRender,800)}
- }else setTimeout(()=>{pet.hungry=true;ranchRender()},180000);
- ranchRender();
-}
-// Independent ranch drag-and-drop (pointer and touch); main farm drag remains untouched.
-let ranchDrag=null;
-document.addEventListener('pointerdown',e=>{const el=e.target.closest('[data-ranch-seed],[data-ranch-fruit]');if(!el||ranchDrag)return;e.preventDefault();e.stopPropagation();const seed=el.hasAttribute('data-ranch-seed');const plot=seed?-1:Number(el.dataset.ranchFruit);const crop=seed?ranch.seed:ranch.plots[plot]?.crop;if(crop===null||crop===undefined)return;
- const ghost=document.createElement('div');ghost.className='dragghost';ghost.textContent=seed?'🎒 '+emojis[crop]:emojis[crop];document.body.appendChild(ghost);ranchDrag={id:e.pointerId,seed,plot,ghost};ghost.style.left=e.clientX+'px';ghost.style.top=e.clientY+'px';el.setPointerCapture(e.pointerId);
-},true);
-document.addEventListener('pointermove',e=>{if(!ranchDrag||ranchDrag.id!==e.pointerId)return;ranchDrag.ghost.style.left=e.clientX+'px';ranchDrag.ghost.style.top=e.clientY+'px'},true);
-document.addEventListener('pointerup',e=>{if(!ranchDrag||ranchDrag.id!==e.pointerId)return;const d=ranchDrag;ranchDrag=null;d.ghost.remove();if(d.seed){const el=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-plot]');if(el)ranchPlant(Number(el.dataset.plot))}else{const el=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-pet]');if(el)ranchFeed(d.plot,Number(el.dataset.pet))}},true);
-document.addEventListener('pointercancel',()=>{if(ranchDrag){ranchDrag.ghost.remove();ranchDrag=null}},true);
-setInterval(()=>{if(s.unlocked<3)return;let changed=false;for(const p of ranch.pets){if(!p.hungry&&p.wish===null&&Date.now()-p.at>=180000){p.hungry=true;changed=true}}if(changed)ranchRender()},10000);
-// Preserve existing saves; grant starter egg if user already cleared Level 3.
-ranchUnlock();
+function wander(){if(stageIndex(Math.min(s.level,19))===0)return;if(!$('modal').classList.contains('open')&&!drag&&s.step!==6){$('cat').style.left=(5+Math.random()*35)+'%';$('cat').style.top=(54+Math.random()*20)+'%'}}render();if(stageIndex(Math.min(s.level,19))===0){$('cat').style.left='8%';$('cat').style.top='72%';}else setTimeout(wander,200);setInterval(wander,9000);
 
-render();setTimeout(wander,200);setInterval(wander,9000);
+// At Level 4 the nursery is automatically unlocked: a fence, one egg, and a farm slot.
+// There are no coins, adoption purchases, or paid feeding actions.
+const RANCH_KEY='caterpillarNurseryMeadowV2';
+let ranch;try{ranch=JSON.parse(localStorage.getItem(RANCH_KEY))}catch(e){}
+if(!ranch||!Array.isArray(ranch.pets))ranch={pets:[]};
+function ranchSave(){localStorage.setItem(RANCH_KEY,JSON.stringify(ranch))}
+function ranchRender(){
+  const unlocked=s.unlocked>=3||s.level>=3;
+  const area=document.getElementById('ranchUnlock');
+  if(!area)return;
+  area.style.display=unlocked?'block':'none';
+  if(!unlocked)return;
+  if(!ranch.pets.length){ranch.pets.push({meals:0});ranchSave()}
+  document.getElementById('ranchResidents').innerHTML=ranch.pets.map((p,i)=>
+    `<div class="ranch-pet" style="left:${32+(i%2)*27}%;top:${27+Math.floor(i/2)*25}%"><div>${p.meals>=5?'🦋':p.meals>=1?'🐛':'🥚'}</div><small>${p.meals>=5?'Butterfly':p.meals>=1?'Caterpillar':'Egg'}</small></div>`).join('');
+}
+ranchRender();
+// The level-up transition refreshes the nursery when Level 4 is reached.
+const originalRanchRender=render;
+render=function(){originalRanchRender();ranchRender()};
+
+/* Nursery review: independent of the main story; no currency. */
+const NURSERY_REVIEW_KEY='caterpillarNurseryReviewV1';
+let nursery;try{nursery=JSON.parse(localStorage.getItem(NURSERY_REVIEW_KEY))}catch(e){}
+if(!nursery||typeof nursery!=='object')nursery={meals:0,phase:'hungry',want:0,nextHungry:0};
+let nurseryHeartUntil=0;
+const nurseryStore=()=>localStorage.setItem(NURSERY_REVIEW_KEY,JSON.stringify(nursery));
+const nurseryUnlocked=()=>s.unlocked>=3||s.level>=3;
+const nurseryPool=()=>Math.max(1,Math.min(20,s.unlocked));
+function nurseryWant(){nursery.want=Math.floor(Math.random()*nurseryPool());nurseryStore()}
+function nurseryStage(){return nursery.meals>=12?'🦋':nursery.meals>=9?'🟤':nursery.meals>=6?'🐛':nursery.meals>=3?'🐛':'🥚'}
+function nurseryRefresh(){
+ if(nurseryDrag)return;
+ const area=$('ranchUnlock');if(!area)return;
+ area.style.display=nurseryUnlocked()?'block':'none';if(!nurseryUnlocked())return;
+ if(nursery.phase==='rest'&&Date.now()>=nursery.nextHungry){nursery.phase='hungry';nurseryWant()}
+ if(nursery.want>=nurseryPool())nursery.want=0;
+ const roaming=nursery.meals>=3;
+ const heart=Date.now()<nurseryHeartUntil?'<div class="nursery-fed-heart">❤️</div>':'';
+ const residents=$('ranchResidents');
+ const key=`${nurseryStage()}|${nursery.phase}|${nursery.want}|${heart?'heart':''}`;
+ if(residents.dataset.nurseryKey!==key || !residents.querySelector('.nursery-animal')){
+  residents.innerHTML=`<div class="nursery-animal ${roaming?'roaming':''}"><div class="nursery-wish ${nursery.phase==='rest'?'hidden':''} ${nursery.phase==='hungry'?'nursery-wish-ready':'nursery-wish-waiting'}" ${nursery.phase==='hungry'?`onclick="nurseryAsk('listen')" title="Review this story"`:'title="Grow this fruit and feed it to your caterpillar"'}>${emojis[nursery.want]}</div><div class="nursery-pet">${nurseryStage()}</div>${heart}</div>`;
+  residents.dataset.nurseryKey=key;
+ }
+ const slot=$('ranchSlot');slot.innerHTML=`<div class="nursery-soil" id="nurserySoil"><span class="nursery-slot-title">${['water','sprout','fruit'].includes(nursery.phase)?'SEEDS':''}</span><div class="nursery-action" id="nurseryAction"></div></div><div class="nursery-packet" id="nurseryPacket" title="Drag seed to farm"><span class="packet-icon">${emojis[nursery.want]}</span><span class="packet-name">${items[nursery.want][0][0].toUpperCase()+items[nursery.want][0].slice(1)}</span></div>`;
+ const action=$('nurseryAction'),packet=$('nurseryPacket');
+ packet.style.display=nursery.phase==='seed'?'flex':'none';
+ if(nursery.phase==='water')action.innerHTML='<button onclick="nurseryAsk(\'read\')" title="Answer to water">💧</button>';
+ else if(nursery.phase==='sprout')action.innerHTML='<button onclick="nurseryAsk(\'write\')" title="Answer to grow">🌱</button>';
+ else if(nursery.phase==='fruit')action.innerHTML=`<div id="nurseryFruit" class="nursery-fruit" title="Drag to feed">${emojis[nursery.want]}</div>`;
+ else action.innerHTML='<span class="nursery-soil-dots">· · ·</span>';
+ nurseryStore();
+}
+function nurserySpeak(t){if('speechSynthesis' in window){speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.82;speechSynthesis.speak(u)}}
+function nurseryAsk(which){if(!nurseryUnlocked())return;
+ const required={listen:'hungry',read:'water',write:'sprout'}[which];if(nursery.phase!==required)return;
+ const it=items[nursery.want];
+ if(which==='listen'){
+  openModal('🎧 Listening Review',`<p style="font-size:20px">Listen to the story, then choose the correct word.</p><button onclick="nurserySpeak(items[nursery.want][2])">🔊 Listen again</button><div class="choices">${Array.from({length:Math.max(nurseryPool(),nursery.want+1)},(_,i)=>i).filter(i=>i<10||i===nursery.want).sort(()=>Math.random()-.5).map(i=>`<button onclick="nurseryAnswer('listen',${i})">${items[i][0]}</button>`).join('')}</div>`,'nursery');
+  nurserySpeak(it[2]);
+ }else if(which==='read'){
+  openModal('📖 Reading Review',`<p>${it[2]}</p><p><strong>${it[3]}</strong></p><div class="choices">${it[4].map((v,i)=>`<button onclick="nurseryAnswer('read',${i})">${v}</button>`).join('')}</div>`,'nursery');
+ }else{
+  openModal('✏️ Writing Review',`<p><strong>${it[6]}</strong></p><button type="button" onclick="nurserySpeak(items[nursery.want][2])">🔊 Listen</button><br><input id="nurseryWriting" autocomplete="off" placeholder="Type the missing word" style="font-size:22px;max-width:95%;padding:10px"><button onclick="nurseryAnswer('write')">Check ✓</button>`,'nursery');
+ }
+}
+function nurseryAnswer(which,value){const it=items[nursery.want];const correct=which==='listen'?value===nursery.want:which==='read'?value===it[5]:($('nurseryWriting')?.value||'').trim().toLowerCase()===it[7].toLowerCase();
+ if(!correct){fb('Try again! 💛');sound('package');if(which==='listen')nurserySpeak(it[2]);return}
+ closeModal();sound('ripe');nursery.phase=which==='listen'?'seed':which==='read'?'sprout':'fruit';nurseryRefresh();
+}
+function nurseryPlant(){if(nursery.phase!=='seed')return;nursery.phase='water';sound('sow');nurseryRefresh()}
+function nurseryFeed(){if(nursery.phase!=='fruit')return;nursery.meals++;nursery.phase='rest';nursery.nextHungry=Date.now()+3000;nurseryHeartUntil=Date.now()+1500;sound('ripe');nurseryRefresh();setTimeout(nurseryRefresh,1600)}
+let nurseryDrag=null;
+document.addEventListener('pointerdown',e=>{let packet=e.target.closest('#nurseryPacket'),fruit=e.target.closest('#nurseryFruit');if(!packet&&!fruit)return;e.preventDefault();e.stopPropagation();const kind=packet?'seed':'fruit';const ghost=document.createElement('div');ghost.className='nursery-drag-ghost';if(kind==='seed'){ghost.classList.add('packet-ghost');ghost.innerHTML=emojis[nursery.want]+'<br><small>'+items[nursery.want][0]+'</small>'}else ghost.textContent=emojis[nursery.want];document.body.appendChild(ghost);nurseryDrag={kind,ghost,id:e.pointerId};try{e.target.setPointerCapture(e.pointerId)}catch(err){}if(packet)packet.style.opacity='.35';ghost.style.left=e.clientX+'px';ghost.style.top=e.clientY+'px';});
+document.addEventListener('pointermove',e=>{if(nurseryDrag&&e.pointerId===nurseryDrag.id){nurseryDrag.ghost.style.left=e.clientX+'px';nurseryDrag.ghost.style.top=e.clientY+'px';const soil=$('nurserySoil');if(soil)soil.classList.toggle('nursery-dropready',nurseryDrag.kind==='seed'&&inRect(e.clientX,e.clientY,soil))}});
+document.addEventListener('pointerup',e=>{if(!nurseryDrag||e.pointerId!==nurseryDrag.id)return;e.preventDefault();let kind=nurseryDrag.kind;nurseryDrag.ghost.remove();nurseryDrag=null;const soil=$('nurserySoil');if(soil)soil.classList.remove('nursery-dropready');const packet=$('nurseryPacket');if(packet)packet.style.opacity='1';if(kind==='seed'&&$('nurserySoil')&&inRect(e.clientX,e.clientY,$('nurserySoil')))nurseryPlant();if(kind==='fruit'&&$('ranchResidents')&&inRect(e.clientX,e.clientY,$('ranchResidents')))nurseryFeed()});
+document.addEventListener('pointercancel',()=>{if(nurseryDrag){nurseryDrag.ghost.remove();nurseryDrag=null;nurseryRefresh()}});
+const nurseryBaseRender=render;render=function(){nurseryBaseRender();nurseryRefresh()};
+nurseryRefresh();setInterval(nurseryRefresh,500);
 </script></body></html>
