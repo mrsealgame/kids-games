@@ -11,4 +11,4 @@ Educational mini games for kids.
 | 🎹 Piano Pop! | [Play](https://mrsealgame.github.io/kids-games/piano-pop/) |
 | 🍱 Lunchbox | [Play](https://mrsealgame.github.io/kids-games/lunchbox/) |
 | 🐛 Caterpillar Adventure | [Play](https://mrsealgame.github.io/kids-games/caterpillar-adventure/) |
-| 🌱 Caterpillar Farming Adventure | [Play](https://mrsealgame.github.io/kids-games/caterpillar-farming/) |
+| 🌱 Caterpillar Farming Adventure | [Play](https://mrsealgame.github.io/kids-games/caterpillar-farming-adventure/) |
