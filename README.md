@@ -12,3 +12,4 @@ Educational mini games for kids.
 | 🍱 Lunchbox | [Play](https://mrsealgame.github.io/kids-games/lunchbox/) |
 | 🐛 Caterpillar Adventure | [Play](https://mrsealgame.github.io/kids-games/caterpillar-adventure/) |
 | 🌱 Caterpillar Farming Adventure | [Play](https://mrsealgame.github.io/kids-games/caterpillar-farming-adventure/) |
+| 🎂 Shiba & Caterpillar Cake Shop | [Play](https://mrsealgame.github.io/kids-games/shiba-caterpillar-cake/) |
